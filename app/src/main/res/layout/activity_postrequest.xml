@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/primary_light"
+    android:orientation="vertical">
+
+    <!--<androidx.appcompat.widget.Toolbar-->
+        <!--android:id="@+id/toolbar"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_weight="1"-->
+        <!--android:background="@color/primary_light"-->
+        <!--android:minHeight="?attr/actionBarSize"-->
+        <!--android:theme="?attr/actionBarTheme"-->
+        <!--app:title="New Request"-->
+        <!--app:titleTextAppearance="@style/TextAppearance.AppCompat.Widget.ActionBar.Title"-->
+        <!--app:titleTextColor="@color/accent" />-->
+
+    <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="2"
+        android:background="@drawable/card_view_bg">
+
+        <include
+            layout="@layout/activity_base"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_alignParentBottom="true"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/title"
+            android:layout_width="0dp"
+            android:layout_height="50dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="58dp"
+            android:layout_marginEnd="8dp"
+            android:layout_weight="1"
+            android:hint="Title"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/message"
+            android:layout_width="match_parent"
+            android:layout_height="150dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            android:hint="Message Request"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/title" />
+
+        <EditText
+            android:id="@+id/date"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            android:ems="10"
+            android:hint="Date of event"
+            android:inputType="date"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/message" />
+
+        <EditText
+            android:id="@+id/time"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            android:ems="10"
+            android:hint="Time of event"
+            android:inputType="time"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/date" />
+
+        <!--<EditText-->
+            <!--android:id="@+id/address"-->
+            <!--android:layout_width="0dp"-->
+            <!--android:layout_height="75dp"-->
+            <!--android:layout_marginStart="8dp"-->
+            <!--android:layout_marginEnd="8dp"-->
+            <!--android:ems="10"-->
+            <!--android:hint="Address of event"-->
+            <!--android:inputType="textPostalAddress"-->
+            <!--app:layout_constraintEnd_toEndOf="parent"-->
+            <!--app:layout_constraintStart_toStartOf="parent"-->
+            <!--app:layout_constraintTop_toBottomOf="@+id/time" />-->
+
+        <!--<AutoCompleteTextView-->
+            <!--android:id="@+id/address"-->
+            <!--android:layout_width="0dp"-->
+            <!--android:layout_height="75dp"-->
+            <!--android:layout_marginStart="8dp"-->
+            <!--android:layout_marginEnd="8dp"-->
+            <!--android:ems="10"-->
+            <!--android:hint="Enter Place Here"-->
+            <!--android:inputType="textPostalAddress"-->
+            <!--app:layout_constraintEnd_toEndOf="parent"-->
+            <!--app:layout_constraintStart_toStartOf="parent"-->
+            <!--app:layout_constraintTop_toBottomOf="@+id/time">-->
+        <!--</AutoCompleteTextView>-->
+
+        <fragment
+            android:id="@+id/autocomplete_fragment"
+            android:name="com.google.android.gms.location.places.ui.PlaceAutocompleteFragment"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"
+            android:ems="10"
+            android:hint="Enter Place Here"
+            app:layout_constraintTop_toBottomOf="@+id/time"/>
+
+        <!--</AutoCompleteTextView>-->
+
+        <Button
+            android:id="@+id/buttonPost"
+            android:layout_width="150dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            android:text="Post request!"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/autocomplete_fragment" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</LinearLayout>

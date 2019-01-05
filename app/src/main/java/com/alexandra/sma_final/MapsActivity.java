@@ -1,41 +1,60 @@
 package com.alexandra.sma_final;
 
 import android.Manifest;
-import android.content.Context;
+import android.annotation.SuppressLint;
+import androidx.fragment.app.Fragment;
+
 import android.content.pm.PackageManager;
-import android.location.Location;
-import android.location.LocationListener;
-import android.location.LocationManager;
-import android.support.annotation.NonNull;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.FragmentActivity;
+
+import androidx.annotation.NonNull;
+import androidx.core.app.ActivityCompat;
+
 import android.os.Bundle;
-import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
+
+import androidx.core.content.ContextCompat;
+
 import android.view.Menu;
-import android.view.View;
+import android.view.MenuItem;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.material.bottomnavigation.LabelVisibilityMode;
 
+import java.util.ArrayList;
+
+import io.realm.Realm;
+import io.realm.RealmResults;
+import realm.Topic;
+
+import static android.app.PendingIntent.getActivity;
 import static com.alexandra.sma_final.MainActivity.REQUEST_LOCATION_PERMISSION;
 
-public class MapsActivity extends AppCompatActivity implements OnMapReadyCallback {
+public class MapsActivity extends BaseActivity implements OnMapReadyCallback, GoogleMap.OnMarkerClickListener
+{
+    protected String activityName = "Map";
+
     private GoogleMap mMap;
+    private ArrayList<Marker> mRequests;
+
+    private static final String LIST_FRAGMENT_TAG = "marker_fragment";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
+
+        setListeners();
+        mActivity.setText(getActivityName());
+        bottomNavigationView.setLabelVisibilityMode(LabelVisibilityMode.LABEL_VISIBILITY_SELECTED);
+        bottomNavigationView.getMenu().setGroupCheckable(0, true, true);
+        bottomNavigationView.getMenu().findItem(R.id.map).setChecked(true);
 
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
@@ -45,19 +64,15 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-        return true;
+//        getMenuInflater().inflate(R.menu.menu_main, menu);
+        return super.onCreateOptionsMenu(menu);
     }
 
-    /**
-     * Manipulates the map once available.
-     * This callback is triggered when the map is ready to be used.
-     * This is where we can add markers or lines, add listeners or move the camera. In this case,
-     * we just add a marker near Sydney, Australia.
-     * If Google Play services is not installed on the device, the user will be prompted to install
-     * it inside the SupportMapFragment. This method will only be triggered once the user has
-     * installed Google Play services and returned to the app.
-     */
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        return super.onOptionsItemSelected(item);
+    }
+
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
@@ -65,9 +80,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         enableMyLocation();
 
         mMap.getUiSettings().setMapToolbarEnabled(false);
-        mMap.getUiSettings().setMyLocationButtonEnabled(false);
+        mMap.getUiSettings().setMyLocationButtonEnabled(true);
         mMap.getUiSettings().setZoomControlsEnabled(false);
-
 
         GPSTracker gps = new GPSTracker(this);
         if(gps.canGetLocation()){
@@ -80,7 +94,10 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             mMap.moveCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
         }
 
+        setRequestMarkers();
+        mMap.setOnMarkerClickListener(this);
     }
+
     private void enableMyLocation() {
         if (ContextCompat.checkSelfPermission(this,
                 Manifest.permission.ACCESS_FINE_LOCATION)
@@ -110,4 +127,64 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         }
     }
 
+    public void setRequestMarkers(){
+
+        try(Realm realm = Realm.getDefaultInstance()) {
+            realm.executeTransaction(inRealm -> {
+                final RealmResults<Topic> topics  = realm.where(Topic.class).findAll();
+                if (topics.size() != 0){
+                    mRequests = new ArrayList<>();
+
+                    int count = 0;
+                    for(Topic t : topics){
+                        mRequests.add(count,
+                                mMap.addMarker(new MarkerOptions()
+                                        .position(new LatLng(t.getCoordX(), t.getCoordY()))
+                                        .title(t.getTitle())
+                                        .icon(BitmapDescriptorFactory.fromResource(R.drawable.location))));
+
+                        mRequests.get(count).setTag(t);
+
+                        count++;
+                    }
+                }
+            });
+        }
+    }
+
+    @SuppressLint("ResourceType")
+    @Override
+    public boolean onMarkerClick(Marker marker) {
+//        Intent intent = new Intent(MapsActivity.this, MarkerActivity.class);
+
+//        intent.putExtra("topic_id", );
+//        startActivity(intent);
+
+        Bundle bundle = new Bundle();
+        Topic t = (Topic) mRequests.get(mRequests.indexOf(marker)).getTag();
+        bundle.putLong("topic_id", t.getID());
+
+        Fragment f = getSupportFragmentManager().findFragmentByTag(LIST_FRAGMENT_TAG);
+        if (f != null) {
+            getSupportFragmentManager().popBackStack();
+        } else {
+            getSupportFragmentManager().beginTransaction()
+                    .setCustomAnimations(R.anim.slide_up,
+                            R.anim.slide_down,
+                            R.anim.slide_up,
+                            R.anim.slide_down)
+                    .add(R.id.marker_fragment_container,
+                            MarkerFragment
+                                    .instantiate(this, MarkerFragment.class.getName(), bundle),
+                            LIST_FRAGMENT_TAG
+                    ).addToBackStack(null).commit();
+        }
+
+        return true;
+    }
+
+    @Override
+    public String getActivityName() {
+        return activityName;
+    }
 }

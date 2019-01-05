@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.alexandra.sma_final.view.SlidingRelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/marker_sliding_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_marginTop="200dp"
+    android:alpha="1"
+    android:background="@drawable/marker_slider_bg"
+    android:fadeScrollbars="false"
+    android:fadingEdge="horizontal|vertical"
+    android:orientation="vertical"
+    android:padding="10dp">
+    <!--android:visibility="invisible"-->
+
+    <TextView
+        android:id="@+id/title_marker"
+        android:layout_width="match_parent"
+        android:layout_height="30dp"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginStart="0dp"
+        android:layout_marginTop="16dp" />
+
+    <TextView
+        android:id="@+id/request_marker"
+        android:layout_width="match_parent"
+        android:layout_height="150dp"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginStart="0dp"
+        android:layout_marginTop="55dp"
+        android:layout_weight="20"
+        android:ems="10"
+        android:inputType="textMultiLine" />
+
+    <TextView
+        android:id="@+id/author_marker"
+        android:layout_width="match_parent"
+        android:layout_height="30dp"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginStart="0dp"
+        android:layout_marginBottom="125dp"
+        android:layout_weight="10"
+        android:ems="10"
+        android:text="Posted by" />
+
+    <Button
+        android:id="@+id/title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="false"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginRight="10dp"
+        android:layout_marginBottom="80dp"
+        android:layout_weight="10"
+        android:text="Message author" />
+
+    <Button
+        android:id="@+id/pin"
+        style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/title"
+        android:layout_alignParentEnd="false"
+        android:layout_marginRight="5dp"
+        android:layout_toLeftOf="@+id/title"
+        android:layout_weight="10"
+        android:text="Pin it!"
+        android:textAllCaps="true"
+        android:textStyle="bold" />
+
+</com.alexandra.sma_final.view.SlidingRelativeLayout>
