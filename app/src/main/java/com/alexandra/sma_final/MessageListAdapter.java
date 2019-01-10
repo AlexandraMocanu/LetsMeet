@@ -75,7 +75,7 @@ public class MessageListAdapter extends RecyclerView.Adapter {
     // Passes the message object to a ViewHolder so that the contents can be bound to UI.
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-        UserMessage message = (UserMessage) mMessageList.get(position);
+        Message message = (Message) mMessageList.get(position);
 
         switch (holder.getItemViewType()) {
             case VIEW_TYPE_MESSAGE_SENT:
@@ -96,11 +96,16 @@ public class MessageListAdapter extends RecyclerView.Adapter {
             timeText = (TextView) itemView.findViewById(R.id.text_message_time);
         }
 
-        void bind(UserMessage message) {
-            messageText.setText(message.getMessage());
+        void bind(Message message) {
+            messageText.setText(message.getText());
 
             // Format the stored timestamp into a readable String using method.
-            timeText.setText(Utils.formatDateTime(message.getCreatedAt()));
+            Date date = new Date(message.getTimestampMillis());
+            DateFormat formatter = new SimpleDateFormat("HH:mm");
+            //TODO: timezone?
+//        formatter.setTimeZone(TimeZone.getTimeZone("UTC"));
+            String dateFormatted = formatter.format(date);
+            timeText.setText(dateFormatted);
         }
     }
 
@@ -130,17 +135,15 @@ public class MessageListAdapter extends RecyclerView.Adapter {
 //        formatter.setTimeZone(TimeZone.getTimeZone("UTC"));
             String dateFormatted = formatter.format(date);
             timeText.setText(dateFormatted);
-            User u;
             try (Realm realm = Realm.getDefaultInstance()) {
                 realm.executeTransactionAsync(new Realm.Transaction() {
                     @Override
                     public void execute(Realm bgRealm) {
                         RealmResults<User> users = bgRealm.where(User.class).equalTo("ID", message.getUserID()).findAll();
-                        u = users.first();
+                        nameText.setText(users.first().getUsername());
                     }
                 });
             }
-            nameText.setText(u.getUsername());
 
             final String img = "user_" + rnd.nextInt(10);
             this.profileImage.setImageDrawable(
