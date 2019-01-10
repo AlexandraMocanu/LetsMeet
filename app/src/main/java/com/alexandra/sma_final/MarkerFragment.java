@@ -1,5 +1,6 @@
 package com.alexandra.sma_final;
 
+import android.content.Intent;
 import android.os.Bundle;
 import androidx.fragment.app.Fragment;
 import android.text.Spannable;
@@ -70,6 +71,15 @@ public class MarkerFragment extends Fragment {
         str.setSpan(new android.text.style.StyleSpan(android.graphics.Typeface.BOLD),
                 INT_START, INT_END, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
         mTextAuthor.setText(str);
+
+        mTextAuthor.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent mIntent = new Intent(getContext(), MapsActivity.class);
+                mIntent.putExtra("username_id", mTopic.getPostedBy().getID());
+                getContext().startActivity(mIntent);
+            }
+        });
 
         mTextTitle.setText(mTopic.getTitle());
         mTextRequest.setText(mTopic.getRequest());
