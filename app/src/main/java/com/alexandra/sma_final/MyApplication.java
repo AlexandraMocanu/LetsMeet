@@ -22,6 +22,8 @@ public class MyApplication extends Application {
 
     private Location currentLocation;
     public static String city;
+    public RequestGateway requestGateway;
+    public User currentUser;
 
     @Override
     public void onCreate() {
@@ -38,6 +40,9 @@ public class MyApplication extends Application {
                 .build();
         Realm.setDefaultConfiguration(realmConfiguration);
         Realm.getInstance(realmConfiguration);
+
+        requestGateway = new RequestGateway();
+        currentUser = requestGateway.getCurrentUser();
 
         createMockObjects();
 
