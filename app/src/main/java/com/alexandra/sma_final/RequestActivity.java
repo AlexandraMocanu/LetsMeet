@@ -76,6 +76,15 @@ public class RequestActivity extends BaseActivity {
             });
         }
 
+        mTextAuthor.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent mIntent = new Intent(getApplicationContext(), RequestActivity.class);
+                mIntent.putExtra("username_id", mTopic.getPostedBy().getID());
+                getApplicationContext().startActivity(mIntent);
+            }
+        });
+
         SpannableStringBuilder str = new SpannableStringBuilder("Posted by: " + mTopic.getPostedBy().getUsername());
         int INT_START = 11; int INT_END = INT_START + mTopic.getPostedBy().getUsername().length();
         str.setSpan(new android.text.style.StyleSpan(android.graphics.Typeface.BOLD),

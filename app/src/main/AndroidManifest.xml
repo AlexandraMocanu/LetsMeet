@@ -53,6 +53,15 @@
             <!--android:name="com.google.android.geo.API_KEY"-->
             <!--android:value="AIzaSyBKCEq1yvaD2yG2qOZCviUrmL_m9r-lRJA"/>-->
 
+        <service android:name=".RefreshService" >
+        </service>
+
+        <receiver android:name=".BootReceiver">
+        </receiver>
+
+        <receiver android:name=".NotificationReceiver">
+        </receiver>
+
         <activity
             android:name=".BaseActivity"/>
 

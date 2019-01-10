@@ -16,6 +16,11 @@ import java.util.Random;
 
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import io.realm.Realm;
+import io.realm.RealmResults;
+import realm.Pin;
+import realm.Topic;
+import realm.User;
 
 public class UserActivity extends BaseActivity {
 
@@ -24,8 +29,11 @@ public class UserActivity extends BaseActivity {
     private ImageView mImage;
     private TextView mTextView;
     private TextView mTextView2;
+    private TextView mKarma;
     private RecyclerView mChats;
     private LinearLayoutManager layoutManager;
+
+    private User mUser;
 
     final Random rnd = new Random();
 
@@ -33,6 +41,17 @@ public class UserActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user);
+
+        Long user_id = getIntent().getExtras().getLong("username_id");
+
+        try(Realm realm = Realm.getDefaultInstance()) {
+            realm.executeTransaction(inRealm -> {
+                final User user  = realm.where(User.class).equalTo("ID", user_id).findFirst();
+                if(user != null){
+                    mUser = user;
+                }
+            });
+        }
 
         setListeners();
         mActivity.setText(getActivityName());
@@ -47,8 +66,14 @@ public class UserActivity extends BaseActivity {
         );
 
         // set textView to user name
-
         mTextView2 = (TextView) findViewById(R.id.textView2);
+
+        // set karma
+        mKarma = (TextView) findViewById(R.id.karma);
+        String karma = "Karma: ";
+        karma = karma + mUser.getKarma();
+        karma = karma + "upvotes";
+        mKarma.setText(karma);
 
         //set recyvler view
     }
