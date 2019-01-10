@@ -23,6 +23,7 @@ public class MyApplication extends Application {
     private Location currentLocation;
     public static String city;
     public RequestGateway requestGateway;
+
     public User currentUser;
 
     @Override
