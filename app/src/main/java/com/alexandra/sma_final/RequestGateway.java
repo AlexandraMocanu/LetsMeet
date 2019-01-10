@@ -29,14 +29,35 @@ public class RequestGateway {
         realm = Realm.getDefaultInstance();
     }
 
-
-    public void authenticate(User user) {
+    public void authenticate() {
         User login = new User() {{
             setUsername("admin");
             setPassword("admin");
         }};
-        RealmModel ret = withBodyRequest("POST", AUTH_API, User.class, login);
-        realm.insertOrUpdate(ret);
+
+        try {
+            URL url = new URL(AUTH_API);
+            HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
+            try {
+                urlConnection.setRequestMethod("POST");
+                urlConnection.setDoOutput(true);
+
+                OutputStream request = new BufferedOutputStream(urlConnection.getOutputStream());
+                writeStream(login, request);
+
+
+                InputStream response = new BufferedInputStream(urlConnection.getInputStream());
+                ret = readStream(response, TokenHolder.class);
+                jwtToken = ret.getIdToken();
+            } catch (IOException e) {
+                e.printStackTrace();
+            } finally {
+                urlConnection.disconnect();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
     }
 
     public void getNearbyTopics(double coordX, double coordY, Integer dist) {
@@ -45,10 +66,10 @@ public class RequestGateway {
             setCoordY(coordY);
         }};
         String urlStr = TOPICS_NEARBY_API;
-        if(dist != null) {
+        if (dist != null) {
             urlStr += "?distance=" + dist.toString();
         }
-        RealmModel ret = withBodyRequest("POST", urlStr , Topic.class, location);
+        RealmModel ret = withBodyRequest("POST", urlStr, Topic.class, location);
         realm.insertOrUpdate(ret);
     }
 
@@ -82,7 +103,12 @@ public class RequestGateway {
             urlConnection = (HttpURLConnection) url.openConnection();
             try {
                 urlConnection.setRequestMethod(reqMethod);
-                urlConnection.setDoOutput(true);
+
+                setupRequest(urlConnection);
+
+                OutputStream request = new BufferedOutputStream(urlConnection.getOutputStream());
+
+                authAwareConnect(urlConnection);
 
                 InputStream response = new BufferedInputStream(urlConnection.getInputStream());
                 ret = readStream(response, clazz);
@@ -97,6 +123,31 @@ public class RequestGateway {
         return ret;
     }
 
+    public void setupRequest(HttpURLConnection urlConnection) {
+
+
+        urlConnection.setRequestProperty("Authorization", "Bearer " + jwtToken);
+        urlConnection.setDoOutput(true);
+        urlConnection.setDoInput(true);
+        urlConnection.setConnectTimeout(1000 * 5);
+
+    }
+
+    public void authAwareConnect(HttpURLConnection urlConnection) {
+        try {
+            urlConnection.connect();
+
+            while(jwtToken == null
+                    || urlConnection.getResponseCode() == HttpURLConnection.HTTP_UNAUTHORIZED){
+                authenticate();
+                urlConnection.connect();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+
     public RealmModel withBodyRequest(String reqMethod, String urlStr, Class clazz, Object obj) {
         RealmModel ret = null;
         URL url = null;
@@ -106,11 +157,13 @@ public class RequestGateway {
             urlConnection = (HttpURLConnection) url.openConnection();
             try {
                 urlConnection.setRequestMethod(reqMethod);
-                urlConnection.setDoOutput(true);
+
+                setupRequest(urlConnection);
 
                 OutputStream request = new BufferedOutputStream(urlConnection.getOutputStream());
                 writeStream(obj, request);
 
+                authAwareConnect(urlConnection);
 
                 InputStream response = new BufferedInputStream(urlConnection.getInputStream());
                 ret = readStream(response, clazz);
