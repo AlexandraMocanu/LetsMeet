@@ -24,6 +24,7 @@ public class UserActivity extends BaseActivity {
     private ImageView mImage;
     private TextView mTextView;
     private TextView mTextView2;
+    private TextView mKarma;
     private RecyclerView mChats;
     private LinearLayoutManager layoutManager;
 
@@ -47,8 +48,14 @@ public class UserActivity extends BaseActivity {
         );
 
         // set textView to user name
-
         mTextView2 = (TextView) findViewById(R.id.textView2);
+
+        // set karma
+        mKarma = (TextView) findViewById(R.id.karma);
+        String karma = "Karma: ";
+//        karma = karma + getScore();
+        karma = karma + "upvotes";
+        mKarma.setText(karma);
 
         //set recyvler view
     }
