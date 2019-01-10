@@ -25,7 +25,7 @@ public class Topic extends RealmObject {
     private Integer score;
 
     @Required
-    private String request;
+    private Message request;
 
     @Required
     private String title;
