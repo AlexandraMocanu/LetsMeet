@@ -112,7 +112,6 @@ public class RequestGateway {
         }
         return sb.toString();
     }
-    Android
 
     public void writeStream(Object obj, OutputStream request) {
         try {
