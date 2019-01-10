@@ -1,5 +1,6 @@
 package com.alexandra.sma_final;
 
+import android.app.Application;
 import io.realm.Realm;
 import io.realm.RealmModel;
 import org.json.JSONObject;
@@ -16,8 +17,9 @@ public class RequestGateway {
 
     private Realm realm;
 
-    private static final String BASE_API = "http://192.168.1.114/api";
+    private static final String BASE_API = "http://localhost/api";
     private static final String AUTH_API = BASE_API + "/authenticate";
+    private static final String WHO_AM_I_API = BASE_API + "/account";
 
     private static final String TOPICS_API = BASE_API + "/topics";
     private static final String TOPICS_NEARBY_API = TOPICS_API + "/nearby"; // in km
@@ -25,14 +27,17 @@ public class RequestGateway {
     private static final String MESSAGES_API = BASE_API + "/messages";
     private static final String CONVERSATIONS_API = BASE_API + "/conversations";
 
+    private static final String USERNAME = "admin";
+    private static final String PASSWORD = "admin";
+
     public RequestGateway() {
         realm = Realm.getDefaultInstance();
     }
 
     public void authenticate() {
         User login = new User() {{
-            setUsername("admin");
-            setPassword("admin");
+            setUsername(USERNAME);
+            setPassword(PASSWORD);
         }};
 
         try {
@@ -60,6 +65,14 @@ public class RequestGateway {
 
     }
 
+    public User whoAmI(){
+        return getCurrentUser();
+    }
+
+    public User getCurrentUser() {
+        return (User) noBodyRequest("GET", WHO_AM_I_API, User.class);
+    }
+
     public void getNearbyTopics(double coordX, double coordY, Integer dist) {
         Topic location = new Topic() {{
             setCoordX(coordX);
@@ -72,6 +85,13 @@ public class RequestGateway {
         RealmModel ret = withBodyRequest("POST", urlStr, Topic.class, location);
         realm.insertOrUpdate(ret);
     }
+
+
+
+    public void getConversations() {
+
+    }
+
 
     public void writeStream(Object obj, OutputStream request) {
         try {
