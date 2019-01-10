@@ -4,6 +4,8 @@ import android.app.Application;
 import io.realm.Realm;
 import io.realm.RealmModel;
 import org.json.JSONObject;
+
+import realm.TokenHolder;
 import realm.Topic;
 import realm.User;
 
@@ -52,7 +54,7 @@ public class RequestGateway {
 
 
                 InputStream response = new BufferedInputStream(urlConnection.getInputStream());
-                ret = readStream(response, TokenHolder.class);
+                TokenHolder ret = (TokenHolder) readStream(response, TokenHolder.class);
                 jwtToken = ret.getIdToken();
             } catch (IOException e) {
                 e.printStackTrace();
