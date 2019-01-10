@@ -14,6 +14,7 @@ import java.util.Locale;
 import io.realm.Realm;
 import io.realm.RealmConfiguration;
 import realm.City;
+import realm.TokenHolder;
 import realm.Topic;
 import realm.User;
 
@@ -56,7 +57,6 @@ public class MyApplication extends Application {
     }
 
     public void createMockObjects(){
-
         User user1 = new User();
         user1.setID(Long.valueOf(1)); user1.setUsername("anon"+1);
         User user2 = new User();

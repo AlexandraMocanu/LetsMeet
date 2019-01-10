@@ -17,6 +17,9 @@ public class Message extends RealmObject {
     private String text;
 
     @Required
+    private Long userID;
+
+    @Required
     private Long timestampMillis;
 
     public String getText() {
@@ -33,6 +36,14 @@ public class Message extends RealmObject {
 
     public void setTimestampMillis(Long timestampMillis) {
         this.timestampMillis = timestampMillis;
+    }
+
+    public Long getUserID() {
+        return userID;
+    }
+
+    public void setUserID(Long userID) {
+        this.userID = userID;
     }
 
 }

@@ -9,12 +9,24 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 
+import com.alexandra.sma_final.view.CityC;
+import com.alexandra.sma_final.view.CityCAdapter;
+import com.alexandra.sma_final.view.ExpandableRecyclerAdapter;
 import com.google.android.material.bottomnavigation.LabelVisibilityMode;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.HashMap;
 
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import io.realm.Realm;
+import io.realm.RealmResults;
+import realm.Pin;
+import realm.Topic;
+import realm.User;
 
 public class MainActivity extends BaseActivity {
 
@@ -23,9 +35,11 @@ public class MainActivity extends BaseActivity {
     public static final int REQUEST_LOCATION_PERMISSION = 99;
 //    protected FloatingActionButton fab;
 
-    private ScrollView mScrollView;
-    private RecyclerView mChats;
+    private static RecyclerView recyclerView;
     private LinearLayoutManager layoutManager;
+
+    private ArrayList<User> mUsers;
+    private static UserAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,17 +52,34 @@ public class MainActivity extends BaseActivity {
         bottomNavigationView.getMenu().setGroupCheckable(0, true, true);
         bottomNavigationView.getMenu().findItem(R.id.home).setChecked(true);
 
-        mScrollView = (ScrollView) findViewById(R.id.scroll_view);
-
-        mChats = (RecyclerView) findViewById(R.id.chats);
-        mChats.setHasFixedSize(false);
+        recyclerView = (RecyclerView) findViewById(R.id.chats);
+        recyclerView.setHasFixedSize(true);
 
         layoutManager = new LinearLayoutManager(this);
-        mChats.setLayoutManager(layoutManager);
-        mChats.setItemAnimator(new DefaultItemAnimator());
+        recyclerView.setLayoutManager(layoutManager);
+        recyclerView.setItemAnimator(new DefaultItemAnimator());
 
         //get chats of user
         //create chat adapter and set it to layout manager
+
+        mUsers = new ArrayList<User>();
+        try(Realm realm = Realm.getDefaultInstance()) {
+            realm.executeTransaction(inRealm -> {
+                final RealmResults<User> users  = realm.where(User.class).findAll();
+                if (users.size() != 0){
+                    for (User u: users){
+                        mUsers.add(u);
+                    }
+                }
+            });
+        }
+
+        // sort newest message
+
+        adapter = new UserAdapter(mUsers, getApplicationContext());
+
+        recyclerView.setAdapter(adapter);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
     }
 
     @Override
