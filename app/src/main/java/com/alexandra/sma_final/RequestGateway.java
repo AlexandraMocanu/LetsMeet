@@ -1,6 +1,7 @@
 package com.alexandra.sma_final;
 
 import android.app.Application;
+import android.os.AsyncTask;
 import io.realm.Realm;
 import io.realm.RealmModel;
 import org.json.JSONObject;
@@ -10,6 +11,7 @@ import realm.User;
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.concurrent.ExecutionException;
 
 public class RequestGateway {
 
@@ -92,6 +94,25 @@ public class RequestGateway {
 
     }
 
+    public String objToStr(Object obj){
+        Object wrap = JSONObject.wrap(obj);
+        return wrap.toString();
+    }
+
+    private String convertInputStreamToString(InputStream inputStream) {
+        BufferedReader bufferedReader = new BufferedReader( new InputStreamReader(inputStream));
+        StringBuilder sb = new StringBuilder();
+        String line;
+        try {
+            while((line = bufferedReader.readLine()) != null) {
+                sb.append(line);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return sb.toString();
+    }
+    Android
 
     public void writeStream(Object obj, OutputStream request) {
         try {
@@ -115,32 +136,54 @@ public class RequestGateway {
 
 
     public RealmModel noBodyRequest(String reqMethod, String urlStr, Class clazz) {
-        RealmModel ret = null;
-        URL url = null;
-        HttpURLConnection urlConnection = null;
+        //urlStr, reqMethod, obj
+        AsyncTask<String, Void, String> execute = new RequestTask().execute(urlStr, reqMethod);
         try {
-            url = new URL(urlStr);
-            urlConnection = (HttpURLConnection) url.openConnection();
-            try {
-                urlConnection.setRequestMethod(reqMethod);
-
-                setupRequest(urlConnection);
-
-                OutputStream request = new BufferedOutputStream(urlConnection.getOutputStream());
-
-                authAwareConnect(urlConnection);
-
-                InputStream response = new BufferedInputStream(urlConnection.getInputStream());
-                ret = readStream(response, clazz);
-            } catch (IOException e) {
-                e.printStackTrace();
-            } finally {
-                urlConnection.disconnect();
-            }
-        } catch (IOException e) {
+            return realm.createOrUpdateObjectFromJson(clazz, execute.get());
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        return ret;
+        return null;
+    }
+
+    private final class RequestTask extends AsyncTask<String,Void,String> {
+
+        @Override
+        protected String doInBackground(String... strings) {
+            //urlStr, reqMethod, obj
+            String ret = null;
+            URL url = null;
+            HttpURLConnection urlConnection = null;
+            try {
+                url = new URL(strings[0]);
+                urlConnection = (HttpURLConnection) url.openConnection();
+                try {
+                    urlConnection.setRequestMethod(strings[1]);
+
+                    setupRequest(urlConnection);
+
+                    if(strings[2] != null && !strings[2].equals("")) {
+                        OutputStream request = new BufferedOutputStream(urlConnection.getOutputStream());
+                        writeStream(strings[2], request);
+                    }
+                    authAwareConnect(urlConnection);
+
+                    InputStream response = new BufferedInputStream(urlConnection.getInputStream());
+                    ret = convertInputStreamToString(response);
+//                    ret = readStream(response, clazz);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                } finally {
+                    urlConnection.disconnect();
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return ret;
+
+        }
     }
 
     public void setupRequest(HttpURLConnection urlConnection) {
@@ -169,32 +212,16 @@ public class RequestGateway {
 
 
     public RealmModel withBodyRequest(String reqMethod, String urlStr, Class clazz, Object obj) {
-        RealmModel ret = null;
-        URL url = null;
-        HttpURLConnection urlConnection = null;
+        //urlStr, reqMethod, obj
+
+        AsyncTask<String, Void, String> execute = new RequestTask().execute(urlStr, reqMethod, objToStr(obj));
         try {
-            url = new URL(urlStr);
-            urlConnection = (HttpURLConnection) url.openConnection();
-            try {
-                urlConnection.setRequestMethod(reqMethod);
-
-                setupRequest(urlConnection);
-
-                OutputStream request = new BufferedOutputStream(urlConnection.getOutputStream());
-                writeStream(obj, request);
-
-                authAwareConnect(urlConnection);
-
-                InputStream response = new BufferedInputStream(urlConnection.getInputStream());
-                ret = readStream(response, clazz);
-            } catch (IOException e) {
-                e.printStackTrace();
-            } finally {
-                urlConnection.disconnect();
-            }
-        } catch (IOException e) {
+            return realm.createOrUpdateObjectFromJson(clazz, execute.get());
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        return ret;
+        return null;
     }
 }
