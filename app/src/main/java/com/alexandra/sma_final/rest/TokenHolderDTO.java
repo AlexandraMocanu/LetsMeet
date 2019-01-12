@@ -1,9 +1,10 @@
-package realm;
+package com.alexandra.sma_final.rest;
 
-import io.realm.RealmObject;
+import com.google.gson.annotations.SerializedName;
 
-public class TokenHolder extends RealmObject {
+public class TokenHolderDTO {
 
+    @SerializedName("id_token")
     private String idToken;
 
     public String getIdToken() {

@@ -1,29 +1,40 @@
 package com.alexandra.sma_final;
 
-import android.app.Application;
 import android.os.AsyncTask;
 import android.util.Log;
 
+import com.alexandra.sma_final.rest.TokenHolderDTO;
+import com.alexandra.sma_final.rest.UserDTO;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+
 import io.realm.Realm;
 import io.realm.RealmModel;
+
 import org.json.JSONObject;
 
-import realm.TokenHolder;
 import realm.Topic;
 import realm.User;
 
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.concurrent.ExecutionException;
+import java.util.Arrays;
+import java.util.HashMap;
 
 public class RequestGateway {
+
+    private static final String TAG = "RequestGateway";
 
     private String jwtToken = null;
 
     private Realm realm;
+    private Gson gson;
+    private MyApplication app;
 
-    private static final String BASE_API = "http://192.168.1.114:8080/api";
+    private static final String EMU_LOCALHOST = "10.0.2.2";
+    private static final String BASE_API = "http://" + EMU_LOCALHOST + ":8080/api";
+    //    private static final String BASE_EMU_API = "http://:8080/api";
     private static final String AUTH_API = BASE_API + "/authenticate";
     private static final String WHO_AM_I_API = BASE_API + "/account";
 
@@ -36,30 +47,28 @@ public class RequestGateway {
     private static final String USERNAME = "admin";
     private static final String PASSWORD = "admin";
 
-    public RequestGateway() {
+    public RequestGateway(MyApplication app) {
+        this.app = app;
         realm = Realm.getDefaultInstance();
+        gson = new GsonBuilder().create();
     }
 
     public void authenticate() {
-        User login = new User() {{
-            setUsername(USERNAME);
-            setPassword(PASSWORD);
-        }};
+//        "{\"username\":\"admin\",\"password\":\"admin\"}"
 
-        AsyncTask<Object, Void, String> post = new RequestTask1().execute(AUTH_API, "POST", "{\"username\":\"admin\",\"password\":\"admin\"}");
-//        try {
-//            jwtToken = post.get();
-//        } catch (ExecutionException e) {
-//            e.printStackTrace();
-//        } catch (InterruptedException e) {
-//            e.printStackTrace();
-//        }
+        HashMap<String, String> loginVM = new HashMap<>();
+        loginVM.put("username", USERNAME);
+        loginVM.put("password", PASSWORD);
+        byte[] bytes = gson.toJson(loginVM).getBytes();
 
+        new LoginTask()
+                .execute(AUTH_API, "POST", bytes);
     }
 
-    public void getCurrentUser() {
-        noBodyRequest("GET", WHO_AM_I_API, User.class);
-//        realm.executeTransaction();
+    public void getCurrentUser(AsyncResponse<UserDTO> responseReceiver) {
+        CurrentUserTask task = new CurrentUserTask();
+        task.delegate = responseReceiver;
+        task.execute(WHO_AM_I_API, "GET");
     }
 
     public void getNearbyTopics(double coordX, double coordY, Integer dist) {
@@ -76,22 +85,21 @@ public class RequestGateway {
     }
 
 
-
     public void getConversations() {
 
     }
 
-    public String objToStr(Object obj){
+    public String objToStr(Object obj) {
         JSONObject wrap = (JSONObject) JSONObject.wrap(obj);
         return wrap.toString();
     }
 
-    private String convertInputStreamToString(InputStream inputStream) {
-        BufferedReader bufferedReader = new BufferedReader( new InputStreamReader(inputStream));
+    private static String inputStreamToString(InputStream inputStream) {
+        BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
         StringBuilder sb = new StringBuilder();
         String line;
         try {
-            while((line = bufferedReader.readLine()) != null) {
+            while ((line = bufferedReader.readLine()) != null) {
                 sb.append(line);
             }
         } catch (IOException e) {
@@ -100,17 +108,23 @@ public class RequestGateway {
         return sb.toString();
     }
 
-    public void writeStream(Object obj, OutputStream request) {
+    public void writeStream(Object obj, OutputStream request, Class clazz) {
         try {
-            Object wrap = JSONObject.wrap(obj);
-            request.write(wrap.toString().getBytes());
+            byte[] bytes = gson.toJson(obj, clazz).getBytes();
+            request.write(bytes);
         } catch (IOException e) {
             e.printStackTrace();
         }
 
     }
 
-    public RealmModel readStream(InputStream response, Class clazz) {
+    public static void addHeaders(HttpURLConnection urlConnection) {
+        urlConnection.setDoInput(true);
+        urlConnection.setConnectTimeout(1000 * 5);
+        urlConnection.setRequestProperty("Content-Type", "application/json");
+    }
+
+    public RealmModel readStream(InputStream response, Class<RealmModel> clazz) {
         RealmModel ret = null;
         try {
             ret = realm.createObjectFromJson(clazz, response);
@@ -121,75 +135,115 @@ public class RequestGateway {
     }
 
 
-    public void noBodyRequest(String reqMethod, String urlStr, Class clazz) {
-        //urlStr, reqMethod, obj
-        AsyncTask<Object, Void, String> execute = new RequestTask().execute(urlStr, reqMethod, clazz);
-//        try {
-//            return realm.createOrUpdateObjectFromJson(clazz, execute.get());
-//        } catch (ExecutionException e) {
-//            e.printStackTrace();
-//        } catch (InterruptedException e) {
-//            e.printStackTrace();
-//        }
-//        return null;
-    }
-
-    private final class RequestTask1 extends AsyncTask<Object,Void,String> {
-
-        @Override
-        protected String doInBackground(Object... strings) {
-            //urlStr, reqMethod, obj
-            String ret = null;
-            URL url = null;
-            HttpURLConnection urlConnection = null;
+    /**
+     * Does request and returns result Body as String
+     *
+     * @param params - urlStr, reqMethod, [bytes]
+     * @return response String
+     */
+    private String doRequest(Object... params) {
+        String urlStr = (String) params[0];
+        String requestMethod = (String) params[1];
+        //urlStr, reqMethod, [bytes]
+        String ret = null;
+        URL url = null;
+        HttpURLConnection urlConnection = null;
+        try {
+            url = new URL(urlStr);
+            urlConnection = (HttpURLConnection) url.openConnection();
             try {
-                url = new URL((String)strings[0]);
-                urlConnection = (HttpURLConnection) url.openConnection();
-                try {
-                    urlConnection.setRequestMethod((String)strings[1]);
+                urlConnection.setRequestMethod(requestMethod);
+                Log.d(TAG, requestMethod + " ---> " + urlStr);
 
+                setupRequest(urlConnection);
+
+                if (params.length == 3 && params[2] != null) {
+                    byte[] body = (byte[]) params[2];
                     urlConnection.setDoOutput(true);
-                    urlConnection.setDoInput(true);
-                    urlConnection.setConnectTimeout(1000 * 5);
+                    OutputStream request = new BufferedOutputStream(urlConnection.getOutputStream());
 
-                    if(strings.length >= 3) {
-                        OutputStream request = new BufferedOutputStream(urlConnection.getOutputStream());
-                        writeStream(strings[2], request);
-                    }
-                    authAwareConnect(urlConnection);
+                    request.write(body);
 
-                    InputStream response = new BufferedInputStream(urlConnection.getInputStream());
-                    ret = convertInputStreamToString(response);
-//                    ret = readStream(response, clazz);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                } finally {
-                    urlConnection.disconnect();
+                    request.flush();
+                    Log.d(TAG, requestMethod + " ---> " + urlStr);
+                    Log.d(TAG, "Body: " + new String(body, "UTF-8"));
+                } else {
+                    Log.d(TAG, requestMethod + " ---> " + urlStr);
                 }
+                urlConnection.connect();
+
+
+                InputStream response = new BufferedInputStream(urlConnection.getInputStream());
+                ret = inputStreamToString(response);
+
+                Log.d(TAG, urlConnection.getResponseCode() + ": " + ret + "<---" + urlStr);
+            } catch (FileNotFoundException e) {
+                Log.e(TAG, "HTTP error!");
+                Log.e(TAG, urlConnection.getResponseCode() + ": " + urlConnection.getResponseMessage());
+                e.printStackTrace();
             } catch (IOException e) {
                 e.printStackTrace();
+            } finally {
+                urlConnection.disconnect();
             }
-            return ret;
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return ret;
 
+
+    }
+
+
+    private final class LoginTask extends AsyncTask<Object, Void, String> {
+
+        @Override
+        protected String doInBackground(Object... params) {
+            return doRequest(params);
         }
 
         @Override
         protected void onPostExecute(String result) {
-            Log.d("TAG","jwt " + result);
-            jwtToken = result;
+            String idToken = gson.fromJson(result, TokenHolderDTO.class).getIdToken();
+            Log.d(TAG, "Got JWT: " + idToken);
+            jwtToken = idToken;
+            getCurrentUser(app);
+        }
+    }
+    //TODO: socket timeout exception
+    //TODO: connection refused
+
+    public void noBodyRequest(String reqMethod, String urlStr, Class clazz) {
+        AsyncTask<Object, Void, String> execute = new RequestTask().execute(urlStr, reqMethod, clazz);
+    }
+
+    private final class CurrentUserTask extends AsyncTask<Object, Void, String> {
+
+        public AsyncResponse<UserDTO> delegate = null;
+
+        @Override
+        protected String doInBackground(Object... params) {
+            return doRequest(params);
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            if (delegate != null) {
+                Log.d(TAG, "Current user is: " + result);
+                delegate.processFinish(gson.fromJson(result, UserDTO.class));
+            }
         }
     }
 
-    private final class RequestTask extends AsyncTask<Object,Void,String> {
+    private final class RequestTask extends AsyncTask<Object, Void, String> {
 
         private Class clazz;
 
         @Override
         protected String doInBackground(Object... strings) {
-            //urlStr, reqMethod, obj
+            //urlStr, reqMethod, obj, class
             String ret = null;
             URL url = null;
-            clazz = (Class) strings[2];
             HttpURLConnection urlConnection = null;
             try {
                 url = new URL((String) strings[0]);
@@ -199,14 +253,15 @@ public class RequestGateway {
 
                     setupRequest(urlConnection);
 
-                    if(strings.length >= 4) {
+                    if (strings.length == 4) {
+                        clazz = (Class) strings[2];
                         OutputStream request = new BufferedOutputStream(urlConnection.getOutputStream());
-                        writeStream(strings[3], request);
+                        writeStream(strings[2], request, (Class) strings[3]);
                     }
                     authAwareConnect(urlConnection);
 
                     InputStream response = new BufferedInputStream(urlConnection.getInputStream());
-                    ret = convertInputStreamToString(response);
+                    ret = inputStreamToString(response);
 //                    ret = readStream(response, clazz);
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -223,32 +278,25 @@ public class RequestGateway {
 
         @Override
         protected void onPostExecute(String result) {
-            Log.d("TAG","smth " + result);
+            Log.d("TAG", "smth " + result);
             realm.createOrUpdateObjectFromJson(clazz, result);
         }
     }
 
     public void setupRequest(HttpURLConnection urlConnection) {
-
-
-        urlConnection.setRequestProperty("Authorization", "Bearer " + jwtToken);
-        urlConnection.setDoOutput(true);
-        urlConnection.setDoInput(true);
-        urlConnection.setConnectTimeout(1000 * 5);
+        addHeaders(urlConnection);
+        if (jwtToken != null)
+            urlConnection.setRequestProperty("Authorization", "Bearer " + jwtToken);
 
     }
 
-    public void authAwareConnect(HttpURLConnection urlConnection) {
-        try {
-            urlConnection.connect();
+    public void authAwareConnect(HttpURLConnection urlConnection) throws IOException {
+        urlConnection.connect();
 
-            while(jwtToken == null
-                    || urlConnection.getResponseCode() == HttpURLConnection.HTTP_UNAUTHORIZED){
-                authenticate();
-                urlConnection.connect();
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
+        while (jwtToken == null
+                || urlConnection.getResponseCode() == HttpURLConnection.HTTP_UNAUTHORIZED) {
+            authenticate();
+            urlConnection.connect();
         }
     }
 

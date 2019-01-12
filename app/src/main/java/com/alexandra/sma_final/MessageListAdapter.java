@@ -6,20 +6,16 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.List;
 import java.util.Random;
-import java.util.TimeZone;
 
 import androidx.recyclerview.widget.RecyclerView;
 import io.realm.Realm;
 import io.realm.RealmResults;
-import realm.City;
 import realm.Message;
 import realm.User;
 
@@ -45,7 +41,7 @@ public class MessageListAdapter extends RecyclerView.Adapter {
     public int getItemViewType(int position) {
         Message message = (Message) mMessageList.get(position);
 
-        if (message.getUserID().equals(((MyApplication)((ChatActivity)mContext).getApplication()).currentUser.getID())) {
+        if (message.getUserID().equals(((MyApplication)((ChatActivity)mContext).getApplication()).getCurrentUser().getID())) {
             // If the current user is the sender of the message
             return VIEW_TYPE_MESSAGE_SENT;
         } else {
