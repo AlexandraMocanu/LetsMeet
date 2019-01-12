@@ -67,6 +67,7 @@ public class UserActivity extends BaseActivity {
 
         // set textView to user name
         mTextView2 = (TextView) findViewById(R.id.textView2);
+        mTextView2.setText(((MyApplication)getApplication()).currentUser.getUsername());
 
         // set karma
         mKarma = (TextView) findViewById(R.id.karma);

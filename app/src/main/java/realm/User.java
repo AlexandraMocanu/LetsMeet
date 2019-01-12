@@ -1,5 +1,7 @@
 package realm;
 
+import javax.annotation.Nullable;
+
 import io.realm.Realm;
 import io.realm.RealmObject;
 import io.realm.annotations.PrimaryKey;
@@ -14,7 +16,6 @@ public class User extends RealmObject {
     @Required
     private String username;
 
-    @Required
     private String password;
 
     private int karma;

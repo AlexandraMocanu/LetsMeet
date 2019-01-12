@@ -64,7 +64,10 @@ abstract public class BaseActivity extends AppCompatActivity implements BottomNa
         mMyIcon.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivity(new Intent(getApplicationContext(), UserActivity.class));
+                Intent mIntent = new Intent(getApplicationContext(), UserActivity.class);
+                // TODO: change the value!
+                mIntent.putExtra("username_id", Long.valueOf(1));
+                getApplicationContext().startActivity(mIntent);
             }
         });
 //        final String img = "user_icon_" + rnd.nextInt(10);

@@ -32,7 +32,6 @@ public class ChatActivity extends BaseActivity {
 
         //get messages from Realm
 
-
         mMessageAdapter = new MessageListAdapter(this, messageList);
         mMessageRecycler.setLayoutManager(new LinearLayoutManager(this));
     }
