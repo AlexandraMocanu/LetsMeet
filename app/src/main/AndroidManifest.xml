@@ -51,7 +51,7 @@
 
         <!--<meta-data-->
             <!--android:name="com.google.android.geo.API_KEY"-->
-            <!--android:value="AIzaSyBKCEq1yvaD2yG2qOZCviUrmL_m9r-lRJA"/>-->
+            <!--android:value="AIzaSyBKCEq1yvaD2yG2qOZCviUrmL"/>-->
 
         <service android:name=".RefreshService" >
         </service>
