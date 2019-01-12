@@ -5,7 +5,7 @@ import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
 
-import com.alexandra.sma_final.font.TypefaceUtil;
+import com.alexandra.sma_final.rest.UserDTO;
 
 import java.io.IOException;
 import java.util.List;
@@ -15,17 +15,17 @@ import io.realm.Realm;
 import io.realm.RealmConfiguration;
 import realm.City;
 import realm.Message;
-import realm.TokenHolder;
 import realm.Topic;
 import realm.User;
 
-public class MyApplication extends Application {
+public class MyApplication extends Application implements AsyncResponse<UserDTO>{
+
 
     private Location currentLocation;
     public static String city;
     public RequestGateway requestGateway;
 
-    public static User currentUser;
+    private UserDTO currentUser;
 
     @Override
     public void onCreate() {
@@ -43,9 +43,10 @@ public class MyApplication extends Application {
         Realm.setDefaultConfiguration(realmConfiguration);
         Realm.getInstance(realmConfiguration);
 
-//        requestGateway = new RequestGateway();
-//        requestGateway.authenticate();
-//        requestGateway.getCurrentUser();
+        requestGateway = new RequestGateway(this);
+        requestGateway.authenticate();
+//        requestGateway.getCurrentUser(this);
+
 
         createMockObjects();
 
@@ -73,8 +74,7 @@ public class MyApplication extends Application {
         user2.setID(Long.valueOf(2));
         user2.setUsername("anon"+2);
         user2.setKarma(345);
-
-        currentUser = user1;
+//        currentUser = user1;
 
         Topic topic1 = new Topic();
         topic1.setID(Long.valueOf(1));
@@ -201,5 +201,18 @@ public class MyApplication extends Application {
                 realm.close();
             }
         }
+    }
+
+    public UserDTO getCurrentUser() {
+        return currentUser;
+    }
+
+    public void setCurrentUser(UserDTO currentUser) {
+        this.currentUser = currentUser;
+    }
+
+    @Override
+    public void processFinish(UserDTO output) {
+        setCurrentUser(output);
     }
 }

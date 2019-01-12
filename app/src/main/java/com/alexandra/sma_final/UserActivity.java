@@ -1,25 +1,18 @@
 package com.alexandra.sma_final;
 
-import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.google.android.material.bottomnavigation.LabelVisibilityMode;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.Random;
 
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import io.realm.Realm;
-import io.realm.RealmResults;
-import realm.Pin;
-import realm.Topic;
 import realm.User;
 
 public class UserActivity extends BaseActivity {
@@ -67,7 +60,7 @@ public class UserActivity extends BaseActivity {
 
         // set textView to user name
         mTextView2 = (TextView) findViewById(R.id.textView2);
-        mTextView2.setText(((MyApplication)getApplication()).currentUser.getUsername());
+        mTextView2.setText(((MyApplication)getApplication()).getCurrentUser().getUsername());
 
         // set karma
         mKarma = (TextView) findViewById(R.id.karma);
