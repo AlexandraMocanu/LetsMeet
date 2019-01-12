@@ -14,6 +14,7 @@ import java.util.Locale;
 import io.realm.Realm;
 import io.realm.RealmConfiguration;
 import realm.City;
+import realm.Message;
 import realm.TokenHolder;
 import realm.Topic;
 import realm.User;
@@ -24,7 +25,7 @@ public class MyApplication extends Application {
     public static String city;
     public RequestGateway requestGateway;
 
-    public User currentUser;
+    public static User currentUser;
 
     @Override
     public void onCreate() {
@@ -42,8 +43,9 @@ public class MyApplication extends Application {
         Realm.setDefaultConfiguration(realmConfiguration);
         Realm.getInstance(realmConfiguration);
 
-        requestGateway = new RequestGateway();
-        currentUser = requestGateway.getCurrentUser();
+//        requestGateway = new RequestGateway();
+//        requestGateway.authenticate();
+//        requestGateway.getCurrentUser();
 
         createMockObjects();
 
@@ -64,9 +66,15 @@ public class MyApplication extends Application {
 
     public void createMockObjects(){
         User user1 = new User();
-        user1.setID(Long.valueOf(1)); user1.setUsername("anon"+1);
+        user1.setID(Long.valueOf(1));
+        user1.setUsername("anon"+1);
+        user1.setKarma(123);
         User user2 = new User();
-        user2.setID(Long.valueOf(2)); user2.setUsername("anon"+2);
+        user2.setID(Long.valueOf(2));
+        user2.setUsername("anon"+2);
+        user2.setKarma(345);
+
+        currentUser = user1;
 
         Topic topic1 = new Topic();
         topic1.setID(Long.valueOf(1));
@@ -159,6 +167,17 @@ public class MyApplication extends Application {
         City city = new City();
         city.setName("Timisoara");
 
+        Message m1 = new Message();
+        m1.setID(Long.valueOf(1));
+        m1.setText("message 1");
+        m1.setTimestampMillis(Long.valueOf(123004));
+        m1.setUserID(user1.getID());
+        Message m2 = new Message();
+        m2.setID(Long.valueOf(2));
+        m2.setText("message 2");
+        m2.setTimestampMillis(Long.valueOf(123004));
+        m2.setUserID(user2.getID());
+
         Realm realm = null;
         try { // I could use try-with-resources here
             realm = Realm.getDefaultInstance();
@@ -174,6 +193,8 @@ public class MyApplication extends Application {
                 realm1.insertOrUpdate(topic7);
                 realm1.insertOrUpdate(topic8);
                 realm1.insertOrUpdate(city);
+                realm1.insertOrUpdate(m1);
+                realm1.insertOrUpdate(m2);
             });
         } finally {
             if(realm != null) {

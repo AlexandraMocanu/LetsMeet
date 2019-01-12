@@ -46,4 +46,12 @@ public class Message extends RealmObject {
         this.userID = userID;
     }
 
+    public Long getID() {
+        return ID;
+    }
+
+    public void setID(Long ID) {
+        this.ID = ID;
+    }
+
 }

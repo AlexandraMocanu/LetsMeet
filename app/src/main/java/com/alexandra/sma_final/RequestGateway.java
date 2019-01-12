@@ -2,6 +2,8 @@ package com.alexandra.sma_final;
 
 import android.app.Application;
 import android.os.AsyncTask;
+import android.util.Log;
+
 import io.realm.Realm;
 import io.realm.RealmModel;
 import org.json.JSONObject;
@@ -21,7 +23,7 @@ public class RequestGateway {
 
     private Realm realm;
 
-    private static final String BASE_API = "http://localhost/api";
+    private static final String BASE_API = "http://192.168.1.114:8080/api";
     private static final String AUTH_API = BASE_API + "/authenticate";
     private static final String WHO_AM_I_API = BASE_API + "/account";
 
@@ -44,37 +46,20 @@ public class RequestGateway {
             setPassword(PASSWORD);
         }};
 
-        try {
-            URL url = new URL(AUTH_API);
-            HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
-            try {
-                urlConnection.setRequestMethod("POST");
-                urlConnection.setDoOutput(true);
-
-                OutputStream request = new BufferedOutputStream(urlConnection.getOutputStream());
-                writeStream(login, request);
-
-
-                InputStream response = new BufferedInputStream(urlConnection.getInputStream());
-                TokenHolder ret = (TokenHolder) readStream(response, TokenHolder.class);
-                jwtToken = ret.getIdToken();
-            } catch (IOException e) {
-                e.printStackTrace();
-            } finally {
-                urlConnection.disconnect();
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        AsyncTask<Object, Void, String> post = new RequestTask1().execute(AUTH_API, "POST", "{\"username\":\"admin\",\"password\":\"admin\"}");
+//        try {
+//            jwtToken = post.get();
+//        } catch (ExecutionException e) {
+//            e.printStackTrace();
+//        } catch (InterruptedException e) {
+//            e.printStackTrace();
+//        }
 
     }
 
-    public User whoAmI(){
-        return getCurrentUser();
-    }
-
-    public User getCurrentUser() {
-        return (User) noBodyRequest("GET", WHO_AM_I_API, User.class);
+    public void getCurrentUser() {
+        noBodyRequest("GET", WHO_AM_I_API, User.class);
+//        realm.executeTransaction();
     }
 
     public void getNearbyTopics(double coordX, double coordY, Integer dist) {
@@ -86,8 +71,8 @@ public class RequestGateway {
         if (dist != null) {
             urlStr += "?distance=" + dist.toString();
         }
-        RealmModel ret = withBodyRequest("POST", urlStr, Topic.class, location);
-        realm.insertOrUpdate(ret);
+        withBodyRequest("POST", urlStr, Topic.class, location);
+//        realm.insertOrUpdate(ret);
     }
 
 
@@ -97,7 +82,7 @@ public class RequestGateway {
     }
 
     public String objToStr(Object obj){
-        Object wrap = JSONObject.wrap(obj);
+        JSONObject wrap = (JSONObject) JSONObject.wrap(obj);
         return wrap.toString();
     }
 
@@ -136,36 +121,38 @@ public class RequestGateway {
     }
 
 
-    public RealmModel noBodyRequest(String reqMethod, String urlStr, Class clazz) {
+    public void noBodyRequest(String reqMethod, String urlStr, Class clazz) {
         //urlStr, reqMethod, obj
-        AsyncTask<String, Void, String> execute = new RequestTask().execute(urlStr, reqMethod);
-        try {
-            return realm.createOrUpdateObjectFromJson(clazz, execute.get());
-        } catch (ExecutionException e) {
-            e.printStackTrace();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        return null;
+        AsyncTask<Object, Void, String> execute = new RequestTask().execute(urlStr, reqMethod, clazz);
+//        try {
+//            return realm.createOrUpdateObjectFromJson(clazz, execute.get());
+//        } catch (ExecutionException e) {
+//            e.printStackTrace();
+//        } catch (InterruptedException e) {
+//            e.printStackTrace();
+//        }
+//        return null;
     }
 
-    private final class RequestTask extends AsyncTask<String,Void,String> {
+    private final class RequestTask1 extends AsyncTask<Object,Void,String> {
 
         @Override
-        protected String doInBackground(String... strings) {
+        protected String doInBackground(Object... strings) {
             //urlStr, reqMethod, obj
             String ret = null;
             URL url = null;
             HttpURLConnection urlConnection = null;
             try {
-                url = new URL(strings[0]);
+                url = new URL((String)strings[0]);
                 urlConnection = (HttpURLConnection) url.openConnection();
                 try {
-                    urlConnection.setRequestMethod(strings[1]);
+                    urlConnection.setRequestMethod((String)strings[1]);
 
-                    setupRequest(urlConnection);
+                    urlConnection.setDoOutput(true);
+                    urlConnection.setDoInput(true);
+                    urlConnection.setConnectTimeout(1000 * 5);
 
-                    if(strings[2] != null && !strings[2].equals("")) {
+                    if(strings.length >= 3) {
                         OutputStream request = new BufferedOutputStream(urlConnection.getOutputStream());
                         writeStream(strings[2], request);
                     }
@@ -184,6 +171,60 @@ public class RequestGateway {
             }
             return ret;
 
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            Log.d("TAG","jwt " + result);
+            jwtToken = result;
+        }
+    }
+
+    private final class RequestTask extends AsyncTask<Object,Void,String> {
+
+        private Class clazz;
+
+        @Override
+        protected String doInBackground(Object... strings) {
+            //urlStr, reqMethod, obj
+            String ret = null;
+            URL url = null;
+            clazz = (Class) strings[2];
+            HttpURLConnection urlConnection = null;
+            try {
+                url = new URL((String) strings[0]);
+                urlConnection = (HttpURLConnection) url.openConnection();
+                try {
+                    urlConnection.setRequestMethod((String) strings[1]);
+
+                    setupRequest(urlConnection);
+
+                    if(strings.length >= 4) {
+                        OutputStream request = new BufferedOutputStream(urlConnection.getOutputStream());
+                        writeStream(strings[3], request);
+                    }
+                    authAwareConnect(urlConnection);
+
+                    InputStream response = new BufferedInputStream(urlConnection.getInputStream());
+                    ret = convertInputStreamToString(response);
+//                    ret = readStream(response, clazz);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                } finally {
+                    urlConnection.disconnect();
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return ret;
+
+        }
+
+
+        @Override
+        protected void onPostExecute(String result) {
+            Log.d("TAG","smth " + result);
+            realm.createOrUpdateObjectFromJson(clazz, result);
         }
     }
 
@@ -212,17 +253,17 @@ public class RequestGateway {
     }
 
 
-    public RealmModel withBodyRequest(String reqMethod, String urlStr, Class clazz, Object obj) {
+    public void withBodyRequest(String reqMethod, String urlStr, Class clazz, Object obj) {
         //urlStr, reqMethod, obj
 
-        AsyncTask<String, Void, String> execute = new RequestTask().execute(urlStr, reqMethod, objToStr(obj));
-        try {
-            return realm.createOrUpdateObjectFromJson(clazz, execute.get());
-        } catch (ExecutionException e) {
-            e.printStackTrace();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        return null;
+        AsyncTask<Object, Void, String> execute = new RequestTask().execute(urlStr, reqMethod, clazz, objToStr(obj));
+//        try {
+//            return realm.createOrUpdateObjectFromJson(clazz, execute.get());
+//        } catch (ExecutionException e) {
+//            e.printStackTrace();
+//        } catch (InterruptedException e) {
+//            e.printStackTrace();
+//        }
+//        return null;
     }
 }
