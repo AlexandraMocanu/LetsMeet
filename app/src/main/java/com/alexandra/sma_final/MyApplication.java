@@ -4,6 +4,7 @@ import android.app.Application;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
+import android.util.Log;
 
 import com.alexandra.sma_final.rest.UserDTO;
 
@@ -20,6 +21,7 @@ import realm.User;
 
 public class MyApplication extends Application implements AsyncResponse<UserDTO>{
 
+    private static final String TAG = "MAIN";
 
     private Location currentLocation;
     public static String city;
@@ -34,6 +36,7 @@ public class MyApplication extends Application implements AsyncResponse<UserDTO>
 //        TypefaceUtil.overrideFont(this, "SERIF", "font/Montserrat-Regular.ttf");
 
         Realm.init(getApplicationContext());
+        Log.d(TAG, "Entered onCreate!");
 
         RealmConfiguration realmConfiguration = new RealmConfiguration.Builder()
                 .name(Realm.DEFAULT_REALM_NAME)
@@ -44,8 +47,7 @@ public class MyApplication extends Application implements AsyncResponse<UserDTO>
         Realm.getInstance(realmConfiguration);
 
         requestGateway = new RequestGateway(this);
-        requestGateway.authenticate();
-//        requestGateway.getCurrentUser(this);
+        requestGateway.authenticate(new CurrentUserCallback(this));
 
 
         createMockObjects();
@@ -63,6 +65,7 @@ public class MyApplication extends Application implements AsyncResponse<UserDTO>
         if (address.size() > 0) {
             city = address.get(0).getLocality();
         }
+        Log.d(TAG, "Exited onCreate!");
     }
 
     public void createMockObjects(){
@@ -207,12 +210,27 @@ public class MyApplication extends Application implements AsyncResponse<UserDTO>
         return currentUser;
     }
 
-    public void setCurrentUser(UserDTO currentUser) {
+    //Do NOT make this public!
+    private void setCurrentUser(UserDTO currentUser) {
         this.currentUser = currentUser;
     }
 
     @Override
     public void processFinish(UserDTO output) {
         setCurrentUser(output);
+    }
+
+    private final class CurrentUserCallback implements Callback {
+
+        private AsyncResponse<UserDTO> param;
+
+        public CurrentUserCallback(AsyncResponse<UserDTO> param) {
+            this.param = param;
+        }
+
+        @Override
+        public void execute() {
+            requestGateway.getCurrentUser(param);
+        }
     }
 }

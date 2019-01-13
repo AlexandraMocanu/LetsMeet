@@ -8,7 +8,7 @@
     tools:context=".MainActivity">
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/chats"
+        android:ID="@+ID/chats"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginTop="60dp">
@@ -16,10 +16,10 @@
     </androidx.recyclerview.widget.RecyclerView>
 
     <include
-        android:id="@+id/menu_rl"
+        android:ID="@+ID/menu_rl"
         layout="@layout/activity_base"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_alignBottom="@+id/chats" />
+        android:layout_alignBottom="@+ID/chats" />
 
 </RelativeLayout>

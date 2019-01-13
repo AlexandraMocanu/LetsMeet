@@ -13,7 +13,7 @@
     android:paddingBottom="8dp">
     <!-- A CardView that contains a TextView -->
     <androidx.cardview.widget.CardView xmlns:card_view="http://schemas.android.com/apk/res-auto"
-        android:id="@+id/card_view"
+        android:ID="@+ID/card_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="fill_vertical"
@@ -24,13 +24,13 @@
         card_view:cardUseCompatPadding="true">
 
         <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/constraintLayout_chats"
+            android:ID="@+ID/constraintLayout_chats"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:paddingTop="10dp">
 
             <TextView
-                android:id="@+id/username"
+                android:ID="@+ID/username"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"

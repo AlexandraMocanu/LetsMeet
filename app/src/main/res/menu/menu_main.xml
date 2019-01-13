@@ -4,31 +4,31 @@
     tools:context="com.alexandra.sma_final.BaseActivity">
 
     <item
-        android:id="@+id/home"
+        android:ID="@+ID/home"
         android:orderInCategory="100"
         android:title="@string/home"
         app:showAsAction="ifRoom|withText"
         android:icon="@drawable/round_chat_black"/>
     <item
-        android:id="@+id/pinned_action"
+        android:ID="@+ID/pinned_action"
         android:orderInCategory="100"
         android:title="@string/pinned_action"
         app:showAsAction="ifRoom|withText"
         android:icon="@drawable/round_favorite_black"/>
     <item
-        android:id="@+id/dashboard_action"
+        android:ID="@+ID/dashboard_action"
         android:orderInCategory="100"
         android:title="@string/dashboard"
         app:showAsAction="ifRoom|withText"
         android:icon="@drawable/round_dashboard_black"/>
     <item
-        android:id="@+id/action_settings"
+        android:ID="@+ID/action_settings"
         android:orderInCategory="100"
         android:title="@string/action_settings"
         app:showAsAction="ifRoom|withText"
         android:icon="@drawable/round_settings_black"/>
     <item
-        android:id="@+id/map"
+        android:ID="@+ID/map"
         android:orderInCategory="100"
         android:title="@string/title_activity_maps"
         app:showAsAction="ifRoom|withText"

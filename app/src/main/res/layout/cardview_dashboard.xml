@@ -13,7 +13,7 @@
     android:paddingBottom="8dp">
     <!-- A CardView that contains a TextView -->
     <androidx.cardview.widget.CardView xmlns:card_view="http://schemas.android.com/apk/res-auto"
-        android:id="@+id/card_view"
+        android:ID="@+ID/card_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="fill_vertical"
@@ -24,13 +24,13 @@
         card_view:cardUseCompatPadding="true">
 
         <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/constraintLayout_dashboard"
+            android:ID="@+ID/constraintLayout_dashboard"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:paddingTop="10dp">
 
             <TextView
-                android:id="@+id/title_author"
+                android:ID="@+ID/title_author"
                 android:layout_width="match_parent"
                 android:layout_height="25dp"
                 android:layout_alignParentStart="true"
@@ -41,12 +41,12 @@
                 android:paddingLeft="10dp"
                 android:paddingEnd="10dp"
                 android:paddingRight="10dp"
-                card_view:layout_constraintBottom_toTopOf="@+id/request_limit"
+                card_view:layout_constraintBottom_toTopOf="@+ID/request_limit"
                 card_view:layout_constraintEnd_toEndOf="parent"
                 card_view:layout_constraintStart_toStartOf="parent" />
 
             <TextView
-                android:id="@+id/request_limit"
+                android:ID="@+ID/request_limit"
                 android:layout_width="match_parent"
                 android:layout_height="60dp"
                 android:layout_alignParentStart="true"
@@ -56,12 +56,12 @@
                 android:layout_marginBottom="8dp"
                 android:layout_weight="20"
                 android:ems="10"
-                card_view:layout_constraintBottom_toTopOf="@+id/see_more"
+                card_view:layout_constraintBottom_toTopOf="@+ID/see_more"
                 card_view:layout_constraintEnd_toEndOf="parent"
                 card_view:layout_constraintStart_toStartOf="parent" />
 
             <Button
-                android:id="@+id/unpin"
+                android:ID="@+ID/unpin"
                 style="@style/Widget.MaterialComponents.Button.OutlinedButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -72,11 +72,11 @@
                 android:textAllCaps="true"
                 android:textColor="@color/accent"
                 android:textStyle="bold"
-                card_view:layout_constraintEnd_toStartOf="@+id/see_more"
-                card_view:layout_constraintTop_toBottomOf="@+id/request_limit" />
+                card_view:layout_constraintEnd_toStartOf="@+ID/see_more"
+                card_view:layout_constraintTop_toBottomOf="@+ID/request_limit" />
 
             <Button
-                android:id="@+id/see_more"
+                android:ID="@+ID/see_more"
                 style="@style/Widget.MaterialComponents.Button.TextButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -86,18 +86,18 @@
                 android:textAllCaps="true"
                 android:textColor="@color/accent"
                 android:textStyle="bold"
-                card_view:layout_constraintBottom_toBottomOf="@id/unpin"
+                card_view:layout_constraintBottom_toBottomOf="@ID/unpin"
                 card_view:layout_constraintEnd_toEndOf="parent" />
 
             <ImageView
-                android:id="@+id/imageView_card"
+                android:ID="@+ID/imageView_card"
                 android:layout_width="0dp"
                 android:layout_height="70dp"
                 android:layout_marginTop="8dp"
                 card_view:layout_constraintBottom_toBottomOf="parent"
                 card_view:layout_constraintEnd_toEndOf="parent"
                 card_view:layout_constraintStart_toStartOf="parent"
-                card_view:layout_constraintTop_toBottomOf="@+id/see_more" />
+                card_view:layout_constraintTop_toBottomOf="@+ID/see_more" />
                 <!--card_view:srcCompat="@color/random_1" />-->
 
         </androidx.constraintlayout.widget.ConstraintLayout>
