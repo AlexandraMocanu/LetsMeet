@@ -12,13 +12,13 @@
         android:layout_height="match_parent">
 
         <include
-            android:id="@+id/include"
+            android:ID="@+ID/include"
             layout="@layout/activity_base"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
         <ImageView
-            android:id="@+id/imageView"
+            android:ID="@+ID/imageView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
@@ -26,11 +26,11 @@
             android:layout_marginEnd="8dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/include"
+            app:layout_constraintTop_toTopOf="@+ID/include"
             app:srcCompat="@drawable/user_6" />
 
         <TextView
-            android:id="@+id/textView"
+            android:ID="@+ID/textView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
@@ -43,23 +43,23 @@
             android:textStyle="bold"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/imageView" />
+            app:layout_constraintTop_toBottomOf="@ID/imageView" />
 
         <TextView
-            android:id="@+id/karma"
+            android:ID="@+ID/karma"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:layout_marginEnd="8dp"
             android:text="Karma: "
             android:textColor="@color/accent"
-            app:layout_constraintBottom_toTopOf="@id/textView2"
+            app:layout_constraintBottom_toTopOf="@ID/textView2"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textView" />
+            app:layout_constraintTop_toBottomOf="@+ID/textView" />
 
         <TextView
-            android:id="@+id/textView2"
+            android:ID="@+ID/textView2"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
@@ -71,10 +71,10 @@
             android:textColor="@color/primary_text"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/karma" />
+            app:layout_constraintTop_toBottomOf="@+ID/karma" />
 
         <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/active_requests"
+            android:ID="@+ID/active_requests"
             android:layout_width="match_parent"
             android:layout_height="200dp"
             android:layout_marginStart="8dp"
@@ -83,7 +83,7 @@
             android:paddingTop="5dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textView2" />
+            app:layout_constraintTop_toBottomOf="@+ID/textView2" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </LinearLayout>

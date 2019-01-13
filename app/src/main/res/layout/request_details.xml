@@ -7,7 +7,7 @@
     android:background="@color/primary_light">
 
     <ImageView
-        android:id="@+id/random_picture"
+        android:ID="@+ID/random_picture"
         android:layout_width="0dp"
         android:layout_height="130dp"
         android:layout_marginLeft="16dp"
@@ -20,7 +20,7 @@
         app:srcCompat="@drawable/ic_launcher_background" />
 
     <TextView
-        android:id="@+id/title"
+        android:ID="@+ID/title"
         android:layout_width="wrap_content"
         android:layout_height="25dp"
         android:layout_marginLeft="16dp"
@@ -30,10 +30,10 @@
         android:textColor="@color/primary_text"
         android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/random_picture" />
+        app:layout_constraintTop_toBottomOf="@+ID/random_picture" />
 
     <TextView
-        android:id="@+id/message"
+        android:ID="@+ID/message"
         android:layout_width="0dp"
         android:layout_height="99dp"
         android:layout_marginLeft="16dp"
@@ -44,43 +44,43 @@
         android:textColor="@color/primary_text"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/title" />
+        app:layout_constraintTop_toBottomOf="@+ID/title" />
 
     <TextView
-        android:id="@+id/author"
+        android:ID="@+ID/author"
         android:layout_width="wrap_content"
         android:layout_height="25dp"
         android:layout_marginLeft="16dp"
         android:layout_marginTop="16dp"
         android:text="Author"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/message" />
+        app:layout_constraintTop_toBottomOf="@+ID/message" />
 
     <Button
 
-        android:id="@+id/see_map"
+        android:ID="@+ID/see_map"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginTop="20dp"
         android:text="See map"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/author"
+        app:layout_constraintTop_toBottomOf="@+ID/author"
         style="@style/Widget.MaterialComponents.Button.TextButton"/>
 
     <Button
-        android:id="@+id/pin_button"
+        android:ID="@+ID/pin_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginTop="20dp"
         android:text="Pin request"
-        app:layout_constraintStart_toEndOf="@+id/see_map"
-        app:layout_constraintTop_toBottomOf="@+id/author"
+        app:layout_constraintStart_toEndOf="@+ID/see_map"
+        app:layout_constraintTop_toBottomOf="@+ID/author"
         style="@style/Widget.MaterialComponents.Button.OutlinedButton"/>
 
     <Button
-        android:id="@+id/message_author"
+        android:ID="@+ID/message_author"
         style="@style/Widget.MaterialComponents.Button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -88,11 +88,11 @@
         android:layout_marginTop="20dp"
         android:text="Respond"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/pin_button"
-        app:layout_constraintTop_toBottomOf="@+id/author" />
+        app:layout_constraintStart_toEndOf="@+ID/pin_button"
+        app:layout_constraintTop_toBottomOf="@+ID/author" />
 
     <include
-        android:id="@+id/include"
+        android:ID="@+ID/include"
         layout="@layout/activity_base"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
