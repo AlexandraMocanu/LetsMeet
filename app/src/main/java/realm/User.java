@@ -1,10 +1,5 @@
 package realm;
 
-import com.google.gson.annotations.SerializedName;
-
-import javax.annotation.Nullable;
-
-import io.realm.Realm;
 import io.realm.RealmObject;
 import io.realm.annotations.PrimaryKey;
 import io.realm.annotations.RealmField;
@@ -14,19 +9,19 @@ public class User extends RealmObject {
 
     @Required
     @PrimaryKey
-    private Long ID;
+    private Long id;
 
     @RealmField("login")
     private String username;
 
     private int karma;
 
-    public Long getID() {
-        return ID;
+    public Long getId() {
+        return id;
     }
 
-    public void setID(Long ID) {
-        this.ID = ID;
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getUsername() {

@@ -9,7 +9,7 @@ public class Topic extends RealmObject {
 
     @Required
     @PrimaryKey
-    private Long ID;
+    private Long id;
 
     @RealmField("user_id")
     private User postedBy;
@@ -26,17 +26,17 @@ public class Topic extends RealmObject {
     @Required
     private Integer score;
 
-    private Message messageID;
+    private Message message;
 
     @Required
     private String title;
 
-    public Long getID() {
-        return ID;
+    public Long getId() {
+        return id;
     }
 
-    public void setID(Long ID) {
-        this.ID = ID;
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public User getPostedBy() {
@@ -47,10 +47,10 @@ public class Topic extends RealmObject {
         this.postedBy = postedBy;
     }
 
-    public Message getMessage() { return messageID; }
+    public Message getMessage() { return message; }
 
     public void setMessage(Message messageID) {
-        this.messageID = messageID;
+        this.message = messageID;
     }
 
     public double getCoordX() {
