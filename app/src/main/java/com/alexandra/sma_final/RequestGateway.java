@@ -1,5 +1,6 @@
 package com.alexandra.sma_final;
 
+import android.annotation.SuppressLint;
 import android.os.AsyncTask;
 import android.util.Log;
 
@@ -8,18 +9,19 @@ import com.alexandra.sma_final.rest.UserDTO;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
+import androidx.annotation.Nullable;
 import io.realm.Realm;
 import io.realm.RealmModel;
 
 import org.json.JSONObject;
 
+import realm.Conversation;
 import realm.Topic;
 import realm.User;
 
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.Arrays;
 import java.util.HashMap;
 
 public class RequestGateway {
@@ -31,17 +33,20 @@ public class RequestGateway {
     private Realm realm;
     private Gson gson;
     private MyApplication app;
+    private UserDTO currentUser = null;
 
     private static final String EMU_LOCALHOST = "10.0.2.2";
     private static final String BASE_API = "http://" + EMU_LOCALHOST + ":8080/api";
     //    private static final String BASE_EMU_API = "http://:8080/api";
     private static final String AUTH_API = BASE_API + "/authenticate";
     private static final String WHO_AM_I_API = BASE_API + "/account";
+    private static final String USERS_API = BASE_API + "/users";
 
     private static final String TOPICS_API = BASE_API + "/topics";
     private static final String TOPICS_NEARBY_API = TOPICS_API + "/nearby"; // in km
     private static final String RATINGS_API = BASE_API + "/ratings";
     private static final String MESSAGES_API = BASE_API + "/messages";
+    // TODO: 2019-01-13 Add my conversations REST endpoint
     private static final String CONVERSATIONS_API = BASE_API + "/conversations";
 
     private static final String USERNAME = "admin";
@@ -53,16 +58,14 @@ public class RequestGateway {
         gson = new GsonBuilder().create();
     }
 
-    public void authenticate() {
-//        "{\"username\":\"admin\",\"password\":\"admin\"}"
-
+    public void authenticate(@Nullable Callback cb) {
         HashMap<String, String> loginVM = new HashMap<>();
         loginVM.put("username", USERNAME);
         loginVM.put("password", PASSWORD);
         byte[] bytes = gson.toJson(loginVM).getBytes();
 
         new LoginTask()
-                .execute(AUTH_API, "POST", bytes);
+                .execute(AUTH_API, "POST", bytes, cb);
     }
 
     public void getCurrentUser(AsyncResponse<UserDTO> responseReceiver) {
@@ -71,23 +74,41 @@ public class RequestGateway {
         task.execute(WHO_AM_I_API, "GET");
     }
 
-    public void getNearbyTopics(double coordX, double coordY, Integer dist) {
-        Topic location = new Topic() {{
-            setCoordX(coordX);
-            setCoordY(coordY);
-        }};
+    public void getAllUsers(){
+        new RequestPersistTask().execute(USERS_API, "GET", User.class);
+    }
+
+    public void getUserByUsername(String username){
+        new RequestPersistTask().execute(USERS_API + "/" + username, "GET", User.class);
+    }
+
+    public void getUserById(Long id){
+        new RequestPersistTask().execute(USERS_API + "/" + id.toString(), "GET", User.class);
+    }
+
+    public void getNearbyTopics(double coordX, double coordY, @Nullable Integer dist) {
+        Topic location = new Topic();
+        location.setCoordX(coordX);
+        location.setCoordY(coordY);
         String urlStr = TOPICS_NEARBY_API;
         if (dist != null) {
             urlStr += "?distance=" + dist.toString();
         }
-        withBodyRequest("POST", urlStr, Topic.class, location);
+        new RequestPersistTask().execute(urlStr, "POST", Topic.class, false, location);
 //        realm.insertOrUpdate(ret);
+    }
+
+    public void getNearbyTopics(String city) {
+        Topic location = new Topic();
+        location.setCity(city);
+        new RequestPersistTask().execute(TOPICS_NEARBY_API, "POST", true, Topic.class, location);
     }
 
 
     public void getConversations() {
-
+        new RequestPersistTask().execute(CONVERSATIONS_API, "GET", false, Conversation.class);
     }
+
 
     public String objToStr(Object obj) {
         JSONObject wrap = (JSONObject) JSONObject.wrap(obj);
@@ -108,15 +129,15 @@ public class RequestGateway {
         return sb.toString();
     }
 
-    public void writeStream(Object obj, OutputStream request, Class clazz) {
-        try {
-            byte[] bytes = gson.toJson(obj, clazz).getBytes();
-            request.write(bytes);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-    }
+//    public void writeStream(Object obj, OutputStream request, Class clazz) {
+//        try {
+//            byte[] bytes = gson.toJson(obj, clazz).getBytes();
+//            request.write(bytes);
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+//
+//    }
 
     public static void addHeaders(HttpURLConnection urlConnection) {
         urlConnection.setDoInput(true);
@@ -124,16 +145,42 @@ public class RequestGateway {
         urlConnection.setRequestProperty("Content-Type", "application/json");
     }
 
-    public RealmModel readStream(InputStream response, Class<RealmModel> clazz) {
-        RealmModel ret = null;
-        try {
-            ret = realm.createObjectFromJson(clazz, response);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return ret;
+//    public RealmModel readStream(InputStream response, Class<RealmModel> clazz) {
+//        RealmModel ret = null;
+//        try {
+//            ret = realm.createObjectFromJson(clazz, response);
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+//        return ret;
+//    }
+
+
+    //TODO: socket timeout exception
+    //TODO: connection refused
+
+    public void noBodyRequest(String reqMethod, String urlStr, Class clazz) {
+        AsyncTask<Object, Void, String> execute = new RequestPersistTask().execute(urlStr, reqMethod, clazz);
     }
 
+    public void setupRequest(HttpURLConnection urlConnection) {
+        addHeaders(urlConnection);
+        if (jwtToken != null)
+            urlConnection.setRequestProperty("Authorization", "Bearer " + jwtToken);
+
+    }
+
+//    public void authAwareConnect(HttpURLConnection urlConnection) throws IOException {
+//        urlConnection.connect();
+//
+//        if(urlConnection.getResponseCode() == HttpURLConnection.HTTP_UNAUTHORIZED){
+//            authenticate();
+//            urlConnection.connect();
+//        }
+//    }
+
+
+    //urlStr, reqMethod, bytes
 
     /**
      * Does request and returns result Body as String
@@ -142,9 +189,13 @@ public class RequestGateway {
      * @return response String
      */
     private String doRequest(Object... params) {
+        //urlStr, reqMethod, [bytes]
+        if (params.length < 2) {
+            Log.e(TAG, "doRequest Method requires at least 2 parameters");
+            return null;
+        }
         String urlStr = (String) params[0];
         String requestMethod = (String) params[1];
-        //urlStr, reqMethod, [bytes]
         String ret = null;
         URL url = null;
         HttpURLConnection urlConnection = null;
@@ -176,10 +227,14 @@ public class RequestGateway {
                 InputStream response = new BufferedInputStream(urlConnection.getInputStream());
                 ret = inputStreamToString(response);
 
-                Log.d(TAG, urlConnection.getResponseCode() + ": " + ret + "<---" + urlStr);
+                Log.d(TAG, urlConnection.getResponseCode() + "<---" + urlStr + ": " + ret);
             } catch (FileNotFoundException e) {
                 Log.e(TAG, "HTTP error!");
                 Log.e(TAG, urlConnection.getResponseCode() + ": " + urlConnection.getResponseMessage());
+                if (urlConnection.getResponseCode() == HttpURLConnection.HTTP_UNAUTHORIZED) {
+                    Log.d(TAG, "Request was unauthorized! Trying to authenticate.");
+                    authenticate(new RequestCallback(params));
+                }
                 e.printStackTrace();
             } catch (IOException e) {
                 e.printStackTrace();
@@ -190,16 +245,20 @@ public class RequestGateway {
             e.printStackTrace();
         }
         return ret;
-
-
     }
 
-
+    //urlStr, reqMethod, bytes, [callback]
+    @SuppressLint("StaticFieldLeak")
     private final class LoginTask extends AsyncTask<Object, Void, String> {
+
+        private Callback cb = null;
 
         @Override
         protected String doInBackground(Object... params) {
-            return doRequest(params);
+            if (params.length == 4 && params[3] != null) {
+                cb = (Callback) params[3];
+            }
+            return doRequest(params[0], params[1], params[2]);
         }
 
         @Override
@@ -207,19 +266,16 @@ public class RequestGateway {
             String idToken = gson.fromJson(result, TokenHolderDTO.class).getIdToken();
             Log.d(TAG, "Got JWT: " + idToken);
             jwtToken = idToken;
-            getCurrentUser(app);
+            if (cb != null) {
+                cb.execute();
+            }
         }
     }
-    //TODO: socket timeout exception
-    //TODO: connection refused
 
-    public void noBodyRequest(String reqMethod, String urlStr, Class clazz) {
-        AsyncTask<Object, Void, String> execute = new RequestTask().execute(urlStr, reqMethod, clazz);
-    }
-
+    @SuppressLint("StaticFieldLeak")
     private final class CurrentUserTask extends AsyncTask<Object, Void, String> {
 
-        public AsyncResponse<UserDTO> delegate = null;
+        private AsyncResponse<UserDTO> delegate = null;
 
         @Override
         protected String doInBackground(Object... params) {
@@ -230,88 +286,67 @@ public class RequestGateway {
         protected void onPostExecute(String result) {
             if (delegate != null) {
                 Log.d(TAG, "Current user is: " + result);
-                delegate.processFinish(gson.fromJson(result, UserDTO.class));
+                currentUser = gson.fromJson(result, UserDTO.class);
+                delegate.processFinish(currentUser);
             }
         }
     }
 
-    private final class RequestTask extends AsyncTask<Object, Void, String> {
+    //urlStr, reqMethod, class, [obj]
+    @SuppressLint("StaticFieldLeak")
+    private final class RequestPersistTask extends AsyncTask<Object, Void, String> {
 
-        private Class clazz;
+        private Class<RealmModel> clazz;
+        private boolean shouldClear;
 
         @Override
-        protected String doInBackground(Object... strings) {
-            //urlStr, reqMethod, obj, class
-            String ret = null;
-            URL url = null;
-            HttpURLConnection urlConnection = null;
+        protected String doInBackground(Object... params) {
+            //urlStr, reqMethod, class, clear, [obj]
             try {
-                url = new URL((String) strings[0]);
-                urlConnection = (HttpURLConnection) url.openConnection();
-                try {
-                    urlConnection.setRequestMethod((String) strings[1]);
-
-                    setupRequest(urlConnection);
-
-                    if (strings.length == 4) {
-                        clazz = (Class) strings[2];
-                        OutputStream request = new BufferedOutputStream(urlConnection.getOutputStream());
-                        writeStream(strings[2], request, (Class) strings[3]);
-                    }
-                    authAwareConnect(urlConnection);
-
-                    InputStream response = new BufferedInputStream(urlConnection.getInputStream());
-                    ret = inputStreamToString(response);
-//                    ret = readStream(response, clazz);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                } finally {
-                    urlConnection.disconnect();
+                while (jwtToken == null) {
+                    Log.d(TAG,"Waiting for JWT!");
+                    Thread.sleep(50);
                 }
-            } catch (IOException e) {
+            } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-            return ret;
 
+            if (params.length < 4) {
+                Log.e(TAG, "RequestPersist requires at least 4 parameters");
+            }
+            clazz = (Class<RealmModel>) params[2];
+            byte[] bytes = null;
+            shouldClear = (boolean) params[3];
+
+            if (params.length == 5 && params[4] != null) {
+                RealmModel obj = (RealmModel) params[4];
+                bytes = gson.toJson(obj, clazz).getBytes();
+            }
+
+            return doRequest(params[0], params[1], bytes);
         }
 
 
         @Override
         protected void onPostExecute(String result) {
-            Log.d("TAG", "smth " + result);
-            realm.createOrUpdateObjectFromJson(clazz, result);
+            Log.d("TAG", "Persisting " + clazz.getSimpleName() + ": " + result);
+            realm.beginTransaction();
+            realm.createOrUpdateAllFromJson(clazz, result);
+            realm.cancelTransaction();
         }
     }
 
-    public void setupRequest(HttpURLConnection urlConnection) {
-        addHeaders(urlConnection);
-        if (jwtToken != null)
-            urlConnection.setRequestProperty("Authorization", "Bearer " + jwtToken);
+    private final class RequestCallback implements Callback {
 
-    }
+        private Object[] params;
 
-    public void authAwareConnect(HttpURLConnection urlConnection) throws IOException {
-        urlConnection.connect();
-
-        while (jwtToken == null
-                || urlConnection.getResponseCode() == HttpURLConnection.HTTP_UNAUTHORIZED) {
-            authenticate();
-            urlConnection.connect();
+        private RequestCallback(Object[] params) {
+            this.params = params;
         }
-    }
 
-
-    public void withBodyRequest(String reqMethod, String urlStr, Class clazz, Object obj) {
-        //urlStr, reqMethod, obj
-
-        AsyncTask<Object, Void, String> execute = new RequestTask().execute(urlStr, reqMethod, clazz, objToStr(obj));
-//        try {
-//            return realm.createOrUpdateObjectFromJson(clazz, execute.get());
-//        } catch (ExecutionException e) {
-//            e.printStackTrace();
-//        } catch (InterruptedException e) {
-//            e.printStackTrace();
-//        }
-//        return null;
+        @Override
+        public void execute() {
+            doRequest(params);
+        }
     }
 }
