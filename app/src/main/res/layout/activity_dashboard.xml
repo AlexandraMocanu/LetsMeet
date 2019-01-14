@@ -8,7 +8,7 @@
     tools:context=".DashboardActivity">
 
     <androidx.recyclerview.widget.RecyclerView
-        android:ID="@+ID/recycler_view_dashboard"
+        android:id="@+id/recycler_view_dashboard"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginTop="60dp"
@@ -17,10 +17,10 @@
     </androidx.recyclerview.widget.RecyclerView>
 
     <include
-        android:ID="@+ID/menu_rl"
+        android:id="@+id/menu_rl"
         layout="@layout/activity_base"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_alignBottom="@+ID/recycler_view_dashboard" />
+        android:layout_alignBottom="@+id/recycler_view_dashboard" />
 
 </RelativeLayout>

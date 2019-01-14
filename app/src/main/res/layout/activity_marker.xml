@@ -2,7 +2,7 @@
 <com.alexandra.sma_final.view.SlidingRelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:ID="@+ID/marker_sliding_layout"
+    android:id="@+id/marker_sliding_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_marginTop="200dp"
@@ -15,7 +15,7 @@
     <!--android:visibility="invisible"-->
 
     <TextView
-        android:ID="@+ID/title_marker"
+        android:id="@+id/title_marker"
         android:layout_width="match_parent"
         android:layout_height="30dp"
         android:layout_alignParentStart="true"
@@ -24,7 +24,7 @@
         android:layout_marginTop="16dp" />
 
     <TextView
-        android:ID="@+ID/request_marker"
+        android:id="@+id/request_marker"
         android:layout_width="match_parent"
         android:layout_height="150dp"
         android:layout_alignParentStart="true"
@@ -36,7 +36,7 @@
         android:inputType="textMultiLine" />
 
     <TextView
-        android:ID="@+ID/author_marker"
+        android:id="@+id/author_marker"
         android:layout_width="match_parent"
         android:layout_height="30dp"
         android:layout_alignParentStart="true"
@@ -48,7 +48,7 @@
         android:text="Posted by" />
 
     <Button
-        android:ID="@+ID/title"
+        android:id="@+id/title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentStart="false"
@@ -60,14 +60,14 @@
         android:text="Message author" />
 
     <Button
-        android:ID="@+ID/pin"
+        android:id="@+id/pin"
         style="@style/Widget.MaterialComponents.Button.OutlinedButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignBaseline="@+ID/title"
+        android:layout_alignBaseline="@+id/title"
         android:layout_alignParentEnd="false"
         android:layout_marginRight="5dp"
-        android:layout_toLeftOf="@+ID/title"
+        android:layout_toLeftOf="@+id/title"
         android:layout_weight="10"
         android:text="Pin it!"
         android:textAllCaps="true"
