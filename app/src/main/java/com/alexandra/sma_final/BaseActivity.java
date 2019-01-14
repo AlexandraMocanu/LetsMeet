@@ -28,6 +28,7 @@ abstract public class BaseActivity extends AppCompatActivity implements BottomNa
     protected MovableFloatingActionButton fab;
     protected BottomNavigationView bottomNavigationView;
     protected ImageButton mMyIcon;
+    protected ImageButton mBackButton;
     protected TextView mActivity;
 //    protected Toolbar toolbar;
 
@@ -52,6 +53,10 @@ abstract public class BaseActivity extends AppCompatActivity implements BottomNa
                 startActivity(new Intent(getApplicationContext(), PostRequestActivity.class));
             }
         });
+        if(this instanceof PostRequestActivity){
+            fab.setEnabled(false);
+            fab.setAlpha(0.0F);
+        }
 
         bottomNavigationView = (BottomNavigationView)
                 findViewById(R.id.bottom_navigation);
@@ -70,6 +75,11 @@ abstract public class BaseActivity extends AppCompatActivity implements BottomNa
                 getApplicationContext().startActivity(mIntent);
             }
         });
+        if(this instanceof PostRequestActivity){
+            mMyIcon.setEnabled(false);
+            mMyIcon.setAlpha(0.0F);
+        }
+
 //        final String img = "user_icon_" + rnd.nextInt(10);
 //        this.mMyIcon.setImageDrawable(
 //                getResources().getDrawable(getResourceID(img, "drawable",
@@ -77,6 +87,14 @@ abstract public class BaseActivity extends AppCompatActivity implements BottomNa
 //        );
 //        mMyIcon.setImageDrawable(getResources().getDrawable(getResourceID("person", "drawable",
 //                        getApplicationContext())));
+
+        mBackButton = (ImageButton) findViewById(R.id.back_button);
+        mBackButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                finish();
+            }
+        });
 
         mActivity = (TextView) findViewById(R.id.titleAct);
 

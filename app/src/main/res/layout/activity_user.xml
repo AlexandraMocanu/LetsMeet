@@ -11,79 +11,187 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/profile_card"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="80dp"
+            android:layout_marginEnd="8dp"
+            android:background="@drawable/card_view_bg"
+            android:orientation="horizontal"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+
+            <ImageView
+                android:id="@+id/imageView2"
+                android:layout_width="0dp"
+                android:layout_height="60dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:srcCompat="@color/primaryLightColor" />
+
+            <LinearLayout
+                android:id="@+id/linearLayout2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="60dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="8dp"
+                android:gravity="center"
+                android:orientation="vertical"
+                android:weightSum="1"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <ImageView
+                    android:id="@+id/imageView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="@+id/include"
+                    app:srcCompat="@drawable/user_6"
+                    tools:layout_conversion_absoluteHeight="64dp"
+                    tools:layout_conversion_absoluteWidth="64dp"
+                    tools:layout_editor_absoluteX="16dp"
+                    tools:layout_editor_absoluteY="88dp" />
+
+                <TextView
+                    android:id="@+id/textView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:fontFamily="@font/montserrat"
+                    android:text="User"
+                    android:textAlignment="center"
+                    android:textAllCaps="true"
+                    android:textColor="@color/accent"
+                    android:textStyle="bold"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/imageView"
+                    tools:layout_conversion_absoluteHeight="20dp"
+                    tools:layout_conversion_absoluteWidth="64dp"
+                    tools:layout_editor_absoluteX="16dp"
+                    tools:layout_editor_absoluteY="152dp" />
+
+                <TextView
+                    android:id="@+id/karma"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:text="Karma: "
+                    android:textAlignment="center"
+                    android:textColor="@color/accent"
+                    app:layout_constraintBottom_toTopOf="@id/textView2"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/textView"
+                    tools:layout_conversion_absoluteHeight="20dp"
+                    tools:layout_conversion_absoluteWidth="64dp"
+                    tools:layout_editor_absoluteX="16dp"
+                    tools:layout_editor_absoluteY="172dp" />
+            </LinearLayout>
+
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/reqs"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"
+            android:background="@drawable/card_view_bg"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/profile_card">
+
+            <TextView
+                android:id="@+id/textView2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginEnd="8dp"
+                android:fontFamily="@font/montserrat"
+                android:paddingLeft="15dp"
+                android:paddingTop="15dp"
+                android:text="Active Requests"
+                android:textColor="@color/primary_text"
+                android:textStyle="bold"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/active_requests"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginEnd="8dp"
+                android:paddingLeft="25dp"
+                android:paddingTop="5dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/textView2" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginBottom="8dp"
+            android:foregroundGravity="center"
+            android:gravity="center|end"
+            android:orientation="vertical"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <ImageButton
+                android:id="@+id/upButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:background="@mipmap/up_button"
+                tools:layout_conversion_absoluteHeight="20dp"
+                tools:layout_conversion_absoluteWidth="24dp"
+                tools:layout_editor_absoluteX="88dp"
+                tools:layout_editor_absoluteY="80dp" />
+
+            <TextView
+                android:id="@+id/vote"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:text="Vote"
+                android:textAlignment="center" />
+
+            <ImageButton
+                android:id="@+id/downButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:background="@mipmap/down_button"
+                tools:layout_conversion_absoluteHeight="20dp"
+                tools:layout_conversion_absoluteWidth="24dp"
+                tools:layout_editor_absoluteX="88dp"
+                tools:layout_editor_absoluteY="120dp" />
+
+        </LinearLayout>
+
         <include
             android:id="@+id/include"
             layout="@layout/activity_base"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <ImageView
-            android:id="@+id/imageView"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="46dp"
-            android:layout_marginEnd="8dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/include"
-            app:srcCompat="@drawable/user_6" />
-
-        <TextView
-            android:id="@+id/textView"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginEnd="8dp"
-            android:fontFamily="@font/montserrat"
-            android:text="User"
-            android:textAlignment="center"
-            android:textAllCaps="true"
-            android:textColor="@color/accent"
-            android:textStyle="bold"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/imageView" />
-
-        <TextView
-            android:id="@+id/karma"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginEnd="8dp"
-            android:text="Karma: "
-            android:textColor="@color/accent"
-            app:layout_constraintBottom_toTopOf="@id/textView2"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textView" />
-
-        <TextView
-            android:id="@+id/textView2"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginEnd="8dp"
-            android:fontFamily="@font/montserrat"
-            android:paddingLeft="15dp"
-            android:paddingTop="15dp"
-            android:text="Active Requests"
-            android:textColor="@color/primary_text"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/karma" />
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/active_requests"
-            android:layout_width="match_parent"
-            android:layout_height="200dp"
-            android:layout_marginStart="8dp"
-            android:layout_marginEnd="8dp"
-            android:paddingLeft="25dp"
-            android:paddingTop="5dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textView2" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </LinearLayout>

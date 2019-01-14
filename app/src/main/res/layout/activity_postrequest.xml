@@ -38,13 +38,13 @@
             android:layout_width="0dp"
             android:layout_height="50dp"
             android:layout_marginStart="8dp"
-            android:layout_marginTop="58dp"
+            android:layout_marginTop="15dp"
             android:layout_marginEnd="8dp"
             android:layout_weight="1"
-            android:hint="Title"
+            android:hint="A nice title"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toBottomOf="@+id/buttonPost" />
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/message"
@@ -53,7 +53,7 @@
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
             android:layout_marginEnd="8dp"
-            android:hint="Message Request"
+            android:hint="Have you got an extra ticket to something? Or you just want to hang out with someone? Write what you wish for here!"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/title" />
@@ -66,7 +66,7 @@
             android:layout_marginTop="8dp"
             android:layout_marginEnd="8dp"
             android:ems="10"
-            android:hint="Date of event"
+            android:hint="Where?"
             android:inputType="date"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -80,7 +80,7 @@
             android:layout_marginTop="8dp"
             android:layout_marginEnd="8dp"
             android:ems="10"
-            android:hint="Time of event"
+            android:hint="When?"
             android:inputType="time"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -128,15 +128,13 @@
 
         <Button
             android:id="@+id/buttonPost"
-            android:layout_width="150dp"
+            android:layout_width="70dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
             android:layout_marginEnd="8dp"
-            android:text="Post request!"
+            android:text="Post"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/autocomplete_fragment" />
+            app:layout_constraintTop_toTopOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
