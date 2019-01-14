@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.os.AsyncTask;
 import android.util.Log;
 
+import com.alexandra.sma_final.rest.NullX509TrustManager;
 import com.alexandra.sma_final.rest.TokenHolderDTO;
 import com.alexandra.sma_final.rest.UserDTO;
 import com.google.gson.Gson;
@@ -20,9 +21,22 @@ import realm.Topic;
 import realm.User;
 
 import java.io.*;
-import java.net.HttpURLConnection;
 import java.net.URL;
+import java.net.URLEncoder;
+import java.security.KeyStore;
+import java.security.SecureRandom;
+import java.security.cert.Certificate;
+import java.security.cert.CertificateFactory;
+import java.security.cert.X509Certificate;
 import java.util.HashMap;
+
+import javax.net.ssl.HostnameVerifier;
+import javax.net.ssl.HttpsURLConnection;
+
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLSession;
+import javax.net.ssl.TrustManagerFactory;
+import javax.net.ssl.X509TrustManager;
 
 public class RequestGateway {
 
@@ -35,8 +49,9 @@ public class RequestGateway {
     private MyApplication app;
     private UserDTO currentUser = null;
 
+    private static final boolean USES_SSL = true;
     private static final String EMU_LOCALHOST = "10.0.2.2";
-    private static final String BASE_API = "http://" + EMU_LOCALHOST + ":8080/api";
+    private static final String BASE_API = "https://" + EMU_LOCALHOST + ":8080/api";
     //    private static final String BASE_EMU_API = "http://:8080/api";
     private static final String AUTH_API = BASE_API + "/authenticate";
     private static final String WHO_AM_I_API = BASE_API + "/account";
@@ -74,16 +89,16 @@ public class RequestGateway {
         task.execute(WHO_AM_I_API, "GET");
     }
 
-    public void getAllUsers(){
-        new RequestPersistTask().execute(USERS_API, "GET", User.class);
+    public void getAllUsers() {
+        new RequestPersistTask().execute(USERS_API, "GET", User.class, true);
     }
 
-    public void getUserByUsername(String username){
-        new RequestPersistTask().execute(USERS_API + "/" + username, "GET", User.class);
+    public void getUserByUsername(String username) {
+        new RequestPersistTask().execute(USERS_API + "/" + username, "GET", User.class, false);
     }
 
-    public void getUserById(Long id){
-        new RequestPersistTask().execute(USERS_API + "/" + id.toString(), "GET", User.class);
+    public void getUserById(Long id) {
+        new RequestPersistTask().execute(USERS_API + "/" + id.toString(), "GET", User.class, false);
     }
 
     public void getNearbyTopics(double coordX, double coordY, @Nullable Integer dist) {
@@ -99,14 +114,17 @@ public class RequestGateway {
     }
 
     public void getNearbyTopics(String city) {
-        Topic location = new Topic();
-        location.setCity(city);
-        new RequestPersistTask().execute(TOPICS_NEARBY_API, "POST", true, Topic.class, location);
+        try {
+            String cityUrl = URLEncoder.encode(city, "UTF-8");
+            new RequestPersistTask().execute(TOPICS_NEARBY_API + "?city=" + cityUrl, "GET", Topic.class, true);
+        } catch (UnsupportedEncodingException e) {
+            Log.e(TAG, "City name could not be encoded!");
+        }
     }
 
 
     public void getConversations() {
-        new RequestPersistTask().execute(CONVERSATIONS_API, "GET", false, Conversation.class);
+        new RequestPersistTask().execute(CONVERSATIONS_API, "GET", Conversation.class, false);
     }
 
 
@@ -139,7 +157,8 @@ public class RequestGateway {
 //
 //    }
 
-    public static void addHeaders(HttpURLConnection urlConnection) {
+    public static void addHeaders(HttpsURLConnection urlConnection) {
+
         urlConnection.setDoInput(true);
         urlConnection.setConnectTimeout(1000 * 5);
         urlConnection.setRequestProperty("Content-Type", "application/json");
@@ -163,17 +182,17 @@ public class RequestGateway {
         AsyncTask<Object, Void, String> execute = new RequestPersistTask().execute(urlStr, reqMethod, clazz);
     }
 
-    public void setupRequest(HttpURLConnection urlConnection) {
+    public void setupRequest(HttpsURLConnection urlConnection) {
         addHeaders(urlConnection);
         if (jwtToken != null)
             urlConnection.setRequestProperty("Authorization", "Bearer " + jwtToken);
 
     }
 
-//    public void authAwareConnect(HttpURLConnection urlConnection) throws IOException {
+//    public void authAwareConnect(HttpsURLConnection urlConnection) throws IOException {
 //        urlConnection.connect();
 //
-//        if(urlConnection.getResponseCode() == HttpURLConnection.HTTP_UNAUTHORIZED){
+//        if(urlConnection.getResponseCode() == HttpsURLConnection.HTTP_UNAUTHORIZED){
 //            authenticate();
 //            urlConnection.connect();
 //        }
@@ -198,10 +217,14 @@ public class RequestGateway {
         String requestMethod = (String) params[1];
         String ret = null;
         URL url = null;
-        HttpURLConnection urlConnection = null;
+        HttpsURLConnection urlConnection = null;
         try {
             url = new URL(urlStr);
-            urlConnection = (HttpURLConnection) url.openConnection();
+            if (USES_SSL) {
+                urlConnection = setUpHttpsConnection(urlStr);
+            } else {
+                urlConnection = (HttpsURLConnection) url.openConnection();
+            }
             try {
                 urlConnection.setRequestMethod(requestMethod);
                 Log.d(TAG, requestMethod + " ---> " + urlStr);
@@ -231,7 +254,7 @@ public class RequestGateway {
             } catch (FileNotFoundException e) {
                 Log.e(TAG, "HTTP error!");
                 Log.e(TAG, urlConnection.getResponseCode() + ": " + urlConnection.getResponseMessage());
-                if (urlConnection.getResponseCode() == HttpURLConnection.HTTP_UNAUTHORIZED) {
+                if (urlConnection.getResponseCode() == HttpsURLConnection.HTTP_UNAUTHORIZED) {
                     Log.d(TAG, "Request was unauthorized! Trying to authenticate.");
                     authenticate(new RequestCallback(params));
                 }
@@ -304,7 +327,7 @@ public class RequestGateway {
             //urlStr, reqMethod, class, clear, [obj]
             try {
                 while (jwtToken == null) {
-                    Log.d(TAG,"Waiting for JWT!");
+                    Log.d(TAG, "Waiting for JWT!");
                     Thread.sleep(50);
                 }
             } catch (InterruptedException e) {
@@ -347,6 +370,77 @@ public class RequestGateway {
         @Override
         public void execute() {
             doRequest(params);
+        }
+    }
+
+    /**
+     * Set up a connection to littlesvr.ca using HTTPS. An entire function
+     * is needed to do this because littlesvr.ca has a self-signed certificate.
+     * <p>
+     * The caller of the function would do something like:
+     * HttpsURLConnection urlConnection = setUpHttpsConnection("https://littlesvr.ca");
+     * InputStream in = urlConnection.getInputStream();
+     * And read from that "in" as usual in Java
+     * <p>
+     * Based on code from:
+     * https://developer.android.com/training/articles/security-ssl.html#SelfSigned
+     */
+    public HttpsURLConnection setUpHttpsConnection(String urlString) {
+        try {
+            // Load CAs from an InputStream
+            // (could be from a resource or ByteArrayInputStream or ...)
+            CertificateFactory cf = CertificateFactory.getInstance("X.509");
+
+            // My CRT file that I put in the assets folder
+            // I got this file by following these steps:
+            // * Go to https://littlesvr.ca using Firefox
+            // * Click the padlock/More/Security/View Certificate/Details/Export
+            // * Saved the file as littlesvr.crt (type X.509 Certificate (PEM))
+            // The MainActivity.context is declared as:
+            // public static Context context;
+            // And initialized in MainActivity.onCreate() as:
+            // MainActivity.context = getApplicationContext();
+            InputStream caInput = new BufferedInputStream(app.getBaseContext().getAssets().open("tls/ca.cer"));
+            Certificate ca = cf.generateCertificate(caInput);
+            System.out.println("ca=" + ((X509Certificate) ca).getSubjectDN());
+
+            // Create a KeyStore containing our trusted CAs
+            String keyStoreType = KeyStore.getDefaultType();
+            KeyStore keyStore = KeyStore.getInstance(keyStoreType);
+            keyStore.load(null, null);
+            keyStore.setCertificateEntry("ca", ca);
+
+            HttpsURLConnection.setDefaultHostnameVerifier(new HostnameVerifier() {
+                @Override
+                public boolean verify(String hostname, SSLSession session) {
+                    Log.i("NullHostnameVerifier", "Approving certificate for " + hostname);
+                    return true;
+                }
+            });
+            SSLContext context = SSLContext.getInstance("TLS");
+            context.init(null, new X509TrustManager[]{new NullX509TrustManager()}, new SecureRandom());
+
+            HttpsURLConnection.setDefaultSSLSocketFactory(context.getSocketFactory());
+
+
+            // Create a TrustManager that trusts the CAs in our KeyStore
+//            String tmfAlgorithm = TrustManagerFactory.getDefaultAlgorithm();
+//            TrustManagerFactory tmf = TrustManagerFactory.getInstance(tmfAlgorithm);
+//            tmf.init(keyStore);
+
+            // Create an SSLContext that uses our TrustManager
+//            SSLContext context = SSLContext.getInstance("TLS");
+//            context.init(null, tmf.getTrustManagers(), null);
+
+            // Tell the URLConnection to use a SocketFactory from our SSLContext
+            URL url = new URL(urlString);
+            HttpsURLConnection urlConnection = (HttpsURLConnection) url.openConnection();
+            urlConnection.setSSLSocketFactory(context.getSocketFactory());
+
+            return urlConnection;
+        } catch (Exception ex) {
+            Log.e(TAG, "Failed to establish SSL connection to server: " + ex.toString());
+            return null;
         }
     }
 }
