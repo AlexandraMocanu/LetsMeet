@@ -66,7 +66,7 @@ public class UserActivity extends BaseActivity {
         mKarma = (TextView) findViewById(R.id.karma);
         String karma = "Karma: ";
         karma = karma + mUser.getKarma();
-        karma = karma + "upvotes";
+        karma = karma + " karma";
         mKarma.setText(karma);
 
         //set recyvler view

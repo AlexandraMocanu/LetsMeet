@@ -92,7 +92,7 @@ public class RequestActivity extends BaseActivity {
         mTextAuthor.setText(str);
         mTextTitle.setText(mTopic.getTitle());
         setTitle(mTopic.getTitle());
-        mTextMessage.setText(mTopic.getRequest());
+        mTextMessage.setText(mTopic.getMessage().getText());
 
         mButtonMessage.setOnClickListener(new View.OnClickListener() {
             @Override

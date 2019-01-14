@@ -82,7 +82,7 @@ public class MarkerFragment extends Fragment {
         });
 
         mTextTitle.setText(mTopic.getTitle());
-        mTextRequest.setText(mTopic.getRequest());
+        mTextRequest.setText(mTopic.getMessage().getText());
 
         mButtonMessage.setOnClickListener(new View.OnClickListener() {
             @Override

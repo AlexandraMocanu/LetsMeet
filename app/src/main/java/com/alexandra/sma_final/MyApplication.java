@@ -45,8 +45,7 @@ public class MyApplication extends Application implements AsyncResponse<UserDTO>
 
         requestGateway = new RequestGateway(this);
         requestGateway.authenticate();
-//        requestGateway.getCurrentUser(this);
-
+        requestGateway.getCurrentUser(this);
 
         createMockObjects();
 
@@ -81,7 +80,12 @@ public class MyApplication extends Application implements AsyncResponse<UserDTO>
         topic1.setTitle("Padurice");
         topic1.setCoordX(45.731527);
         topic1.setCoordY(21.240686);
-        topic1.setRequest("Padurice - request 1");
+        Message topicM1 = new Message();
+        topicM1.setID(Long.valueOf(11));
+        topicM1.setUserID(user1.getID());
+        topicM1.setText("Padurice - Request 1");
+        topicM1.setTimestampMillis(Long.valueOf(12344));
+        topic1.setMessage(topicM1);
         topic1.setPostedBy(user1);
         topic1.setArchived(false);
         topic1.setScore(1);
@@ -92,7 +96,12 @@ public class MyApplication extends Application implements AsyncResponse<UserDTO>
         topic2.setTitle("McDonalds");
         topic2.setCoordX(45.738999);
         topic2.setCoordY(21.240389);
-        topic2.setRequest("McDonalds - request 2");
+        Message topicM2 = new Message();
+        topicM2.setID(Long.valueOf(12));
+        topicM2.setUserID(user1.getID());
+        topicM2.setText("McDonalds - request 2");
+        topicM2.setTimestampMillis(Long.valueOf(12344));
+        topic2.setMessage(topicM2);
         topic2.setPostedBy(user1);
         topic2.setArchived(false);
         topic2.setScore(1);
@@ -103,7 +112,12 @@ public class MyApplication extends Application implements AsyncResponse<UserDTO>
         topic3.setTitle("UPT Electro");
         topic3.setCoordX(45.747757);
         topic3.setCoordY(21.225703);
-        topic3.setRequest("UPT Electro - request 3");
+        Message topicM3 = new Message();
+        topicM3.setID(Long.valueOf(13));
+        topicM3.setUserID(user1.getID());
+        topicM3.setText("UPT Electro - request 3");
+        topicM3.setTimestampMillis(Long.valueOf(12344));
+        topic3.setMessage(topicM3);
         topic3.setPostedBy(user2);
         topic3.setArchived(false);
         topic3.setScore(1);
@@ -114,7 +128,12 @@ public class MyApplication extends Application implements AsyncResponse<UserDTO>
         topic4.setTitle("Fantana cu pesti");
         topic4.setCoordX(45.752780);
         topic4.setCoordY(21.225349);
-        topic4.setRequest("Fantana cu pesti - request 4");
+        Message topicM4 = new Message();
+        topicM4.setID(Long.valueOf(14));
+        topicM4.setUserID(user2.getID());
+        topicM4.setText("Fantana cu pesti - request 4");
+        topicM4.setTimestampMillis(Long.valueOf(12344));
+        topic4.setMessage(topicM4);
         topic4.setPostedBy(user2);
         topic4.setArchived(false);
         topic4.setScore(1);
@@ -125,7 +144,12 @@ public class MyApplication extends Application implements AsyncResponse<UserDTO>
         topic5.setTitle("Piata Unirii");
         topic5.setCoordX(45.757929);
         topic5.setCoordY(21.229029);
-        topic5.setRequest("Piata Unirii - request 5");
+        Message topicM5 = new Message();
+        topicM5.setID(Long.valueOf(15));
+        topicM5.setUserID(user1.getID());
+        topicM5.setText("Piata Unirii - request 5");
+        topicM5.setTimestampMillis(Long.valueOf(12344));
+        topic5.setMessage(topicM5);
         topic5.setPostedBy(user1);
         topic5.setArchived(false);
         topic5.setScore(1);
@@ -136,7 +160,12 @@ public class MyApplication extends Application implements AsyncResponse<UserDTO>
         topic6.setTitle("Catedrala");
         topic6.setCoordX(45.751305);
         topic6.setCoordY(21.224457);
-        topic6.setRequest("Catedrala - request 6");
+        Message topicM6 = new Message();
+        topicM6.setID(Long.valueOf(16));
+        topicM6.setUserID(user2.getID());
+        topicM6.setText("Catedrala - request 6");
+        topicM6.setTimestampMillis(Long.valueOf(12344));
+        topic6.setMessage(topicM6);
         topic6.setPostedBy(user2);
         topic6.setArchived(false);
         topic6.setScore(1);
@@ -147,7 +176,12 @@ public class MyApplication extends Application implements AsyncResponse<UserDTO>
         topic7.setTitle("Casino");
         topic7.setCoordX(46.768994);
         topic7.setCoordY(23.577911);
-        topic7.setRequest("Casino - request 7");
+        Message topicM7 = new Message();
+        topicM7.setID(Long.valueOf(17));
+        topicM7.setUserID(user1.getID());
+        topicM7.setText("Casino - request 7");
+        topicM7.setTimestampMillis(Long.valueOf(12344));
+        topic7.setMessage(topicM7);
         topic7.setPostedBy(user1);
         topic7.setArchived(false);
         topic7.setScore(1);
@@ -158,7 +192,12 @@ public class MyApplication extends Application implements AsyncResponse<UserDTO>
         topic8.setTitle("Observator");
         topic8.setCoordX(46.755706);
         topic8.setCoordY(23.593950);
-        topic8.setRequest("Observator - request 8");
+        Message topicM8 = new Message();
+        topicM8.setID(Long.valueOf(18));
+        topicM8.setUserID(user2.getID());
+        topicM8.setText("Observator - request 8");
+        topicM8.setTimestampMillis(Long.valueOf(12344));
+        topic8.setMessage(topicM8);
         topic8.setPostedBy(user2);
         topic8.setArchived(false);
         topic8.setScore(1);
@@ -184,6 +223,15 @@ public class MyApplication extends Application implements AsyncResponse<UserDTO>
             realm.executeTransactionAsync(realm1 -> {
                 realm1.insertOrUpdate(user1);
                 realm1.insertOrUpdate(user2);
+                realm1.insertOrUpdate(user2);
+                realm1.insertOrUpdate(topicM1);
+                realm1.insertOrUpdate(topicM2);
+                realm1.insertOrUpdate(topicM3);
+                realm1.insertOrUpdate(topicM4);
+                realm1.insertOrUpdate(topicM5);
+                realm1.insertOrUpdate(topicM6);
+                realm1.insertOrUpdate(topicM7);
+                realm1.insertOrUpdate(topicM8);
                 realm1.insertOrUpdate(topic1);
                 realm1.insertOrUpdate(topic2);
                 realm1.insertOrUpdate(topic3);
