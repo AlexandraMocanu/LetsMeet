@@ -43,8 +43,8 @@ public class MyApplication extends Application implements AsyncResponse<UserDTO>
         Realm.setDefaultConfiguration(realmConfiguration);
         Realm.getInstance(realmConfiguration);
 
-        requestGateway = new RequestGateway(this);
-        requestGateway.authenticate(new CurrentUserCallback(this));
+//        requestGateway = new RequestGateway(this);
+//        requestGateway.authenticate(new CurrentUserCallback(this));
 
         createMockObjects();
 
