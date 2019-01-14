@@ -262,4 +262,16 @@ public class MyApplication extends Application implements AsyncResponse<UserDTO>
     public void processFinish(UserDTO output) {
         setCurrentUser(output);
     }
+
+    private class CurrentUserCallback implements Callback {
+        private AsyncResponse<UserDTO> delegate;
+        public CurrentUserCallback(AsyncResponse<UserDTO> delegate) {
+            this.delegate = delegate;
+        }
+
+        @Override
+        public void execute() {
+            requestGateway.getCurrentUser(delegate);
+        }
+    }
 }
