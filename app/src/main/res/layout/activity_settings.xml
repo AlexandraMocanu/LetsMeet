@@ -12,7 +12,7 @@
         android:layout_height="wrap_content">
 
         <include
-            android:ID="@+ID/include2"
+            android:id="@+id/include2"
             layout="@layout/activity_base"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -23,7 +23,7 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
-            android:ID="@+ID/currentLocation"
+            android:id="@+id/currentLocation"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_marginStart="8dp"
@@ -38,10 +38,10 @@
             android:textColor="@color/accent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@+ID/include2" />
+            app:layout_constraintTop_toTopOf="@+id/include2" />
 
         <View
-            android:ID="@+ID/divider"
+            android:id="@+id/divider"
             android:layout_width="match_parent"
             android:layout_height="2dp"
             android:layout_marginStart="8dp"
@@ -51,10 +51,10 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+ID/currentLocation" />
+            app:layout_constraintTop_toBottomOf="@+id/currentLocation" />
 
         <Button
-            android:ID="@+ID/modify_cities"
+            android:id="@+id/modify_cities"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
@@ -66,10 +66,10 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@ID/divider" />
+            app:layout_constraintTop_toBottomOf="@id/divider" />
 
         <FrameLayout
-            android:ID="@+ID/modify_cities_fragment"
+            android:id="@+id/modify_cities_fragment"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
@@ -77,14 +77,14 @@
             android:layout_marginEnd="8dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+ID/modify_cities">
+            app:layout_constraintTop_toBottomOf="@+id/modify_cities">
 
         </FrameLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <!--<TextView-->
-    <!--android:ID="@+ID/favorite_cities"-->
+    <!--android:id="@+id/favorite_cities"-->
     <!--android:layout_width="match_parent"-->
     <!--android:layout_height="0dp"-->
     <!--android:layout_marginLeft="16dp"-->
@@ -93,7 +93,7 @@
     <!--android:text="Favorite cities" />-->
 
     <!--<View-->
-    <!--android:ID="@+ID/divider2"-->
+    <!--android:id="@+id/divider2"-->
     <!--android:layout_width="match_parent"-->
     <!--android:layout_height="2dp"-->
     <!--android:layout_marginLeft="10dp"-->

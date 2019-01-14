@@ -17,7 +17,7 @@
         android:layout_weight="1">
 
         <fragment
-            android:ID="@+ID/place_autocomplete_fragment"
+            android:id="@+id/place_autocomplete_fragment"
             android:name="com.google.android.gms.location.places.ui.PlaceAutocompleteFragment"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
@@ -25,14 +25,14 @@
     </FrameLayout>
 
     <!--<fragment-->
-    <!--android:ID="@+ID/place_autocomplete_fragment"-->
+    <!--android:id="@+id/place_autocomplete_fragment"-->
     <!--android:layout_width="match_parent"-->
     <!--android:layout_height="wrap_content"-->
     <!--android:name="com.google.android.gms.location.places.ui.PlaceAutocompleteFragment"-->
     <!--/>-->
 
     <TextView
-        android:ID="@+ID/current_favorites"
+        android:id="@+id/current_favorites"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
@@ -43,7 +43,7 @@
         android:textSize="18sp" />
 
     <androidx.recyclerview.widget.RecyclerView
-        android:ID="@+ID/favorite_cities_list"
+        android:id="@+id/favorite_cities_list"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
