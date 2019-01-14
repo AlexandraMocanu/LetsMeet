@@ -82,14 +82,14 @@ public class TopicsViewHolder extends ChildViewHolder {
     }
 
     private void unpinTopic(View view){
-        Long topicID = ((Topic) adapter.mItemList.get(getAdapterPosition())).getID();
+        Long topicID = ((Topic) adapter.mItemList.get(getAdapterPosition())).getId();
         Topic t = (Topic) adapter.mItemList.get(getAdapterPosition());
 
         try (Realm realm = Realm.getDefaultInstance()) {
             realm.executeTransactionAsync(new Realm.Transaction() {
                 @Override
                 public void execute(Realm bgRealm) {
-//                        Long topicID = mTopics.get(myViewHolder.getAdapterPosition()).getID();
+//                        Long topicID = mTopics.get(myViewHolder.getAdapterPosition()).getId();
                     RealmResults<Pin> rows = bgRealm.where(Pin.class).equalTo("topicID", topicID).findAll();
                     rows.deleteAllFromRealm();
                 }
@@ -111,7 +111,7 @@ public class TopicsViewHolder extends ChildViewHolder {
                         if( ((CityC) adapter.mParentItemList.get(i)).getName().equals(t.getCity()) ){
                             idx_parent = i;
                             for(int j = 0; j < ((CityC) adapter.mParentItemList.get(i)).getChildItemList().size(); j++){
-                                if( ((Topic)((CityC) adapter.mParentItemList.get(i)).getChildItemList().get(j)).getID() == topicID){
+                                if( ((Topic)((CityC) adapter.mParentItemList.get(i)).getChildItemList().get(j)).getId() == topicID){
                                     ((CityC) adapter.mParentItemList.get(i)).getChildItemList().remove(j);
                                     break;
                                 }
@@ -121,7 +121,7 @@ public class TopicsViewHolder extends ChildViewHolder {
                     int idx_child = 0;
                     for(int i = 0; i < adapter.mItemList.size(); i++){
                         if(adapter.mItemList.get(i) instanceof Topic){
-                            if( ((Topic)adapter.mItemList.get(i)).getID() == topicID ){
+                            if( ((Topic)adapter.mItemList.get(i)).getId() == topicID ){
                                 idx_child = i;
                             }
                         }
@@ -144,7 +144,7 @@ public class TopicsViewHolder extends ChildViewHolder {
     }
 
     private void seeMoreButtonClicked(View view){
-        Long topicID = ((Topic) adapter.mItemList.get(getAdapterPosition())).getID();
+        Long topicID = ((Topic) adapter.mItemList.get(getAdapterPosition())).getId();
 
         Intent mIntent = new Intent(view.getContext(), RequestActivity.class);
         mIntent.putExtra("topic_id", topicID);

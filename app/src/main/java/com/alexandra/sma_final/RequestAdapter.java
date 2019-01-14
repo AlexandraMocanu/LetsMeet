@@ -81,13 +81,13 @@
 //        }
 //
 //        private void unpinTopic(MyViewHolder myViewHolder, View view){
-//            Long topicID = mTopics.get(myViewHolder.getAdapterPosition()).getID();
+//            Long topicID = mTopics.get(myViewHolder.getAdapterPosition()).getId();
 //
 //            try (Realm realm = Realm.getDefaultInstance()) {
 //                realm.executeTransactionAsync(new Realm.Transaction() {
 //                    @Override
 //                    public void execute(Realm bgRealm) {
-////                        Long topicID = mTopics.get(myViewHolder.getAdapterPosition()).getID();
+////                        Long topicID = mTopics.get(myViewHolder.getAdapterPosition()).getId();
 //                        RealmResults<Pin> rows = bgRealm.where(Pin.class).equalTo("topicID", topicID).findAll();
 //                        rows.deleteAllFromRealm();
 //                    }
@@ -114,7 +114,7 @@
 //        }
 //
 //        private void seeMoreButtonClicked(MyViewHolder myViewHolder, View view){
-//            Long topicID = mTopics.get(myViewHolder.getAdapterPosition()).getID();
+//            Long topicID = mTopics.get(myViewHolder.getAdapterPosition()).getId();
 //
 //            Intent mIntent = new Intent(view.getContext(), RequestActivity.class);
 //            mIntent.putExtra("topic_id", topicID);
