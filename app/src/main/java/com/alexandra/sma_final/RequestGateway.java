@@ -15,7 +15,9 @@ import io.realm.RealmModel;
 
 import org.json.JSONObject;
 
+import realm.Conversation;
 import realm.Topic;
+import realm.User;
 
 import java.io.*;
 import java.net.HttpURLConnection;
@@ -33,12 +35,12 @@ public class RequestGateway {
     private MyApplication app;
     private UserDTO currentUser = null;
 
-    private static final String MUST_AUTHENTICATE = "}}UNAUTHORIZED{{";
     private static final String EMU_LOCALHOST = "10.0.2.2";
     private static final String BASE_API = "http://" + EMU_LOCALHOST + ":8080/api";
     //    private static final String BASE_EMU_API = "http://:8080/api";
     private static final String AUTH_API = BASE_API + "/authenticate";
     private static final String WHO_AM_I_API = BASE_API + "/account";
+    private static final String USERS_API = BASE_API + "/users";
 
     private static final String TOPICS_API = BASE_API + "/topics";
     private static final String TOPICS_NEARBY_API = TOPICS_API + "/nearby"; // in km
@@ -57,8 +59,6 @@ public class RequestGateway {
     }
 
     public void authenticate(@Nullable Callback cb) {
-//        "{\"username\":\"admin\",\"password\":\"admin\"}"
-
         HashMap<String, String> loginVM = new HashMap<>();
         loginVM.put("username", USERNAME);
         loginVM.put("password", PASSWORD);
@@ -74,13 +74,19 @@ public class RequestGateway {
         task.execute(WHO_AM_I_API, "GET");
     }
 
-    public void getNearbyTopics(double coordX, double coordY, @Nullable Integer dist) {
-//        HashMap<String, Double> location = new HashMap<>();
-//        location.put("coordX", coordX);
-//        location.put("coordY", coordY);
-//
-//        String json = gson.toJson(location);
+    public void getAllUsers(){
+        new RequestPersistTask().execute(USERS_API, "GET", User.class);
+    }
 
+    public void getUserByUsername(String username){
+        new RequestPersistTask().execute(USERS_API + "/" + username, "GET", User.class);
+    }
+
+    public void getUserById(Long id){
+        new RequestPersistTask().execute(USERS_API + "/" + id.toString(), "GET", User.class);
+    }
+
+    public void getNearbyTopics(double coordX, double coordY, @Nullable Integer dist) {
         Topic location = new Topic();
         location.setCoordX(coordX);
         location.setCoordY(coordY);
@@ -93,24 +99,15 @@ public class RequestGateway {
     }
 
     public void getNearbyTopics(String city) {
-//        HashMap<String, Double> location = new HashMap<>();
-//        location.put("coordX", coordX);
-//        location.put("coordY", coordY);
-//
-//        String json = gson.toJson(location);
-
         Topic location = new Topic();
         location.setCity(city);
         new RequestPersistTask().execute(TOPICS_NEARBY_API, "POST", true, Topic.class, location);
     }
 
 
-//    public void getConversations() {
-//        if(currentUser == null){
-//            Log.e(TAG, "Need to get user info first!");
-//        }
-//        new RequestPersistTask().execute(CONVERSATIONS_API, "GET", false, Conversation.class);
-//    }
+    public void getConversations() {
+        new RequestPersistTask().execute(CONVERSATIONS_API, "GET", false, Conversation.class);
+    }
 
 
     public String objToStr(Object obj) {
