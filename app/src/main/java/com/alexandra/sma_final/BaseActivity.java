@@ -75,8 +75,8 @@ abstract public class BaseActivity extends AppCompatActivity implements BottomNa
 //                getResources().getDrawable(getResourceID(img, "drawable",
 //                        getApplicationContext()))
 //        );
-        mMyIcon.setImageDrawable(getResources().getDrawable(getResourceID("person", "drawable",
-                        getApplicationContext())));
+//        mMyIcon.setImageDrawable(getResources().getDrawable(getResourceID("person", "drawable",
+//                        getApplicationContext())));
 
         mActivity = (TextView) findViewById(R.id.titleAct);
 

@@ -166,6 +166,6 @@ public class TopicsViewHolder extends ChildViewHolder {
         str1.append(str2);
         mTitleAuthor.setText(str1);
 
-        mRequestLimit.setText(topic.getRequest().trim());
+        mRequestLimit.setText(topic.getMessage().getText().trim());
     }
 }

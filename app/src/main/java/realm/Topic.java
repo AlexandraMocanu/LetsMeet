@@ -2,6 +2,7 @@ package realm;
 
 import io.realm.RealmObject;
 import io.realm.annotations.PrimaryKey;
+import io.realm.annotations.RealmField;
 import io.realm.annotations.Required;
 
 public class Topic extends RealmObject {
@@ -10,6 +11,7 @@ public class Topic extends RealmObject {
     @PrimaryKey
     private Long ID;
 
+    @RealmField("user_id")
     private User postedBy;
 
     private double coordX;
@@ -24,8 +26,7 @@ public class Topic extends RealmObject {
     @Required
     private Integer score;
 
-    @Required
-    private String request;
+    private Message messageID;
 
     @Required
     private String title;
@@ -46,12 +47,10 @@ public class Topic extends RealmObject {
         this.postedBy = postedBy;
     }
 
-    public String getRequest() {
-        return request;
-    }
+    public Message getMessage() { return messageID; }
 
-    public void setRequest(String request) {
-        this.request = request;
+    public void setMessage(Message messageID) {
+        this.messageID = messageID;
     }
 
     public double getCoordX() {
