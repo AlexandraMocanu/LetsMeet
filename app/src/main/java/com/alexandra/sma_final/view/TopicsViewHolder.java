@@ -1,7 +1,6 @@
 package com.alexandra.sma_final.view;
 
 import android.content.Intent;
-import android.graphics.Color;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
 import android.view.View;

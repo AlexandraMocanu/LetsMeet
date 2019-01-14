@@ -1,7 +1,7 @@
 <com.alexandra.sma_final.MovableFloatingActionButton.MovableFloatingActionButton
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/fab"
+    android:ID="@+ID/fab"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:layout_gravity="bottom|right"

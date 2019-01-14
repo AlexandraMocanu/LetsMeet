@@ -9,7 +9,7 @@
     tools:context=".ChatActivity">
 
     <aandroidx.recyclerview.widget.RecyclerView
-        android:id="@+id/reyclerview_message_list"
+        android:ID="@+ID/reyclerview_message_list"
         android:layout_width="0dp"
         android:layout_height="0dp"
         app:layout_constraintTop_toTopOf="parent"
@@ -23,12 +23,12 @@
         android:layout_height="2dp"
         android:background="#dfdfdf"
         android:layout_marginBottom="0dp"
-        app:layout_constraintBottom_toTopOf="@+id/layout_chatbox"
+        app:layout_constraintBottom_toTopOf="@+ID/layout_chatbox"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"/>
 
     <LinearLayout
-        android:id="@+id/layout_chatbox"
+        android:ID="@+ID/layout_chatbox"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
@@ -39,7 +39,7 @@
         app:layout_constraintLeft_toLeftOf="parent">
 
         <EditText
-            android:id="@+id/edittext_chatbox"
+            android:ID="@+ID/edittext_chatbox"
             android:hint="Enter message"
             android:background="@android:color/transparent"
             android:layout_gravity="center"
@@ -51,7 +51,7 @@
             android:maxLines="6"/>
 
         <Button
-            android:id="@+id/button_chatbox_send"
+            android:ID="@+ID/button_chatbox_send"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom"
