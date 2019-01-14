@@ -22,6 +22,7 @@ import realm.User;
 
 import java.io.*;
 import java.net.URL;
+import java.net.URLEncoder;
 import java.security.KeyStore;
 import java.security.SecureRandom;
 import java.security.cert.Certificate;
@@ -48,6 +49,7 @@ public class RequestGateway {
     private MyApplication app;
     private UserDTO currentUser = null;
 
+    private static final boolean USES_SSL = true;
     private static final String EMU_LOCALHOST = "10.0.2.2";
     private static final String BASE_API = "https://" + EMU_LOCALHOST + ":8080/api";
     //    private static final String BASE_EMU_API = "http://:8080/api";
@@ -87,16 +89,16 @@ public class RequestGateway {
         task.execute(WHO_AM_I_API, "GET");
     }
 
-    public void getAllUsers(){
-        new RequestPersistTask().execute(USERS_API, "GET", User.class);
+    public void getAllUsers() {
+        new RequestPersistTask().execute(USERS_API, "GET", User.class, true);
     }
 
-    public void getUserByUsername(String username){
-        new RequestPersistTask().execute(USERS_API + "/" + username, "GET", User.class);
+    public void getUserByUsername(String username) {
+        new RequestPersistTask().execute(USERS_API + "/" + username, "GET", User.class, false);
     }
 
-    public void getUserById(Long id){
-        new RequestPersistTask().execute(USERS_API + "/" + id.toString(), "GET", User.class);
+    public void getUserById(Long id) {
+        new RequestPersistTask().execute(USERS_API + "/" + id.toString(), "GET", User.class, false);
     }
 
     public void getNearbyTopics(double coordX, double coordY, @Nullable Integer dist) {
@@ -112,14 +114,17 @@ public class RequestGateway {
     }
 
     public void getNearbyTopics(String city) {
-        Topic location = new Topic();
-        location.setCity(city);
-        new RequestPersistTask().execute(TOPICS_NEARBY_API, "POST", true, Topic.class, location);
+        try {
+            String cityUrl = URLEncoder.encode(city, "UTF-8");
+            new RequestPersistTask().execute(TOPICS_NEARBY_API + "?city=" + cityUrl, "GET", Topic.class, true);
+        } catch (UnsupportedEncodingException e) {
+            Log.e(TAG, "City name could not be encoded!");
+        }
     }
 
 
     public void getConversations() {
-        new RequestPersistTask().execute(CONVERSATIONS_API, "GET", false, Conversation.class);
+        new RequestPersistTask().execute(CONVERSATIONS_API, "GET", Conversation.class, false);
     }
 
 
@@ -215,8 +220,11 @@ public class RequestGateway {
         HttpsURLConnection urlConnection = null;
         try {
             url = new URL(urlStr);
-//            urlConnection = (HttpsURLConnection) url.openConnection();
-            urlConnection = setUpHttpsConnection(urlStr);
+            if (USES_SSL) {
+                urlConnection = setUpHttpsConnection(urlStr);
+            } else {
+                urlConnection = (HttpsURLConnection) url.openConnection();
+            }
             try {
                 urlConnection.setRequestMethod(requestMethod);
                 Log.d(TAG, requestMethod + " ---> " + urlStr);
@@ -319,7 +327,7 @@ public class RequestGateway {
             //urlStr, reqMethod, class, clear, [obj]
             try {
                 while (jwtToken == null) {
-                    Log.d(TAG,"Waiting for JWT!");
+                    Log.d(TAG, "Waiting for JWT!");
                     Thread.sleep(50);
                 }
             } catch (InterruptedException e) {
@@ -368,19 +376,17 @@ public class RequestGateway {
     /**
      * Set up a connection to littlesvr.ca using HTTPS. An entire function
      * is needed to do this because littlesvr.ca has a self-signed certificate.
-     *
+     * <p>
      * The caller of the function would do something like:
      * HttpsURLConnection urlConnection = setUpHttpsConnection("https://littlesvr.ca");
      * InputStream in = urlConnection.getInputStream();
      * And read from that "in" as usual in Java
-     *
+     * <p>
      * Based on code from:
      * https://developer.android.com/training/articles/security-ssl.html#SelfSigned
      */
-    public HttpsURLConnection setUpHttpsConnection(String urlString)
-    {
-        try
-        {
+    public HttpsURLConnection setUpHttpsConnection(String urlString) {
+        try {
             // Load CAs from an InputStream
             // (could be from a resource or ByteArrayInputStream or ...)
             CertificateFactory cf = CertificateFactory.getInstance("X.509");
@@ -428,13 +434,11 @@ public class RequestGateway {
 
             // Tell the URLConnection to use a SocketFactory from our SSLContext
             URL url = new URL(urlString);
-            HttpsURLConnection urlConnection = (HttpsURLConnection)url.openConnection();
+            HttpsURLConnection urlConnection = (HttpsURLConnection) url.openConnection();
             urlConnection.setSSLSocketFactory(context.getSocketFactory());
 
             return urlConnection;
-        }
-        catch (Exception ex)
-        {
+        } catch (Exception ex) {
             Log.e(TAG, "Failed to establish SSL connection to server: " + ex.toString());
             return null;
         }

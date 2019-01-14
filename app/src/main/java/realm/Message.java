@@ -1,8 +1,5 @@
 package realm;
 
-import java.sql.Date;
-import java.time.Instant;
-
 import io.realm.RealmObject;
 import io.realm.annotations.PrimaryKey;
 import io.realm.annotations.Required;
@@ -11,13 +8,13 @@ public class Message extends RealmObject {
 
     @Required
     @PrimaryKey
-    private Long ID;
+    private Long id;
 
     @Required
     private String text;
 
     @Required
-    private Long userID;
+    private Long userId;
 
     @Required
     private Long timestampMillis;
@@ -38,20 +35,20 @@ public class Message extends RealmObject {
         this.timestampMillis = timestampMillis;
     }
 
-    public Long getUserID() {
-        return userID;
+    public Long getUserId() {
+        return userId;
     }
 
-    public void setUserID(Long userID) {
-        this.userID = userID;
+    public void setUserId(Long userId) {
+        this.userId = userId;
     }
 
-    public Long getID() {
-        return ID;
+    public Long getId() {
+        return id;
     }
 
-    public void setID(Long ID) {
-        this.ID = ID;
+    public void setId(Long id) {
+        this.id = id;
     }
 
 }

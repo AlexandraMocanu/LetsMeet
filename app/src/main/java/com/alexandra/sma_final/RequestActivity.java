@@ -79,7 +79,7 @@ public class RequestActivity extends BaseActivity {
             @Override
             public void onClick(View view) {
                 Intent mIntent = new Intent(getApplicationContext(), RequestActivity.class);
-                mIntent.putExtra("username_id", mTopic.getPostedBy().getID());
+                mIntent.putExtra("username_id", mTopic.getPostedBy().getId());
                 getApplicationContext().startActivity(mIntent);
             }
         });
@@ -127,7 +127,7 @@ public class RequestActivity extends BaseActivity {
     }
 
     private void pinTopic(){
-        Long topicID = mTopic.getID();
+        Long topicID = mTopic.getId();
         try (Realm realm = Realm.getDefaultInstance()) {
             realm.executeTransactionAsync(new Realm.Transaction() {
                 @Override

@@ -46,6 +46,9 @@ public class MyApplication extends Application implements AsyncResponse<UserDTO>
         requestGateway = new RequestGateway(this);
         requestGateway.authenticate(new CurrentUserCallback(this));
 
+//        requestGateway.getNearbyTopics(45.731527D,21.240686D, null);
+//        requestGateway.getNearbyTopics("Timisoara");
+
         createMockObjects();
 
         GPSTracker gps = new GPSTracker(this);
@@ -65,23 +68,23 @@ public class MyApplication extends Application implements AsyncResponse<UserDTO>
 
     public void createMockObjects(){
         User user1 = new User();
-        user1.setID(Long.valueOf(1));
+        user1.setId(Long.valueOf(1));
         user1.setUsername("anon"+1);
         user1.setKarma(123);
         User user2 = new User();
-        user2.setID(Long.valueOf(2));
+        user2.setId(Long.valueOf(2));
         user2.setUsername("anon"+2);
         user2.setKarma(345);
 //        currentUser = user1;
 
         Topic topic1 = new Topic();
-        topic1.setID(Long.valueOf(1));
+        topic1.setId(Long.valueOf(1));
         topic1.setTitle("Padurice");
         topic1.setCoordX(45.731527);
         topic1.setCoordY(21.240686);
         Message topicM1 = new Message();
-        topicM1.setID(Long.valueOf(11));
-        topicM1.setUserID(user1.getID());
+        topicM1.setId(Long.valueOf(11));
+        topicM1.setUserId(user1.getId());
         topicM1.setText("Padurice - Request 1");
         topicM1.setTimestampMillis(Long.valueOf(12344));
         topic1.setMessage(topicM1);
@@ -91,13 +94,13 @@ public class MyApplication extends Application implements AsyncResponse<UserDTO>
         topic1.setCity("Timisoara");
 
         Topic topic2 = new Topic();
-        topic2.setID(Long.valueOf(2));
+        topic2.setId(Long.valueOf(2));
         topic2.setTitle("McDonalds");
         topic2.setCoordX(45.738999);
         topic2.setCoordY(21.240389);
         Message topicM2 = new Message();
-        topicM2.setID(Long.valueOf(12));
-        topicM2.setUserID(user1.getID());
+        topicM2.setId(Long.valueOf(12));
+        topicM2.setUserId(user1.getId());
         topicM2.setText("McDonalds - request 2");
         topicM2.setTimestampMillis(Long.valueOf(12344));
         topic2.setMessage(topicM2);
@@ -107,13 +110,13 @@ public class MyApplication extends Application implements AsyncResponse<UserDTO>
         topic2.setCity("Timisoara");
 
         Topic topic3 = new Topic();
-        topic3.setID(Long.valueOf(3));
+        topic3.setId(Long.valueOf(3));
         topic3.setTitle("UPT Electro");
         topic3.setCoordX(45.747757);
         topic3.setCoordY(21.225703);
         Message topicM3 = new Message();
-        topicM3.setID(Long.valueOf(13));
-        topicM3.setUserID(user1.getID());
+        topicM3.setId(Long.valueOf(13));
+        topicM3.setUserId(user1.getId());
         topicM3.setText("UPT Electro - request 3");
         topicM3.setTimestampMillis(Long.valueOf(12344));
         topic3.setMessage(topicM3);
@@ -123,13 +126,13 @@ public class MyApplication extends Application implements AsyncResponse<UserDTO>
         topic3.setCity("Timisoara");
 
         Topic topic4 = new Topic();
-        topic4.setID(Long.valueOf(4));
+        topic4.setId(Long.valueOf(4));
         topic4.setTitle("Fantana cu pesti");
         topic4.setCoordX(45.752780);
         topic4.setCoordY(21.225349);
         Message topicM4 = new Message();
-        topicM4.setID(Long.valueOf(14));
-        topicM4.setUserID(user2.getID());
+        topicM4.setId(Long.valueOf(14));
+        topicM4.setUserId(user2.getId());
         topicM4.setText("Fantana cu pesti - request 4");
         topicM4.setTimestampMillis(Long.valueOf(12344));
         topic4.setMessage(topicM4);
@@ -139,13 +142,13 @@ public class MyApplication extends Application implements AsyncResponse<UserDTO>
         topic4.setCity("Timisoara");
 
         Topic topic5 = new Topic();
-        topic5.setID(Long.valueOf(5));
+        topic5.setId(Long.valueOf(5));
         topic5.setTitle("Piata Unirii");
         topic5.setCoordX(45.757929);
         topic5.setCoordY(21.229029);
         Message topicM5 = new Message();
-        topicM5.setID(Long.valueOf(15));
-        topicM5.setUserID(user1.getID());
+        topicM5.setId(Long.valueOf(15));
+        topicM5.setUserId(user1.getId());
         topicM5.setText("Piata Unirii - request 5");
         topicM5.setTimestampMillis(Long.valueOf(12344));
         topic5.setMessage(topicM5);
@@ -155,13 +158,13 @@ public class MyApplication extends Application implements AsyncResponse<UserDTO>
         topic5.setCity("Timisoara");
 
         Topic topic6 = new Topic();
-        topic6.setID(Long.valueOf(6));
+        topic6.setId(Long.valueOf(6));
         topic6.setTitle("Catedrala");
         topic6.setCoordX(45.751305);
         topic6.setCoordY(21.224457);
         Message topicM6 = new Message();
-        topicM6.setID(Long.valueOf(16));
-        topicM6.setUserID(user2.getID());
+        topicM6.setId(Long.valueOf(16));
+        topicM6.setUserId(user2.getId());
         topicM6.setText("Catedrala - request 6");
         topicM6.setTimestampMillis(Long.valueOf(12344));
         topic6.setMessage(topicM6);
@@ -171,13 +174,13 @@ public class MyApplication extends Application implements AsyncResponse<UserDTO>
         topic6.setCity("Timisoara");
 
         Topic topic7 = new Topic();
-        topic7.setID(Long.valueOf(7));
+        topic7.setId(Long.valueOf(7));
         topic7.setTitle("Casino");
         topic7.setCoordX(46.768994);
         topic7.setCoordY(23.577911);
         Message topicM7 = new Message();
-        topicM7.setID(Long.valueOf(17));
-        topicM7.setUserID(user1.getID());
+        topicM7.setId(Long.valueOf(17));
+        topicM7.setUserId(user1.getId());
         topicM7.setText("Casino - request 7");
         topicM7.setTimestampMillis(Long.valueOf(12344));
         topic7.setMessage(topicM7);
@@ -187,13 +190,13 @@ public class MyApplication extends Application implements AsyncResponse<UserDTO>
         topic7.setCity("Cluj - Napoca");
 
         Topic topic8 = new Topic();
-        topic8.setID(Long.valueOf(8));
+        topic8.setId(Long.valueOf(8));
         topic8.setTitle("Observator");
         topic8.setCoordX(46.755706);
         topic8.setCoordY(23.593950);
         Message topicM8 = new Message();
-        topicM8.setID(Long.valueOf(18));
-        topicM8.setUserID(user2.getID());
+        topicM8.setId(Long.valueOf(18));
+        topicM8.setUserId(user2.getId());
         topicM8.setText("Observator - request 8");
         topicM8.setTimestampMillis(Long.valueOf(12344));
         topic8.setMessage(topicM8);
@@ -206,15 +209,15 @@ public class MyApplication extends Application implements AsyncResponse<UserDTO>
         city.setName("Timisoara");
 
         Message m1 = new Message();
-        m1.setID(Long.valueOf(1));
+        m1.setId(Long.valueOf(1));
         m1.setText("message 1");
         m1.setTimestampMillis(Long.valueOf(123004));
-        m1.setUserID(user1.getID());
+        m1.setUserId(user1.getId());
         Message m2 = new Message();
-        m2.setID(Long.valueOf(2));
+        m2.setId(Long.valueOf(2));
         m2.setText("message 2");
         m2.setTimestampMillis(Long.valueOf(123004));
-        m2.setUserID(user2.getID());
+        m2.setUserId(user2.getId());
 
         Realm realm = null;
         try { // I could use try-with-resources here

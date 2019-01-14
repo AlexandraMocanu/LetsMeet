@@ -162,7 +162,7 @@ public class MapsActivity extends BaseActivity implements OnMapReadyCallback, Go
 
         Bundle bundle = new Bundle();
         Topic t = (Topic) mRequests.get(mRequests.indexOf(marker)).getTag();
-        bundle.putLong("topic_id", t.getID());
+        bundle.putLong("topic_id", t.getId());
 
         Fragment f = getSupportFragmentManager().findFragmentByTag(LIST_FRAGMENT_TAG);
         if (f != null) {

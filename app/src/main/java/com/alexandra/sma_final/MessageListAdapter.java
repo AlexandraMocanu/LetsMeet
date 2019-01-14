@@ -41,7 +41,7 @@ public class MessageListAdapter extends RecyclerView.Adapter {
     public int getItemViewType(int position) {
         Message message = (Message) mMessageList.get(position);
 
-        if (message.getUserID().equals(((MyApplication)((ChatActivity)mContext).getApplication()).getCurrentUser().getID())) {
+        if (message.getUserId().equals(((MyApplication)((ChatActivity)mContext).getApplication()).getCurrentUser().getID())) {
             // If the current user is the sender of the message
             return VIEW_TYPE_MESSAGE_SENT;
         } else {
@@ -135,7 +135,7 @@ public class MessageListAdapter extends RecyclerView.Adapter {
                 realm.executeTransactionAsync(new Realm.Transaction() {
                     @Override
                     public void execute(Realm bgRealm) {
-                        RealmResults<User> users = bgRealm.where(User.class).equalTo("ID", message.getUserID()).findAll();
+                        RealmResults<User> users = bgRealm.where(User.class).equalTo("ID", message.getUserId()).findAll();
                         nameText.setText(users.first().getUsername());
                     }
                 });
