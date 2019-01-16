@@ -49,7 +49,7 @@ public class MarkerFragment extends Fragment {
 
         try(Realm realm = Realm.getDefaultInstance()) {
             realm.executeTransaction(inRealm -> {
-                final RealmQuery<Topic> topic  = realm.where(Topic.class).equalTo("ID",id);
+                final RealmQuery<Topic> topic  = realm.where(Topic.class).equalTo("id",id);
                 if (topic.count() > 0){
                     mTopic = topic.findFirst();
 
@@ -76,6 +76,7 @@ public class MarkerFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 Intent mIntent = new Intent(getContext(), MapsActivity.class);
+                mIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 mIntent.putExtra("username_id", mTopic.getPostedBy().getId());
                 getContext().startActivity(mIntent);
             }

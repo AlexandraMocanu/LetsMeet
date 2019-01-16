@@ -79,6 +79,7 @@ public class RequestActivity extends BaseActivity {
             @Override
             public void onClick(View view) {
                 Intent mIntent = new Intent(getApplicationContext(), RequestActivity.class);
+                mIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 mIntent.putExtra("username_id", mTopic.getPostedBy().getId());
                 getApplicationContext().startActivity(mIntent);
             }
@@ -103,7 +104,9 @@ public class RequestActivity extends BaseActivity {
         mButtonSeeOnMap.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(v.getContext(), MapsActivity.class));
+                Intent mIntent = new Intent(v.getContext(), MapsActivity.class);
+                mIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                startActivity(mIntent);
             }
         });
 

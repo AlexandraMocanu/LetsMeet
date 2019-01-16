@@ -54,7 +54,7 @@ public class MovableFloatingActionButton extends FloatingActionButton implements
 
             View viewParent = (View)view.getParent();
             int parentWidth = viewParent.getWidth();
-            int parentHeight = viewParent.getHeight();
+            int parentHeight = viewParent.getHeight() - (130); // top + bottom toolbars equal 130 in height
 
             float newX = motionEvent.getRawX() + dX;
             newX = Math.max(0, newX); // Don't allow the FAB past the left hand side of the parent
