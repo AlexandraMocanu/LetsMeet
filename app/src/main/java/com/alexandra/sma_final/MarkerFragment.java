@@ -76,13 +76,13 @@ public class MarkerFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 Intent mIntent = new Intent(getContext(), MapsActivity.class);
-                mIntent.putExtra("username_id", mTopic.getPostedBy().getID());
+                mIntent.putExtra("username_id", mTopic.getPostedBy().getId());
                 getContext().startActivity(mIntent);
             }
         });
 
         mTextTitle.setText(mTopic.getTitle());
-        mTextRequest.setText(mTopic.getRequest());
+        mTextRequest.setText(mTopic.getMessage().getText());
 
         mButtonMessage.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -107,7 +107,7 @@ public class MarkerFragment extends Fragment {
     }
 
     private void pinTopic(){
-        Long topicID = mTopic.getID();
+        Long topicID = mTopic.getId();
         try (Realm realm = Realm.getDefaultInstance()) {
             realm.executeTransactionAsync(new Realm.Transaction() {
                 @Override
