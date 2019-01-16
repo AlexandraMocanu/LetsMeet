@@ -109,7 +109,6 @@ public class RequestGateway {
             urlStr += "?distance=" + dist.toString();
         }
         new RequestPersistTask().execute(urlStr, "POST", Topic.class, false, location);
-//        realm.insertOrUpdate(ret);
     }
 
     public void getNearbyTopics(String city) {
@@ -146,16 +145,6 @@ public class RequestGateway {
         return sb.toString();
     }
 
-//    public void writeStream(Object obj, OutputStream request, Class clazz) {
-//        try {
-//            byte[] bytes = gson.toJson(obj, clazz).getBytes();
-//            request.write(bytes);
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-//
-//    }
-
     public static void addHeaders(HttpsURLConnection urlConnection) {
 
         urlConnection.setDoInput(true);
@@ -163,15 +152,6 @@ public class RequestGateway {
         urlConnection.setRequestProperty("Content-Type", "application/json");
     }
 
-//    public RealmModel readStream(InputStream response, Class<RealmModel> clazz) {
-//        RealmModel ret = null;
-//        try {
-//            ret = realm.createObjectFromJson(clazz, response);
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-//        return ret;
-//    }
 
 
     //TODO: socket timeout exception
@@ -187,16 +167,6 @@ public class RequestGateway {
             urlConnection.setRequestProperty("Authorization", "Bearer " + jwtToken);
 
     }
-
-//    public void authAwareConnect(HttpsURLConnection urlConnection) throws IOException {
-//        urlConnection.connect();
-//
-//        if(urlConnection.getResponseCode() == HttpsURLConnection.HTTP_UNAUTHORIZED){
-//            authenticate();
-//            urlConnection.connect();
-//        }
-//    }
-
 
     //urlStr, reqMethod, bytes
 
