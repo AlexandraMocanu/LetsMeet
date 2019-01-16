@@ -354,16 +354,28 @@ public class RequestGateway {
             Object json = null;
             try {
                 json = new JSONTokener(result).nextValue();
-                realm.beginTransaction();
+//                realm.beginTransaction();
                 if (json instanceof JSONObject){
                     Log.d(TAG, "Persisting " + clazz.getSimpleName() + ": " + result);
-                    realm.createOrUpdateObjectFromJson(clazz, result);
+                    realm.executeTransaction(new Realm.Transaction() {
+                                                 @Override
+                                                 public void execute(Realm realm) {
+                                                     realm.createOrUpdateObjectFromJson(clazz, result);
+                                                 }
+                                             });
+//                    realm.createOrUpdateObjectFromJson(clazz, result);
                 }
                 else if (json instanceof JSONArray){
                     Log.d(TAG, "Persisting " + clazz.getSimpleName() + "s: " + result);
-                    realm.createOrUpdateAllFromJson(clazz, result);
+                    realm.executeTransaction(new Realm.Transaction() {
+                        @Override
+                        public void execute(Realm realm) {
+                            realm.createOrUpdateAllFromJson(clazz, result);
+                        }
+                    });
+//                    realm.createOrUpdateAllFromJson(clazz, result);
                 }
-                realm.cancelTransaction();
+//                realm.commitTransaction();
             } catch (JSONException e) {
                 Log.e(TAG, "This is not a valid JSON: " + result);
             }
