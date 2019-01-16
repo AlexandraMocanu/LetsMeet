@@ -14,7 +14,9 @@ import java.util.Locale;
 import io.realm.Realm;
 import io.realm.RealmConfiguration;
 import realm.City;
+import realm.Conversation;
 import realm.Message;
+import realm.Rating;
 import realm.Topic;
 import realm.User;
 
@@ -43,13 +45,12 @@ public class MyApplication extends Application implements AsyncResponse<UserDTO>
         Realm.setDefaultConfiguration(realmConfiguration);
         Realm.getInstance(realmConfiguration);
 
-//        requestGateway = new RequestGateway(this);
-//        requestGateway.authenticate(new CurrentUserCallback(this));
+        requestGateway = new RequestGateway(this);
+        requestGateway.authenticate(new CurrentUserCallback(this));
 
-//        requestGateway.getNearbyTopics(45.731527D,21.240686D, null);
-//        requestGateway.getNearbyTopics("Timisoara");
-
+//        doGetRequests();
         createMockObjects();
+        doPutRequests();
 
         GPSTracker gps = new GPSTracker(this);
         currentLocation = gps.location;
@@ -66,6 +67,31 @@ public class MyApplication extends Application implements AsyncResponse<UserDTO>
         }
     }
 
+    public void doGetRequests(){
+        requestGateway.getNearbyTopics(45.731527D,21.240686D, null);
+        requestGateway.getNearbyTopics("Timisoara");
+        requestGateway.getAllUsers();
+        requestGateway.getUserByUsername("system");
+        requestGateway.getUserConversations();
+    }
+
+    public void doPutRequests(){
+        //USER IS ALWAYS REQUIRED
+        requestGateway.putTopic(new Topic(){{
+            setScore(10);
+            setTitle("My New Topic");
+        }});
+        requestGateway.putConversation(new Conversation());
+        requestGateway.putMessage(new Message(){{
+            setText("My new Message text");
+            setUserId(5L);
+            setTimestampMillis(System.currentTimeMillis());
+        }});
+        requestGateway.putRating(new Rating(){{
+            setScore(1);
+        }});
+    }
+
     public void createMockObjects(){
         User user1 = new User();
         user1.setId(Long.valueOf(1));
@@ -75,7 +101,6 @@ public class MyApplication extends Application implements AsyncResponse<UserDTO>
         user2.setId(Long.valueOf(2));
         user2.setUsername("anon"+2);
         user2.setKarma(345);
-//        currentUser = user1;
 
         Topic topic1 = new Topic();
         topic1.setId(Long.valueOf(1));
