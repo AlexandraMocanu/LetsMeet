@@ -65,7 +65,7 @@ public class RequestActivity extends BaseActivity {
 
         try(Realm realm = Realm.getDefaultInstance()) {
             realm.executeTransaction(inRealm -> {
-                final RealmQuery<Topic> topic  = realm.where(Topic.class).equalTo("ID",topicID);
+                final RealmQuery<Topic> topic  = realm.where(Topic.class).equalTo("id",topicID);
                 if (topic.count() > 0){
                     mTopic = topic.findFirst();
                     if (mTopic == null){
