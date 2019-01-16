@@ -4,7 +4,7 @@ import io.realm.RealmObject;
 import io.realm.annotations.PrimaryKey;
 import io.realm.annotations.Required;
 
-public class Message extends RealmObject {
+public class Message extends RealmObject implements GetIdCompliant{
 
     @Required
     @PrimaryKey

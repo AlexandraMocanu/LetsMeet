@@ -60,7 +60,7 @@ public class MyPinsActivity extends BaseActivity {
                 if (pins.size() != 0){
                     for (Pin p: pins){
                         final RealmResults<Topic> topic  = realm.where(Topic.class)
-                                .equalTo("ID", p.getTopicID()).findAll();
+                                .equalTo("id", p.getTopicID()).findAll();
 
                         if(topic.size() > 0){
                             for(Topic t : topic){

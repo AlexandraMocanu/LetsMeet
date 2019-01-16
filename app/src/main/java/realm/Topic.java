@@ -5,7 +5,7 @@ import io.realm.annotations.PrimaryKey;
 import io.realm.annotations.RealmField;
 import io.realm.annotations.Required;
 
-public class Topic extends RealmObject {
+public class Topic extends RealmObject implements GetIdCompliant{
 
     @Required
     @PrimaryKey
@@ -20,7 +20,6 @@ public class Topic extends RealmObject {
 
     private String city;
 
-    @Required
     private Boolean archived;
 
     @Required
