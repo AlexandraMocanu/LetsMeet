@@ -14,7 +14,9 @@ import java.util.Locale;
 import io.realm.Realm;
 import io.realm.RealmConfiguration;
 import realm.City;
+import realm.Conversation;
 import realm.Message;
+import realm.Rating;
 import realm.Topic;
 import realm.User;
 
@@ -48,6 +50,7 @@ public class MyApplication extends Application implements AsyncResponse<UserDTO>
 
 //        doGetRequests();
         createMockObjects();
+        doPutRequests();
 
         GPSTracker gps = new GPSTracker(this);
         currentLocation = gps.location;
@@ -70,6 +73,23 @@ public class MyApplication extends Application implements AsyncResponse<UserDTO>
         requestGateway.getAllUsers();
         requestGateway.getUserByUsername("system");
         requestGateway.getUserConversations();
+    }
+
+    public void doPutRequests(){
+        //USER IS ALWAYS REQUIRED
+        requestGateway.putTopic(new Topic(){{
+            setScore(10);
+            setTitle("My New Topic");
+        }});
+        requestGateway.putConversation(new Conversation());
+        requestGateway.putMessage(new Message(){{
+            setText("My new Message text");
+            setUserId(5L);
+            setTimestampMillis(System.currentTimeMillis());
+        }});
+        requestGateway.putRating(new Rating(){{
+            setScore(1);
+        }});
     }
 
     public void createMockObjects(){

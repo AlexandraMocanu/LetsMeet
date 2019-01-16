@@ -19,7 +19,11 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONTokener;
 
+import io.realm.RealmObject;
 import realm.Conversation;
+import realm.GetIdCompliant;
+import realm.Message;
+import realm.Rating;
 import realm.Topic;
 import realm.User;
 
@@ -64,7 +68,7 @@ public class RequestGateway {
     private static final String TOPICS_NEARBY_API = TOPICS_API + "/nearby"; // in km
     private static final String RATINGS_API = BASE_API + "/ratings";
     private static final String MESSAGES_API = BASE_API + "/messages";
-    // TODO: 2019-01-13 Add my conversations REST endpoint
+    private static final String CONVERSATIONS_API = BASE_API + "/conversations";
     private static final String MY_CONVERSATIONS_API = BASE_API + "/conversations/me";
 
     private static final String USERNAME = "admin";
@@ -125,6 +129,25 @@ public class RequestGateway {
         new RequestPersistTask().execute(MY_CONVERSATIONS_API, "GET", Conversation.class, false);
     }
 
+    public String postOrPut(GetIdCompliant obj){
+        return obj.getId() == null ? "POST" : "PUT";
+    }
+
+    public void putConversation(Conversation conversation){
+        new RequestPersistTask().execute(CONVERSATIONS_API, postOrPut(conversation), Conversation.class, false, conversation);
+    }
+
+    public void putMessage(Message message){
+        new RequestPersistTask().execute(MESSAGES_API, postOrPut(message), Message.class, false, message);
+    }
+
+    public void putRating(Rating rating){
+        new RequestPersistTask().execute(RATINGS_API, postOrPut(rating), Rating.class, false, rating);
+    }
+
+    public void putTopic(Topic topic){
+        new RequestPersistTask().execute(TOPICS_API, postOrPut(topic), Topic.class, false, topic);
+    }
 
     public String objToStr(Object obj) {
         JSONObject wrap = (JSONObject) JSONObject.wrap(obj);
@@ -284,7 +307,7 @@ public class RequestGateway {
         }
     }
 
-    //urlStr, reqMethod, class, [obj]
+    //urlStr, reqMethod, class, clear, [obj]
     @SuppressLint("StaticFieldLeak")
     private final class RequestPersistTask extends AsyncTask<Object, Void, String> {
 
@@ -346,7 +369,7 @@ public class RequestGateway {
 //                    realm.createOrUpdateAllFromJson(clazz, result);
                 }
 //                realm.commitTransaction();
-            } catch (JSONException e) {
+            } catch (Exception e) {
                 Log.e(TAG, "This is not a valid JSON: " + result);
             }
         }

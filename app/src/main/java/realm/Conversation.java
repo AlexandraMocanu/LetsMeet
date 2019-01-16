@@ -4,21 +4,21 @@ import io.realm.RealmObject;
 import io.realm.annotations.PrimaryKey;
 import io.realm.annotations.Required;
 
-public class Conversation extends RealmObject {
+public class Conversation extends RealmObject implements GetIdCompliant{
 
     @Required
     @PrimaryKey
-    private String id;
+    private Long id;
 
     private Long topicId;
 
     private Long respondingUserId;
 
-    public String getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(Long id) {
         this.id = id;
     }
 

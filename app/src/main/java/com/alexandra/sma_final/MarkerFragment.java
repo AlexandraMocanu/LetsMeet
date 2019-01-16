@@ -49,7 +49,7 @@ public class MarkerFragment extends Fragment {
 
         try(Realm realm = Realm.getDefaultInstance()) {
             realm.executeTransaction(inRealm -> {
-                final RealmQuery<Topic> topic  = realm.where(Topic.class).equalTo("ID",id);
+                final RealmQuery<Topic> topic  = realm.where(Topic.class).equalTo("id",id);
                 if (topic.count() > 0){
                     mTopic = topic.findFirst();
 
