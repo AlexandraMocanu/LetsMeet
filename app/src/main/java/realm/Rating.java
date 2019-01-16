@@ -13,6 +13,10 @@ public class Rating extends RealmObject {
     @Required
     private Integer score;
 
+    private Long topicID;
+
+    private Long userID;
+
     public Integer getScore() {
         return score;
     }

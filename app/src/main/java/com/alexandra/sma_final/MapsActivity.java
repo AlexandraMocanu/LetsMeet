@@ -4,6 +4,7 @@ import android.Manifest;
 import android.annotation.SuppressLint;
 import androidx.fragment.app.Fragment;
 
+import android.content.Context;
 import android.content.pm.PackageManager;
 
 import androidx.annotation.NonNull;
@@ -16,8 +17,10 @@ import androidx.core.content.ContextCompat;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.LocationSource;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
@@ -36,8 +39,7 @@ import realm.Topic;
 import static android.app.PendingIntent.getActivity;
 import static com.alexandra.sma_final.MainActivity.REQUEST_LOCATION_PERMISSION;
 
-public class MapsActivity extends BaseActivity implements OnMapReadyCallback, GoogleMap.OnMarkerClickListener
-{
+public class MapsActivity extends BaseActivity implements OnMapReadyCallback, GoogleMap.OnMarkerClickListener {
     protected String activityName = "Map";
 
     private GoogleMap mMap;
@@ -84,10 +86,10 @@ public class MapsActivity extends BaseActivity implements OnMapReadyCallback, Go
         mMap.getUiSettings().setZoomControlsEnabled(false);
 
         GPSTracker gps = new GPSTracker(this);
-        if(gps.canGetLocation()){
+        if (gps.canGetLocation()) {
             LatLng currentPosition = new LatLng(gps.getLatitude(), gps.getLongitude());
 //            mMap.addMarker(new MarkerOptions().position(currentPosition).title("You are here");
-            CameraPosition cameraPosition =  new CameraPosition.Builder()
+            CameraPosition cameraPosition = new CameraPosition.Builder()
                     .target(currentPosition)    // Sets the center of the map to location user
                     .zoom(13)                   // Sets the zoom
                     .build();                   // Creates a CameraPosition from the builder
@@ -105,7 +107,8 @@ public class MapsActivity extends BaseActivity implements OnMapReadyCallback, Go
             mMap.setMyLocationEnabled(true);
         } else {
             ActivityCompat.requestPermissions(this, new String[]
-                            {Manifest.permission.ACCESS_FINE_LOCATION},
+                            {Manifest.permission.ACCESS_FINE_LOCATION,
+                            Manifest.permission.ACCESS_COARSE_LOCATION},
                     REQUEST_LOCATION_PERMISSION);
         }
     }
@@ -127,16 +130,16 @@ public class MapsActivity extends BaseActivity implements OnMapReadyCallback, Go
         }
     }
 
-    public void setRequestMarkers(){
+    public void setRequestMarkers() {
 
-        try(Realm realm = Realm.getDefaultInstance()) {
+        try (Realm realm = Realm.getDefaultInstance()) {
             realm.executeTransaction(inRealm -> {
-                final RealmResults<Topic> topics  = realm.where(Topic.class).findAll();
-                if (topics.size() != 0){
+                final RealmResults<Topic> topics = realm.where(Topic.class).findAll();
+                if (topics.size() != 0) {
                     mRequests = new ArrayList<>();
 
                     int count = 0;
-                    for(Topic t : topics){
+                    for (Topic t : topics) {
                         mRequests.add(count,
                                 mMap.addMarker(new MarkerOptions()
                                         .position(new LatLng(t.getCoordX(), t.getCoordY()))
@@ -162,7 +165,7 @@ public class MapsActivity extends BaseActivity implements OnMapReadyCallback, Go
 
         Bundle bundle = new Bundle();
         Topic t = (Topic) mRequests.get(mRequests.indexOf(marker)).getTag();
-        bundle.putLong("topic_id", t.getID());
+        bundle.putLong("topic_id", t.getId());
 
         Fragment f = getSupportFragmentManager().findFragmentByTag(LIST_FRAGMENT_TAG);
         if (f != null) {

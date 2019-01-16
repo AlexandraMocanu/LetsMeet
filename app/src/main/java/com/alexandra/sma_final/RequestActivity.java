@@ -1,6 +1,5 @@
 package com.alexandra.sma_final;
 
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.Spannable;
@@ -66,7 +65,7 @@ public class RequestActivity extends BaseActivity {
 
         try(Realm realm = Realm.getDefaultInstance()) {
             realm.executeTransaction(inRealm -> {
-                final RealmQuery<Topic> topic  = realm.where(Topic.class).equalTo("ID",topicID);
+                final RealmQuery<Topic> topic  = realm.where(Topic.class).equalTo("id",topicID);
                 if (topic.count() > 0){
                     mTopic = topic.findFirst();
                     if (mTopic == null){
@@ -80,7 +79,7 @@ public class RequestActivity extends BaseActivity {
             @Override
             public void onClick(View view) {
                 Intent mIntent = new Intent(getApplicationContext(), RequestActivity.class);
-                mIntent.putExtra("username_id", mTopic.getPostedBy().getID());
+                mIntent.putExtra("username_id", mTopic.getPostedBy().getId());
                 getApplicationContext().startActivity(mIntent);
             }
         });
@@ -92,7 +91,7 @@ public class RequestActivity extends BaseActivity {
         mTextAuthor.setText(str);
         mTextTitle.setText(mTopic.getTitle());
         setTitle(mTopic.getTitle());
-        mTextMessage.setText(mTopic.getRequest());
+        mTextMessage.setText(mTopic.getMessage().getText());
 
         mButtonMessage.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -128,7 +127,7 @@ public class RequestActivity extends BaseActivity {
     }
 
     private void pinTopic(){
-        Long topicID = mTopic.getID();
+        Long topicID = mTopic.getId();
         try (Realm realm = Realm.getDefaultInstance()) {
             realm.executeTransactionAsync(new Realm.Transaction() {
                 @Override
