@@ -135,7 +135,7 @@ public class MessageListAdapter extends RecyclerView.Adapter {
                 realm.executeTransactionAsync(new Realm.Transaction() {
                     @Override
                     public void execute(Realm bgRealm) {
-                        RealmResults<User> users = bgRealm.where(User.class).equalTo("ID", message.getUserId()).findAll();
+                        RealmResults<User> users = bgRealm.where(User.class).equalTo("id", message.getUserId()).findAll();
                         nameText.setText(users.first().getUsername());
                     }
                 });

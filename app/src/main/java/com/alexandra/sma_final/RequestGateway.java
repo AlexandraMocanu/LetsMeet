@@ -14,9 +14,16 @@ import androidx.annotation.Nullable;
 import io.realm.Realm;
 import io.realm.RealmModel;
 
+import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
+import org.json.JSONTokener;
 
+import io.realm.RealmObject;
 import realm.Conversation;
+import realm.GetIdCompliant;
+import realm.Message;
+import realm.Rating;
 import realm.Topic;
 import realm.User;
 
@@ -61,8 +68,8 @@ public class RequestGateway {
     private static final String TOPICS_NEARBY_API = TOPICS_API + "/nearby"; // in km
     private static final String RATINGS_API = BASE_API + "/ratings";
     private static final String MESSAGES_API = BASE_API + "/messages";
-    // TODO: 2019-01-13 Add my conversations REST endpoint
     private static final String CONVERSATIONS_API = BASE_API + "/conversations";
+    private static final String MY_CONVERSATIONS_API = BASE_API + "/conversations/me";
 
     private static final String USERNAME = "admin";
     private static final String PASSWORD = "admin";
@@ -97,10 +104,6 @@ public class RequestGateway {
         new RequestPersistTask().execute(USERS_API + "/" + username, "GET", User.class, false);
     }
 
-    public void getUserById(Long id) {
-        new RequestPersistTask().execute(USERS_API + "/" + id.toString(), "GET", User.class, false);
-    }
-
     public void getNearbyTopics(double coordX, double coordY, @Nullable Integer dist) {
         Topic location = new Topic();
         location.setCoordX(coordX);
@@ -110,23 +113,41 @@ public class RequestGateway {
             urlStr += "?distance=" + dist.toString();
         }
         new RequestPersistTask().execute(urlStr, "POST", Topic.class, false, location);
-//        realm.insertOrUpdate(ret);
     }
 
     public void getNearbyTopics(String city) {
         try {
             String cityUrl = URLEncoder.encode(city, "UTF-8");
-            new RequestPersistTask().execute(TOPICS_NEARBY_API + "?city=" + cityUrl, "GET", Topic.class, true);
+            new RequestPersistTask().execute(TOPICS_NEARBY_API + "?city=" + cityUrl, "GET", Topic.class, false);
         } catch (UnsupportedEncodingException e) {
             Log.e(TAG, "City name could not be encoded!");
         }
     }
 
 
-    public void getConversations() {
-        new RequestPersistTask().execute(CONVERSATIONS_API, "GET", Conversation.class, false);
+    public void getUserConversations() {
+        new RequestPersistTask().execute(MY_CONVERSATIONS_API, "GET", Conversation.class, false);
     }
 
+    public String postOrPut(GetIdCompliant obj){
+        return obj.getId() == null ? "POST" : "PUT";
+    }
+
+    public void putConversation(Conversation conversation){
+        new RequestPersistTask().execute(CONVERSATIONS_API, postOrPut(conversation), Conversation.class, false, conversation);
+    }
+
+    public void putMessage(Message message){
+        new RequestPersistTask().execute(MESSAGES_API, postOrPut(message), Message.class, false, message);
+    }
+
+    public void putRating(Rating rating){
+        new RequestPersistTask().execute(RATINGS_API, postOrPut(rating), Rating.class, false, rating);
+    }
+
+    public void putTopic(Topic topic){
+        new RequestPersistTask().execute(TOPICS_API, postOrPut(topic), Topic.class, false, topic);
+    }
 
     public String objToStr(Object obj) {
         JSONObject wrap = (JSONObject) JSONObject.wrap(obj);
@@ -147,16 +168,6 @@ public class RequestGateway {
         return sb.toString();
     }
 
-//    public void writeStream(Object obj, OutputStream request, Class clazz) {
-//        try {
-//            byte[] bytes = gson.toJson(obj, clazz).getBytes();
-//            request.write(bytes);
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-//
-//    }
-
     public static void addHeaders(HttpsURLConnection urlConnection) {
 
         urlConnection.setDoInput(true);
@@ -164,15 +175,6 @@ public class RequestGateway {
         urlConnection.setRequestProperty("Content-Type", "application/json");
     }
 
-//    public RealmModel readStream(InputStream response, Class<RealmModel> clazz) {
-//        RealmModel ret = null;
-//        try {
-//            ret = realm.createObjectFromJson(clazz, response);
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-//        return ret;
-//    }
 
 
     //TODO: socket timeout exception
@@ -188,16 +190,6 @@ public class RequestGateway {
             urlConnection.setRequestProperty("Authorization", "Bearer " + jwtToken);
 
     }
-
-//    public void authAwareConnect(HttpsURLConnection urlConnection) throws IOException {
-//        urlConnection.connect();
-//
-//        if(urlConnection.getResponseCode() == HttpsURLConnection.HTTP_UNAUTHORIZED){
-//            authenticate();
-//            urlConnection.connect();
-//        }
-//    }
-
 
     //urlStr, reqMethod, bytes
 
@@ -315,7 +307,7 @@ public class RequestGateway {
         }
     }
 
-    //urlStr, reqMethod, class, [obj]
+    //urlStr, reqMethod, class, clear, [obj]
     @SuppressLint("StaticFieldLeak")
     private final class RequestPersistTask extends AsyncTask<Object, Void, String> {
 
@@ -352,10 +344,34 @@ public class RequestGateway {
 
         @Override
         protected void onPostExecute(String result) {
-            Log.d("TAG", "Persisting " + clazz.getSimpleName() + ": " + result);
-            realm.beginTransaction();
-            realm.createOrUpdateAllFromJson(clazz, result);
-            realm.cancelTransaction();
+            Object json = null;
+            try {
+                json = new JSONTokener(result).nextValue();
+//                realm.beginTransaction();
+                if (json instanceof JSONObject){
+                    Log.d(TAG, "Persisting " + clazz.getSimpleName() + ": " + result);
+                    realm.executeTransaction(new Realm.Transaction() {
+                                                 @Override
+                                                 public void execute(Realm realm) {
+                                                     realm.createOrUpdateObjectFromJson(clazz, result);
+                                                 }
+                                             });
+//                    realm.createOrUpdateObjectFromJson(clazz, result);
+                }
+                else if (json instanceof JSONArray){
+                    Log.d(TAG, "Persisting " + clazz.getSimpleName() + "s: " + result);
+                    realm.executeTransaction(new Realm.Transaction() {
+                        @Override
+                        public void execute(Realm realm) {
+                            realm.createOrUpdateAllFromJson(clazz, result);
+                        }
+                    });
+//                    realm.createOrUpdateAllFromJson(clazz, result);
+                }
+//                realm.commitTransaction();
+            } catch (Exception e) {
+                Log.e(TAG, "This is not a valid JSON: " + result);
+            }
         }
     }
 
@@ -402,7 +418,7 @@ public class RequestGateway {
             // MainActivity.context = getApplicationContext();
             InputStream caInput = new BufferedInputStream(app.getBaseContext().getAssets().open("tls/ca.cer"));
             Certificate ca = cf.generateCertificate(caInput);
-            System.out.println("ca=" + ((X509Certificate) ca).getSubjectDN());
+//            System.out.println("ca=" + ((X509Certificate) ca).getSubjectDN());
 
             // Create a KeyStore containing our trusted CAs
             String keyStoreType = KeyStore.getDefaultType();
@@ -413,7 +429,7 @@ public class RequestGateway {
             HttpsURLConnection.setDefaultHostnameVerifier(new HostnameVerifier() {
                 @Override
                 public boolean verify(String hostname, SSLSession session) {
-                    Log.i("NullHostnameVerifier", "Approving certificate for " + hostname);
+//                    Log.i("NullHostnameVerifier", "Approving certificate for " + hostname);
                     return true;
                 }
             });

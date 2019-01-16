@@ -5,7 +5,7 @@ import io.realm.annotations.PrimaryKey;
 import io.realm.annotations.RealmField;
 import io.realm.annotations.Required;
 
-public class Topic extends RealmObject {
+public class Topic extends RealmObject implements GetIdCompliant{
 
     @Required
     @PrimaryKey
@@ -20,7 +20,6 @@ public class Topic extends RealmObject {
 
     private String city;
 
-    @Required
     private Boolean archived;
 
     @Required
@@ -30,6 +29,8 @@ public class Topic extends RealmObject {
 
     @Required
     private String title;
+
+    private int myScore;
 
     public Long getId() {
         return id;
@@ -101,4 +102,11 @@ public class Topic extends RealmObject {
         this.city = city;
     }
 
+    public int getMyScore() {
+        return myScore;
+    }
+
+    public void setMyScore(int myScore) {
+        this.myScore = myScore;
+    }
 }
