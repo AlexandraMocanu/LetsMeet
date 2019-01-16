@@ -31,6 +31,8 @@ public class Topic extends RealmObject {
     @Required
     private String title;
 
+    private int myScore;
+
     public Long getId() {
         return id;
     }
@@ -101,4 +103,11 @@ public class Topic extends RealmObject {
         this.city = city;
     }
 
+    public int getMyScore() {
+        return myScore;
+    }
+
+    public void setMyScore(int myScore) {
+        this.myScore = myScore;
+    }
 }

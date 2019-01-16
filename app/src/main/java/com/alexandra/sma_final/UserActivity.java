@@ -57,7 +57,7 @@ public class UserActivity extends BaseActivity {
 
         try(Realm realm = Realm.getDefaultInstance()) {
             realm.executeTransaction(inRealm -> {
-                final User user  = realm.where(User.class).equalTo("ID", user_id).findFirst();
+                final User user  = realm.where(User.class).equalTo("id", user_id).findFirst();
                 if(user != null){
                     mUser = user;
                 }
@@ -159,7 +159,7 @@ public class UserActivity extends BaseActivity {
             realm.executeTransaction(inRealm -> {
                 final RealmResults<Topic> topics  = realm.where(Topic.class).findAll();
                 for(Topic t : topics){
-                    if(t.getPostedBy().getID() == mUser.getID()) {
+                    if(t.getPostedBy().getId() == mUser.getId()) {
                         activeR.add(t);
                     }
                 }
@@ -212,7 +212,7 @@ public class UserActivity extends BaseActivity {
             seeMoreButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Long topicID = topic.getID();
+                    Long topicID = topic.getId();
 
                     Intent mIntent = new Intent(v.getContext(), RequestActivity.class);
                     mIntent.putExtra("topic_id", topicID);
@@ -232,7 +232,7 @@ public class UserActivity extends BaseActivity {
 
         public boolean contains(Topic c){
             for(int i = 0; i < activeRequests.size(); i++){
-                if(activeRequests.get(i).getID() == c.getID()){
+                if(activeRequests.get(i).getId() == c.getId()){
                     return true;
                 }
             }

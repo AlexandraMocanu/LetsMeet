@@ -43,13 +43,14 @@ public class MyApplication extends Application implements AsyncResponse<UserDTO>
         Realm.setDefaultConfiguration(realmConfiguration);
         Realm.getInstance(realmConfiguration);
 
-//        requestGateway = new RequestGateway(this);
+        requestGateway = new RequestGateway(this);
 //        requestGateway.authenticate(new CurrentUserCallback(this));
-
+        requestGateway.authenticate(new CurrentUserCallback(this));
+//        requestGateway.getAllUsers();
 //        requestGateway.getNearbyTopics(45.731527D,21.240686D, null);
-//        requestGateway.getNearbyTopics("Timisoara");
 
-        createMockObjects();
+        doGetRequests();
+//        createMockObjects();
 
         GPSTracker gps = new GPSTracker(this);
         currentLocation = gps.location;
@@ -66,6 +67,14 @@ public class MyApplication extends Application implements AsyncResponse<UserDTO>
         }
     }
 
+    public void doGetRequests(){
+        requestGateway.getNearbyTopics(45.731527D,21.240686D, null);
+        requestGateway.getNearbyTopics("Timisoara");
+        requestGateway.getAllUsers();
+        requestGateway.getUserByUsername("system");
+        requestGateway.getUserConversations();
+    }
+
     public void createMockObjects(){
         User user1 = new User();
         user1.setId(Long.valueOf(1));
@@ -75,7 +84,6 @@ public class MyApplication extends Application implements AsyncResponse<UserDTO>
         user2.setId(Long.valueOf(2));
         user2.setUsername("anon"+2);
         user2.setKarma(345);
-//        currentUser = user1;
 
         Topic topic1 = new Topic();
         topic1.setId(Long.valueOf(1));
