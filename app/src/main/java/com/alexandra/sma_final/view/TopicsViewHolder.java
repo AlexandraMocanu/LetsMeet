@@ -147,6 +147,7 @@ public class TopicsViewHolder extends ChildViewHolder {
         Long topicID = ((Topic) adapter.mItemList.get(getAdapterPosition())).getId();
 
         Intent mIntent = new Intent(view.getContext(), RequestActivity.class);
+        mIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         mIntent.putExtra("topic_id", topicID);
         view.getContext().startActivity(mIntent);
     }

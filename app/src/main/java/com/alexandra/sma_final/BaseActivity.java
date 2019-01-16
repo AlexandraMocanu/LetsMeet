@@ -50,7 +50,9 @@ abstract public class BaseActivity extends AppCompatActivity implements BottomNa
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivity(new Intent(getApplicationContext(), PostRequestActivity.class));
+                Intent newIntent = new Intent(getApplicationContext(), PostRequestActivity.class);
+                newIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                startActivity(newIntent);
             }
         });
         if(this instanceof PostRequestActivity){
@@ -59,7 +61,7 @@ abstract public class BaseActivity extends AppCompatActivity implements BottomNa
         }
 
         bottomNavigationView = (BottomNavigationView)
-                findViewById(R.id.bottom_navigation);
+                findViewById(R.id.bottom_bar);
 
         bottomNavigationView.setLabelVisibilityMode(LabelVisibilityMode.LABEL_VISIBILITY_SELECTED);
         bottomNavigationView.setOnNavigationItemSelectedListener(this);
@@ -70,6 +72,7 @@ abstract public class BaseActivity extends AppCompatActivity implements BottomNa
             @Override
             public void onClick(View view) {
                 Intent mIntent = new Intent(getApplicationContext(), UserActivity.class);
+                mIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 // TODO: change the value!
                 mIntent.putExtra("username_id", Long.valueOf(1));
                 getApplicationContext().startActivity(mIntent);
@@ -119,19 +122,29 @@ abstract public class BaseActivity extends AppCompatActivity implements BottomNa
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
-            startActivity(new Intent(this, SettingsActivity.class));
+            Intent newIntent = new Intent(this, SettingsActivity.class);
+            newIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            startActivity(newIntent);
         }
         if (id == R.id.map){
-            startActivity(new Intent(this, MapsActivity.class));
+            Intent newIntent = new Intent(this, MapsActivity.class);
+            newIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            startActivity(newIntent);
         }
         if (id == R.id.pinned_action){
-            startActivity(new Intent(this, MyPinsActivity.class));
+            Intent newIntent = new Intent(this, MyPinsActivity.class);
+            newIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            startActivity(newIntent);
         }
         if (id == R.id.dashboard_action){
-            startActivity(new Intent(this, DashboardActivity.class));
+            Intent newIntent = new Intent(this, DashboardActivity.class);
+            newIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            startActivity(newIntent);
         }
         if (id == R.id.home){
-            startActivity(new Intent(this, MainActivity.class));
+            Intent newIntent = new Intent(this, MainActivity.class);
+            newIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            startActivity(newIntent);
         }
 
         return super.onOptionsItemSelected(item);

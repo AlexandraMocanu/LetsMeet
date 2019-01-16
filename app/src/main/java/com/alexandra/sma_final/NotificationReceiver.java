@@ -17,8 +17,10 @@ public class NotificationReceiver extends BroadcastReceiver {
 
         int count = intent.getIntExtra("count", 0);
 
+        Intent newIntent = new Intent(context, MainActivity.class);
+        newIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         PendingIntent operation = PendingIntent.getActivity(context, -1,
-                new Intent(context, MainActivity.class),
+                newIntent,
                 PendingIntent.FLAG_ONE_SHOT);
 
         Notification notification = new Notification.Builder(context)
