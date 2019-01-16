@@ -44,13 +44,10 @@ public class MyApplication extends Application implements AsyncResponse<UserDTO>
         Realm.getInstance(realmConfiguration);
 
         requestGateway = new RequestGateway(this);
-//        requestGateway.authenticate(new CurrentUserCallback(this));
         requestGateway.authenticate(new CurrentUserCallback(this));
-//        requestGateway.getAllUsers();
-//        requestGateway.getNearbyTopics(45.731527D,21.240686D, null);
 
-        doGetRequests();
-//        createMockObjects();
+//        doGetRequests();
+        createMockObjects();
 
         GPSTracker gps = new GPSTracker(this);
         currentLocation = gps.location;
