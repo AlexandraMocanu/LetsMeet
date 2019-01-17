@@ -1,8 +1,12 @@
 package com.alexandra.sma_final;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.alexandra.sma_final.rest.NullX509TrustManager;
 import com.alexandra.sma_final.rest.TokenHolderDTO;
@@ -19,7 +23,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONTokener;
 
-import io.realm.RealmObject;
+import io.realm.exceptions.RealmException;
 import realm.Conversation;
 import realm.GetIdCompliant;
 import realm.Message;
@@ -28,13 +32,14 @@ import realm.Topic;
 import realm.User;
 
 import java.io.*;
+import java.net.ConnectException;
+import java.net.InetAddress;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.security.KeyStore;
 import java.security.SecureRandom;
 import java.security.cert.Certificate;
 import java.security.cert.CertificateFactory;
-import java.security.cert.X509Certificate;
 import java.util.HashMap;
 
 import javax.net.ssl.HostnameVerifier;
@@ -42,7 +47,6 @@ import javax.net.ssl.HttpsURLConnection;
 
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLSession;
-import javax.net.ssl.TrustManagerFactory;
 import javax.net.ssl.X509TrustManager;
 
 public class RequestGateway {
@@ -51,15 +55,23 @@ public class RequestGateway {
 
     private String jwtToken = null;
 
+    private MyApplication mApp;
+    private Context mContext;
+
     private Realm realm;
     private Gson gson;
-    private MyApplication app;
     private UserDTO currentUser = null;
 
+    //Connection parameters
     private static final boolean USES_SSL = true;
+    private static final boolean USES_EMULATOR = true;
+    private static boolean isConnected = false;
+
+    //API link constants
     private static final String EMU_LOCALHOST = "10.0.2.2";
-    private static final String BASE_API = "https://" + EMU_LOCALHOST + ":8080/api";
-    //    private static final String BASE_EMU_API = "http://:8080/api";
+    private static final String DOMAIN_BASE_API = USES_EMULATOR ?
+            EMU_LOCALHOST : "localhost" ;
+    private static final String BASE_API = "https://" + DOMAIN_BASE_API + ":8080/api";
     private static final String AUTH_API = BASE_API + "/authenticate";
     private static final String WHO_AM_I_API = BASE_API + "/account";
     private static final String USERS_API = BASE_API + "/users";
@@ -74,8 +86,8 @@ public class RequestGateway {
     private static final String USERNAME = "admin";
     private static final String PASSWORD = "admin";
 
-    public RequestGateway(MyApplication app) {
-        this.app = app;
+    public RequestGateway(MyApplication mApp) {
+        this.mApp = mApp;
         realm = Realm.getDefaultInstance();
         gson = new GsonBuilder().create();
     }
@@ -129,23 +141,23 @@ public class RequestGateway {
         new RequestPersistTask().execute(MY_CONVERSATIONS_API, "GET", Conversation.class, false);
     }
 
-    public String postOrPut(GetIdCompliant obj){
+    public String postOrPut(GetIdCompliant obj) {
         return obj.getId() == null ? "POST" : "PUT";
     }
 
-    public void putConversation(Conversation conversation){
+    public void putConversation(Conversation conversation) {
         new RequestPersistTask().execute(CONVERSATIONS_API, postOrPut(conversation), Conversation.class, false, conversation);
     }
 
-    public void putMessage(Message message){
+    public void putMessage(Message message) {
         new RequestPersistTask().execute(MESSAGES_API, postOrPut(message), Message.class, false, message);
     }
 
-    public void putRating(Rating rating){
+    public void putRating(Rating rating) {
         new RequestPersistTask().execute(RATINGS_API, postOrPut(rating), Rating.class, false, rating);
     }
 
-    public void putTopic(Topic topic){
+    public void putTopic(Topic topic) {
         new RequestPersistTask().execute(TOPICS_API, postOrPut(topic), Topic.class, false, topic);
     }
 
@@ -174,7 +186,6 @@ public class RequestGateway {
         urlConnection.setConnectTimeout(1000 * 5);
         urlConnection.setRequestProperty("Content-Type", "application/json");
     }
-
 
 
     //TODO: socket timeout exception
@@ -251,6 +262,9 @@ public class RequestGateway {
                     authenticate(new RequestCallback(params));
                 }
                 e.printStackTrace();
+            } catch (ConnectException e) {
+                Log.e(TAG, e.getMessage() + " Try checking your connection to the server!");
+                e.printStackTrace();
             } catch (IOException e) {
                 e.printStackTrace();
             } finally {
@@ -266,6 +280,9 @@ public class RequestGateway {
     @SuppressLint("StaticFieldLeak")
     private final class LoginTask extends AsyncTask<Object, Void, String> {
 
+        private static final String TAG = "RequestGateway - LoginTask";
+
+
         private Callback cb = null;
 
         @Override
@@ -278,7 +295,12 @@ public class RequestGateway {
 
         @Override
         protected void onPostExecute(String result) {
-            String idToken = gson.fromJson(result, TokenHolderDTO.class).getIdToken();
+            TokenHolderDTO tokenJson = gson.fromJson(result, TokenHolderDTO.class);
+            if (tokenJson == null) {
+                Log.e(TAG, "Server responded to Login Request with null!");
+                return;
+            }
+            String idToken = tokenJson.getIdToken();
             Log.d(TAG, "Got JWT: " + idToken);
             jwtToken = idToken;
             if (cb != null) {
@@ -289,6 +311,7 @@ public class RequestGateway {
 
     @SuppressLint("StaticFieldLeak")
     private final class CurrentUserTask extends AsyncTask<Object, Void, String> {
+        private static final String TAG = "RequestGateway - CurrentUserTask";
 
         private AsyncResponse<UserDTO> delegate = null;
 
@@ -310,20 +333,27 @@ public class RequestGateway {
     //urlStr, reqMethod, class, clear, [obj]
     @SuppressLint("StaticFieldLeak")
     private final class RequestPersistTask extends AsyncTask<Object, Void, String> {
+        private static final String TAG = "RequestGateway - RequestPersistTask";
 
         private Class<RealmModel> clazz;
         private boolean shouldClear;
+        private String urlStr = null;
 
+        //urlStr, reqMethod, class, clear, [obj]
         @Override
         protected String doInBackground(Object... params) {
-            //urlStr, reqMethod, class, clear, [obj]
             try {
-                while (jwtToken == null) {
-                    Log.d(TAG, "Waiting for JWT!");
-                    Thread.sleep(50);
+                while (jwtToken == null ) {
+                    if (isConnected && checkInternetConnection()) {
+                        Log.d(TAG, "Waiting for JWT!");
+                        Thread.sleep(50);
+                    } else {
+                        Log.v(TAG, "Waiting for connection to server!");
+                        Thread.sleep(500);
+                    }
                 }
             } catch (InterruptedException e) {
-                e.printStackTrace();
+                Log.getStackTraceString(e);
             }
 
             if (params.length < 4) {
@@ -344,33 +374,44 @@ public class RequestGateway {
 
         @Override
         protected void onPostExecute(String result) {
-            Object json = null;
             try {
-                json = new JSONTokener(result).nextValue();
+                JSONTokener json = new JSONTokener(result);
+                if (result == null || json == null) {
+                    Log.w(TAG, "Request to " + urlStr + "returned null!");
+                    return;
+                }
+                Object firstField = json.nextValue();
 //                realm.beginTransaction();
-                if (json instanceof JSONObject){
+                if (firstField instanceof JSONObject) {
                     Log.d(TAG, "Persisting " + clazz.getSimpleName() + ": " + result);
                     realm.executeTransaction(new Realm.Transaction() {
-                                                 @Override
-                                                 public void execute(Realm realm) {
-                                                     realm.createOrUpdateObjectFromJson(clazz, result);
-                                                 }
-                                             });
+                        @Override
+                        public void execute(Realm realm) {
+                            if (shouldClear)
+                                realm.delete(clazz);
+                            realm.createOrUpdateObjectFromJson(clazz, result);
+                        }
+                    });
 //                    realm.createOrUpdateObjectFromJson(clazz, result);
-                }
-                else if (json instanceof JSONArray){
+                } else if (firstField instanceof JSONArray) {
                     Log.d(TAG, "Persisting " + clazz.getSimpleName() + "s: " + result);
                     realm.executeTransaction(new Realm.Transaction() {
                         @Override
                         public void execute(Realm realm) {
+                            if (shouldClear)
+                                realm.delete(clazz);
                             realm.createOrUpdateAllFromJson(clazz, result);
                         }
                     });
 //                    realm.createOrUpdateAllFromJson(clazz, result);
                 }
 //                realm.commitTransaction();
-            } catch (Exception e) {
+            } catch (JSONException | IllegalArgumentException e) {
                 Log.e(TAG, "This is not a valid JSON: " + result);
+                Log.getStackTraceString(e);
+            } catch (RealmException e) {
+                Log.e(TAG, "Realm exception for JSON: " + result);
+                Log.getStackTraceString(e);
             }
         }
     }
@@ -416,7 +457,7 @@ public class RequestGateway {
             // public static Context context;
             // And initialized in MainActivity.onCreate() as:
             // MainActivity.context = getApplicationContext();
-            InputStream caInput = new BufferedInputStream(app.getBaseContext().getAssets().open("tls/ca.cer"));
+            InputStream caInput = new BufferedInputStream(mApp.getBaseContext().getAssets().open("tls/ca.cer"));
             Certificate ca = cf.generateCertificate(caInput);
 //            System.out.println("ca=" + ((X509Certificate) ca).getSubjectDN());
 
@@ -457,6 +498,18 @@ public class RequestGateway {
         } catch (Exception ex) {
             Log.e(TAG, "Failed to establish SSL connection to server: " + ex.toString());
             return null;
+        }
+    }
+
+    private boolean checkInternetConnection() {
+        ConnectivityManager cm = (ConnectivityManager) mApp.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo ni = cm.getActiveNetworkInfo();
+        if (null == ni) {
+            Toast.makeText(mApp.getApplicationContext(), "no internet connection", Toast.LENGTH_LONG).show();
+            return false;
+        } else {
+            Toast.makeText(mApp.getApplicationContext(), "Internet Connect is detected .. check access to sire", Toast.LENGTH_LONG).show();
+            return true;
         }
     }
 }
