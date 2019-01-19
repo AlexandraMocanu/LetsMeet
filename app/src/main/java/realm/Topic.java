@@ -11,7 +11,6 @@ public class Topic extends RealmObject implements GetIdCompliant{
     @PrimaryKey
     private Long id;
 
-    @RealmField("user")
     private User postedBy;
 
     private double coordX;
