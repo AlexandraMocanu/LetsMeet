@@ -42,7 +42,7 @@
                 card_view:layout_constraintTop_toTopOf="parent"
                 card_view:srcCompat="@drawable/user_0" />
 
-            <com.alexandra.sma_final.view.MontserratTextView
+            <com.alexandra.sma_final.customviews.MontserratTextView
                 android:id="@+id/username"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -56,7 +56,7 @@
                 card_view:layout_constraintStart_toEndOf="@+id/icon"
                 card_view:layout_constraintTop_toTopOf="@+id/icon" />
 
-            <com.alexandra.sma_final.view.MontserratTextView
+            <com.alexandra.sma_final.customviews.MontserratTextView
                 android:id="@+id/title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -69,7 +69,7 @@
                 card_view:layout_constraintStart_toEndOf="@+id/icon"
                 card_view:layout_constraintTop_toBottomOf="@+id/username" />
 
-            <com.alexandra.sma_final.view.MontserratTextView
+            <com.alexandra.sma_final.customviews.MontserratTextView
                 android:id="@+id/time"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

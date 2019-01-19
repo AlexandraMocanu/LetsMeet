@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
-    <com.alexandra.sma_final.view.MontserratTextView
+    <com.alexandra.sma_final.customviews.MontserratTextView
         android:id="@+id/topic_title"
         android:layout_width="100dp"
         android:layout_height="wrap_content"

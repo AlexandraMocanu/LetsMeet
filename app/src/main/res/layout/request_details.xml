@@ -31,7 +31,7 @@
             app:layout_constraintTop_toTopOf="parent"
             app:srcCompat="@drawable/ic_launcher_background" />
 
-        <com.alexandra.sma_final.view.MontserratTextView
+        <com.alexandra.sma_final.customviews.MontserratTextView
             android:id="@+id/title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -46,7 +46,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/random_picture" />
 
-        <com.alexandra.sma_final.view.MontserratTextView
+        <com.alexandra.sma_final.customviews.MontserratTextView
             android:id="@+id/message"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -59,7 +59,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/title" />
 
-        <com.alexandra.sma_final.view.MontserratTextView
+        <com.alexandra.sma_final.customviews.MontserratTextView
             android:id="@+id/author"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

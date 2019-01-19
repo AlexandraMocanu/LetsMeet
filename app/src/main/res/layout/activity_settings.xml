@@ -34,7 +34,7 @@
             app:layout_constraintTop_toTopOf="@+id/title_currentlocation"
             app:srcCompat="@drawable/my_location" />
 
-        <com.alexandra.sma_final.view.MontserratTextView
+        <com.alexandra.sma_final.customviews.MontserratTextView
             android:id="@+id/title_currentlocation"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -47,7 +47,7 @@
             app:layout_constraintStart_toEndOf="@+id/imageView4"
             app:layout_constraintTop_toTopOf="@+id/include2" />
 
-        <com.alexandra.sma_final.view.MontserratTextView
+        <com.alexandra.sma_final.customviews.MontserratTextView
             android:id="@+id/currentLocation"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

@@ -13,7 +13,7 @@
         android:layout_height="match_parent"
         android:layout_marginTop="50dp"
         android:layout_marginBottom="55dp"
-        tools:context=".MapsActivity" />
+        tools:context=".activities.MapsActivity" />
 
     <FrameLayout
         android:id="@+id/marker_fragment_container"

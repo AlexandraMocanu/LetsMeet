@@ -1,14 +1,19 @@
 package com.alexandra.sma_final;
 
 import android.app.Application;
+import android.content.Intent;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
 import android.widget.Toast;
 
 import com.alexandra.sma_final.font.FontsOverride;
-import com.alexandra.sma_final.font.TypefaceUtil;
 import com.alexandra.sma_final.rest.UserDTO;
+import com.alexandra.sma_final.server.AsyncResponse;
+import com.alexandra.sma_final.server.Callback;
+import com.alexandra.sma_final.server.RequestGateway;
+import com.alexandra.sma_final.receivers.CheckConnectivity;
+import com.alexandra.sma_final.services.GPSTracker;
 
 import java.io.IOException;
 import java.util.List;
@@ -38,6 +43,8 @@ public class MyApplication extends Application implements AsyncResponse<UserDTO>
         super.onCreate();
 
 //        TypefaceUtil.overrideFont(this, "SERIF", "font/Montserrat-Regular.ttf");
+
+        startService(new Intent(getApplicationContext(), CheckConnectivity.class));
 
         FontsOverride.setDefaultFont(this, "DEFAULT", "font/Montserrat-Regular.ttf");
         FontsOverride.setDefaultFont(this, "MONOSPACE", "font/Montserrat-Regular.ttf");
