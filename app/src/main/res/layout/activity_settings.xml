@@ -34,12 +34,11 @@
             app:layout_constraintTop_toTopOf="@+id/title_currentlocation"
             app:srcCompat="@drawable/my_location" />
 
-        <TextView
+        <com.alexandra.sma_final.view.MontserratTextView
             android:id="@+id/title_currentlocation"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="70dp"
-            android:fontFamily="@font/montserrat"
             android:text="Current Location"
             android:textAlignment="center"
             android:textColor="@color/primaryTextColor"
@@ -48,13 +47,12 @@
             app:layout_constraintStart_toEndOf="@+id/imageView4"
             app:layout_constraintTop_toTopOf="@+id/include2" />
 
-        <TextView
+        <com.alexandra.sma_final.view.MontserratTextView
             android:id="@+id/currentLocation"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
             android:elegantTextHeight="true"
-            android:fontFamily="@font/montserrat"
             android:text="Timisoara"
             android:textAlignment="center"
             android:textColor="@color/secondaryColor"

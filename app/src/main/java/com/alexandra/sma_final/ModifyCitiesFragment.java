@@ -1,6 +1,7 @@
 package com.alexandra.sma_final;
 
 import android.content.Context;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -9,8 +10,9 @@ import android.view.InflateException;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import com.alexandra.sma_final.view.MontserratTextView;
+
 import android.widget.Button;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.common.api.Status;
@@ -135,13 +137,13 @@ public class ModifyCitiesFragment extends Fragment{
         private ArrayList<City> favoriteCities;
 
         public class MyViewHolder extends RecyclerView.ViewHolder{
-            public TextView cityName;
+            public MontserratTextView cityName;
             public Button mRemoveButton;
 
             public MyViewHolder(View itemView){
                 super(itemView);
 
-                this.cityName = (TextView) itemView.findViewById(R.id.city);
+                this.cityName = (MontserratTextView) itemView.findViewById(R.id.city);
                 this.mRemoveButton = (Button) itemView.findViewById(R.id.remove_city);
             }
         }
@@ -165,10 +167,11 @@ public class ModifyCitiesFragment extends Fragment{
         public void onBindViewHolder(ListFavoriteCitiesAdapter.MyViewHolder viewHolder, int position) {
             City city = favoriteCities.get(position);
 
-            TextView textView = viewHolder.cityName;
-            textView.setText(city.getName());
+            MontserratTextView MontserratTextView = viewHolder.cityName;
+            MontserratTextView.setText(city.getName());
             Button removeButton = viewHolder.mRemoveButton;
             removeButton.setText("Remove city");
+            removeButton.setTypeface(Typeface.createFromAsset(getContext().getAssets(), "font/Montserrat-Regular.ttf"));
             removeButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
