@@ -352,7 +352,7 @@ public class RequestGateway {
                         Thread.sleep(50);
                     } else {
                         Log.v(TAG, "Waiting for connection to server!");
-                        Thread.sleep(5000);
+                        Thread.sleep(1000);
                     }
                     isConnected = isConnected && checkInternetConnection();
                 }
@@ -392,7 +392,7 @@ public class RequestGateway {
                         Thread.sleep(50);
                     } else {
                         Log.v(TAG, "Waiting for connection to server!");
-                        Thread.sleep(10000);
+                        Thread.sleep(4000);
                     }
                     isConnected = isConnected && checkInternetConnection();
                 }
