@@ -47,6 +47,7 @@ import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.HttpsURLConnection;
 
 import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLHandshakeException;
 import javax.net.ssl.SSLSession;
 import javax.net.ssl.X509TrustManager;
 
@@ -255,6 +256,9 @@ public class RequestGateway {
                 ret = inputStreamToString(response);
 
                 Log.d(TAG, urlConnection.getResponseCode() + "<---" + urlStr + ": " + ret);
+            }catch(SSLHandshakeException e) {
+                Log.e(TAG, "SSl Handshake Exception! Server is not running in tls mode!");
+                Log.getStackTraceString(e);
             } catch (SocketTimeoutException e) {
                 Log.w(TAG, "Timeout exception!");
                 if (USES_EMULATOR) {

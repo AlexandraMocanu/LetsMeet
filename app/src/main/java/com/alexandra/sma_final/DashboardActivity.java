@@ -66,7 +66,12 @@ public class DashboardActivity extends BaseActivity {
         data.sort(new Comparator<Topic>() {
             @Override
             public int compare(Topic o1, Topic o2) {
-                return o1.getCity().compareTo(o2.getCity());
+                String city1 = o1.getCity();
+                String city2 = o2.getCity();
+                if(city1 == null || city2 == null){
+                    return 0;
+                }
+                return city1.compareTo(city2);
             }
         });
 
