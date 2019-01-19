@@ -41,7 +41,7 @@ public class MessageListAdapter extends RecyclerView.Adapter {
     public int getItemViewType(int position) {
         Message message = (Message) mMessageList.get(position);
 
-        if (message.getUserId().equals(((MyApplication)((ChatActivity)mContext).getApplication()).getCurrentUser().getID())) {
+        if (message.getUserId().equals(((MyApplication)((ChatActivity)mContext).getApplication()).getCurrentUser().getId())) {
             // If the current user is the sender of the message
             return VIEW_TYPE_MESSAGE_SENT;
         } else {

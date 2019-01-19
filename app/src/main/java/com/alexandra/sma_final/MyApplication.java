@@ -4,6 +4,7 @@ import android.app.Application;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
+import android.widget.Toast;
 
 import com.alexandra.sma_final.rest.UserDTO;
 
@@ -11,6 +12,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Locale;
 
+import androidx.annotation.NonNull;
 import io.realm.Realm;
 import io.realm.RealmConfiguration;
 import realm.City;
@@ -20,7 +22,7 @@ import realm.Rating;
 import realm.Topic;
 import realm.User;
 
-public class MyApplication extends Application implements AsyncResponse<UserDTO>{
+public class MyApplication extends Application implements AsyncResponse<UserDTO> {
 
 
     private Location currentLocation;
@@ -50,7 +52,7 @@ public class MyApplication extends Application implements AsyncResponse<UserDTO>
 
         doGetRequests();
 //        createMockObjects();
-        doPutRequests();
+//        doPutRequests();
 
         GPSTracker gps = new GPSTracker(this);
         currentLocation = gps.location;
@@ -62,44 +64,48 @@ public class MyApplication extends Application implements AsyncResponse<UserDTO>
         } catch (IOException e) {
             e.printStackTrace();
         }
-        if (address.size() > 0) {
+        if (address != null && address.size() > 0) {
             city = address.get(0).getLocality();
+        } else {
+            System.out.println("asdasasdasdasdasdasd city not found !");
+            Toast.makeText(this, "Could not get current location! Is GeoLocation active?", Toast.LENGTH_LONG).show();
+            city = "Timisoara";
         }
     }
 
-    public void doGetRequests(){
-        requestGateway.getNearbyTopics(45.731527D,21.240686D, null);
+    public void doGetRequests() {
+        requestGateway.getNearbyTopics(45.731527D, 21.240686D, null);
         requestGateway.getNearbyTopics("Timisoara");
         requestGateway.getAllUsers();
         requestGateway.getUserByUsername("system");
         requestGateway.getUserConversations();
     }
 
-    public void doPutRequests(){
+    public void doPutRequests() {
         //USER IS ALWAYS REQUIRED
-        requestGateway.putTopic(new Topic(){{
+        requestGateway.putTopic(new Topic() {{
             setScore(10);
             setTitle("My New Topic");
         }});
         requestGateway.putConversation(new Conversation());
-        requestGateway.putMessage(new Message(){{
+        requestGateway.putMessage(new Message() {{
             setText("My new Message text");
             setUserId(5L);
             setTimestampMillis(System.currentTimeMillis());
         }});
-        requestGateway.putRating(new Rating(){{
+        requestGateway.putRating(new Rating() {{
             setScore(1);
         }});
     }
 
-    public void createMockObjects(){
+    public void createMockObjects() {
         User user1 = new User();
         user1.setId(Long.valueOf(1));
-        user1.setUsername("anon"+1);
+        user1.setUsername("anon" + 1);
         user1.setKarma(123);
         User user2 = new User();
         user2.setId(Long.valueOf(2));
-        user2.setUsername("anon"+2);
+        user2.setUsername("anon" + 2);
         user2.setKarma(345);
 
         Topic topic1 = new Topic();
@@ -272,13 +278,20 @@ public class MyApplication extends Application implements AsyncResponse<UserDTO>
                 realm1.insertOrUpdate(m2);
             });
         } finally {
-            if(realm != null) {
+            if (realm != null) {
                 realm.close();
             }
         }
     }
 
+    @NonNull
     public UserDTO getCurrentUser() {
+        if(currentUser == null){
+            UserDTO userDTO = new UserDTO();
+            userDTO.setId(-1L);
+            userDTO.setUsername("fallback-user-1");
+            return userDTO;
+        }
         return currentUser;
     }
 
@@ -293,6 +306,7 @@ public class MyApplication extends Application implements AsyncResponse<UserDTO>
 
     private class CurrentUserCallback implements Callback {
         private AsyncResponse<UserDTO> delegate;
+
         public CurrentUserCallback(AsyncResponse<UserDTO> delegate) {
             this.delegate = delegate;
         }

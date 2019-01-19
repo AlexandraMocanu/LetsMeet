@@ -56,12 +56,8 @@ public class ActiveRequests extends Fragment {
             realm.executeTransaction(inRealm -> {
                 final RealmResults<Topic> topics  = realm.where(Topic.class).findAll();
                 for(Topic t : topics){
-                    if(((UserActivity)getActivity()).getUser() != null){
-                        if(t.getPostedBy().getId() == ((UserActivity)getActivity()).getUser().getId()) { //TODO: change to getID() when using server
-                            activeR.add(t);
-                        }
-                    }else if(((UserActivity)getActivity()).getCurrentUser() != null){
-                        if(t.getPostedBy().getId() == ((UserActivity)getActivity()).getCurrentUser().getID()) { //TODO: change to getID() when using server
+                    if(((UserActivity)getActivity()).getCurrentUser() != null){
+                        if(t.getPostedBy().getId() == ((UserActivity)getActivity()).getCurrentUser().getId()) { //TODO: change to getID() when using server
                             activeR.add(t);
                         }
                     }
