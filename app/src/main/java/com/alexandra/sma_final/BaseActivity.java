@@ -21,6 +21,9 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.Random;
 
+import static android.content.Intent.FLAG_ACTIVITY_CLEAR_TOP;
+import static android.content.Intent.FLAG_ACTIVITY_NEW_TASK;
+
 abstract public class BaseActivity extends AppCompatActivity implements BottomNavigationView.OnNavigationItemSelectedListener{
 
     final Random rnd = new Random();
@@ -51,7 +54,7 @@ abstract public class BaseActivity extends AppCompatActivity implements BottomNa
             @Override
             public void onClick(View view) {
                 Intent newIntent = new Intent(getApplicationContext(), PostRequestActivity.class);
-                newIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                newIntent.setFlags(FLAG_ACTIVITY_CLEAR_TOP);
                 startActivity(newIntent);
             }
         });
@@ -72,9 +75,9 @@ abstract public class BaseActivity extends AppCompatActivity implements BottomNa
             @Override
             public void onClick(View view) {
                 Intent mIntent = new Intent(getApplicationContext(), UserActivity.class);
-                mIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                mIntent.setFlags(FLAG_ACTIVITY_CLEAR_TOP|FLAG_ACTIVITY_NEW_TASK);
                 // TODO: change the value!
-                mIntent.putExtra("username_id", Long.valueOf(1));
+                mIntent.putExtra("username", ((MyApplication) getApplication()).getCurrentUser().getUsername());
                 getApplicationContext().startActivity(mIntent);
             }
         });
@@ -122,29 +125,39 @@ abstract public class BaseActivity extends AppCompatActivity implements BottomNa
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
-            Intent newIntent = new Intent(this, SettingsActivity.class);
-            newIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-            startActivity(newIntent);
+            if(!(this instanceof SettingsActivity)){
+                Intent newIntent = new Intent(this, SettingsActivity.class);
+//                newIntent.setFlags(FLAG_ACTIVITY_CLEAR_TOP);
+                startActivity(newIntent);
+            }
         }
         if (id == R.id.map){
-            Intent newIntent = new Intent(this, MapsActivity.class);
-            newIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-            startActivity(newIntent);
+            if(!(this instanceof MapsActivity)){
+                Intent newIntent = new Intent(this, MapsActivity.class);
+//                newIntent.setFlags(FLAG_ACTIVITY_CLEAR_TOP);
+                startActivity(newIntent);
+            }
         }
         if (id == R.id.pinned_action){
-            Intent newIntent = new Intent(this, MyPinsActivity.class);
-            newIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-            startActivity(newIntent);
+            if(!(this instanceof MyPinsActivity)){
+                Intent newIntent = new Intent(this, MyPinsActivity.class);
+//                newIntent.setFlags(FLAG_ACTIVITY_CLEAR_TOP);
+                startActivity(newIntent);
+            }
         }
         if (id == R.id.dashboard_action){
-            Intent newIntent = new Intent(this, DashboardActivity.class);
-            newIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-            startActivity(newIntent);
+            if(!(this instanceof DashboardActivity)){
+                Intent newIntent = new Intent(this, DashboardActivity.class);
+//                newIntent.setFlags(FLAG_ACTIVITY_CLEAR_TOP);
+                startActivity(newIntent);
+            }
         }
         if (id == R.id.home){
-            Intent newIntent = new Intent(this, MainActivity.class);
-            newIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-            startActivity(newIntent);
+            if(!(this instanceof MainActivity)){
+                Intent newIntent = new Intent(this, MainActivity.class);
+//                newIntent.setFlags(FLAG_ACTIVITY_CLEAR_TOP);
+                startActivity(newIntent);
+            }
         }
 
         return super.onOptionsItemSelected(item);

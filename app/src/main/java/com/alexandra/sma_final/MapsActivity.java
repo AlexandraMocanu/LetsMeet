@@ -47,10 +47,19 @@ public class MapsActivity extends BaseActivity implements OnMapReadyCallback, Go
 
     private static final String LIST_FRAGMENT_TAG = "marker_fragment";
 
+    private Long topicId;
+    private Topic mTopic;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
+
+        try{
+            topicId = getIntent().getExtras().getLong("topicId");
+        }catch (Exception e){
+
+        }
 
         setListeners();
         mActivity.setText(getActivityName());
@@ -86,11 +95,29 @@ public class MapsActivity extends BaseActivity implements OnMapReadyCallback, Go
         mMap.getUiSettings().setZoomControlsEnabled(false);
 
         GPSTracker gps = new GPSTracker(this);
-        if (gps.canGetLocation()) {
-            LatLng currentPosition = new LatLng(gps.getLatitude(), gps.getLongitude());
-//            mMap.addMarker(new MarkerOptions().position(currentPosition).title("You are here");
+        LatLng position = null;
+        if (topicId != null) {
+            try(Realm realm = Realm.getDefaultInstance()) {
+                realm.executeTransaction(inRealm -> {
+                    final Topic topic = realm.where(Topic.class).equalTo("id", topicId).findFirst();
+                    if (topic != null) {
+                        setTopic(topic);
+                    }
+                });
+            }
+
+            position = new LatLng(mTopic.getCoordX(), mTopic.getCoordY());
+        }
+        else {
+            if (gps.canGetLocation()) {
+                position = new LatLng(gps.getLatitude(), gps.getLongitude());
+            }
+        }
+
+        if (position != null){
+            //            mMap.addMarker(new MarkerOptions().position(currentPosition).title("You are here");
             CameraPosition cameraPosition = new CameraPosition.Builder()
-                    .target(currentPosition)    // Sets the center of the map to location user
+                    .target(position)    // Sets the center of the map to location user
                     .zoom(13)                   // Sets the zoom
                     .build();                   // Creates a CameraPosition from the builder
             mMap.moveCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
@@ -189,5 +216,9 @@ public class MapsActivity extends BaseActivity implements OnMapReadyCallback, Go
     @Override
     public String getActivityName() {
         return activityName;
+    }
+
+    public void setTopic(Topic t){
+        this.mTopic = t;
     }
 }

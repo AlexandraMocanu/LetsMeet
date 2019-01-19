@@ -6,28 +6,45 @@ import androidx.fragment.app.FragmentStatePagerAdapter;
 
 public class UserTabAdapter extends FragmentStatePagerAdapter {
 
-    public UserTabAdapter(FragmentManager fm){
+    private UserActivity userActivity;
+
+    public UserTabAdapter(FragmentManager fm, UserActivity uA){
         super(fm);
+        this.userActivity = uA;
     }
 
     @Override public Fragment getItem(int position) {
-        switch (position){
-            case 0: return new ActiveRequests();
-            case 1: return new Score();
+
+        if(userActivity.getUser() != null){
+            switch (position){
+                case 0: return new ActiveRequests();
+                case 1: return new Score();
+            }
+        }
+        else{
+            return new ActiveRequests();
         }
         return null;
     }
 
     @Override
     public int getCount() {
-        return 2;
+        return userActivity.getUser() != null ? 2 : 1;
     }
 
     @Override public CharSequence getPageTitle(int position) {
-        switch (position){
-            case 0: return "Active Requests";
-            case 1: return "Score";
-            default: return null;
+        if(userActivity.getUser() != null) {
+            switch (position) {
+                case 0:
+                    return "Active Requests";
+                case 1:
+                    return "Score";
+                default:
+                    return null;
+            }
+        }
+        else{
+            return "Active Requests";
         }
     }
 }

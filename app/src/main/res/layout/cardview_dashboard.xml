@@ -3,8 +3,10 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/primary_light"
+    android:layout_margin="5dp"
+    android:background="@color/backgroundLight"
     android:orientation="vertical"
+    android:padding="8dp"
     android:paddingStart="8dp"
     android:paddingLeft="8dp"
     android:paddingTop="8dp"
@@ -17,8 +19,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="fill_vertical"
-        android:background="@drawable/card_view_bg"
-        card_view:cardCornerRadius="10dp"
         card_view:cardElevation="0dp"
         card_view:cardPreventCornerOverlap="true"
         card_view:cardUseCompatPadding="true">
@@ -27,20 +27,24 @@
             android:id="@+id/constraintLayout_dashboard"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:background="@color/backgroundLight"
             android:paddingTop="10dp">
 
             <TextView
                 android:id="@+id/title_author"
                 android:layout_width="match_parent"
-                android:layout_height="25dp"
+                android:layout_height="wrap_content"
                 android:layout_alignParentStart="true"
                 android:layout_alignParentTop="true"
                 android:layout_marginStart="8dp"
                 android:layout_marginEnd="8dp"
                 android:layout_marginBottom="8dp"
+                android:paddingStart="10dp"
                 android:paddingLeft="10dp"
                 android:paddingEnd="10dp"
                 android:paddingRight="10dp"
+                android:text="Title"
+                android:textColor="@color/primaryTextColor"
                 card_view:layout_constraintBottom_toTopOf="@+id/request_limit"
                 card_view:layout_constraintEnd_toEndOf="parent"
                 card_view:layout_constraintStart_toStartOf="parent" />
@@ -56,6 +60,12 @@
                 android:layout_marginBottom="8dp"
                 android:layout_weight="20"
                 android:ems="10"
+                android:paddingStart="10dp"
+                android:paddingLeft="10dp"
+                android:paddingEnd="10dp"
+                android:paddingRight="10dp"
+                android:text="Short description about event"
+                android:textColor="@color/primaryTextColor"
                 card_view:layout_constraintBottom_toTopOf="@+id/see_more"
                 card_view:layout_constraintEnd_toEndOf="parent"
                 card_view:layout_constraintStart_toStartOf="parent" />
@@ -70,7 +80,7 @@
                 android:fontFamily="@font/montserrat"
                 android:text="Unpin"
                 android:textAllCaps="true"
-                android:textColor="@color/accent"
+                android:textColor="@color/secondaryDarkColor"
                 android:textStyle="bold"
                 card_view:layout_constraintEnd_toStartOf="@+id/see_more"
                 card_view:layout_constraintTop_toBottomOf="@+id/request_limit" />
@@ -84,21 +94,12 @@
                 android:fontFamily="@font/montserrat"
                 android:text="See More"
                 android:textAllCaps="true"
-                android:textColor="@color/accent"
+                android:textColor="@color/secondaryDarkColor"
                 android:textStyle="bold"
                 card_view:layout_constraintBottom_toBottomOf="@id/unpin"
                 card_view:layout_constraintEnd_toEndOf="parent" />
 
-            <ImageView
-                android:id="@+id/imageView_card"
-                android:layout_width="0dp"
-                android:layout_height="70dp"
-                android:layout_marginTop="8dp"
-                card_view:layout_constraintBottom_toBottomOf="parent"
-                card_view:layout_constraintEnd_toEndOf="parent"
-                card_view:layout_constraintStart_toStartOf="parent"
-                card_view:layout_constraintTop_toBottomOf="@+id/see_more" />
-                <!--card_view:srcCompat="@color/random_1" />-->
+            <!--card_view:srcCompat="@color/random_1" />-->
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

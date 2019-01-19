@@ -60,7 +60,7 @@ public class MarkerFragment extends Fragment {
             });
         }
 
-        mButtonMessage = v.findViewById(R.id.title);
+        mButtonMessage = v.findViewById(R.id.message_author);
         mButtonPin = v.findViewById(R.id.pin);
         mTextAuthor = v.findViewById(R.id.author_marker);
         mTextTitle = v.findViewById(R.id.title_marker);

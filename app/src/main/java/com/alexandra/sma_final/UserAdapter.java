@@ -6,11 +6,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.Random;
 
+import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 import io.realm.Realm;
 import io.realm.RealmResults;
@@ -22,13 +25,24 @@ class UserAdapter extends RecyclerView.Adapter<UserAdapter.MyViewHolder> {
     private ArrayList<User> mUsers;
     private Context context;
 
+    final Random rnd = new Random();
+
     public class MyViewHolder extends RecyclerView.ViewHolder{
         public TextView username;
+        public TextView title;
+        public TextView time;
+        public ImageView mImage;
+        public CardView mCardView;
 
         public MyViewHolder(View itemView){
             super(itemView);
 
             this.username = (TextView) itemView.findViewById(R.id.username);
+            this.title = (TextView) itemView.findViewById(R.id.title);
+            this.time = (TextView) itemView.findViewById(R.id.time);
+            this.mImage = (ImageView) itemView.findViewById(R.id.icon);
+            this.mCardView = (CardView) itemView.findViewById(R.id.card_view);
+
         }
     }
 
@@ -55,7 +69,21 @@ class UserAdapter extends RecyclerView.Adapter<UserAdapter.MyViewHolder> {
         TextView textView = viewHolder.username;
         textView.setText(user.getUsername());
 
-        textView.setOnClickListener(new View.OnClickListener() {
+        TextView title = viewHolder.username;
+        title.setText("last message"); //TODO: change this to actual last mesage in chat
+
+        TextView time =  viewHolder.time;
+        time.setText("00:00");
+
+        ImageView mImage = viewHolder.mImage;
+        final String img = "user_" + rnd.nextInt(10);
+        mImage.setImageDrawable(
+                context.getResources().getDrawable(((MainActivity)context).getResourceID(img, "drawable",
+                        context))
+        );
+
+        CardView cardView = viewHolder.mCardView;
+        cardView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent mIntent = new Intent(context, ChatActivity.class);

@@ -9,6 +9,8 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.alexandra.sma_final.rest.UserDTO;
+
 import java.util.ArrayList;
 
 import androidx.fragment.app.Fragment;
@@ -17,6 +19,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import io.realm.Realm;
 import io.realm.RealmResults;
 import realm.Topic;
+import realm.User;
 
 public class ActiveRequests extends Fragment {
 
@@ -53,9 +56,16 @@ public class ActiveRequests extends Fragment {
             realm.executeTransaction(inRealm -> {
                 final RealmResults<Topic> topics  = realm.where(Topic.class).findAll();
                 for(Topic t : topics){
-                    if(t.getPostedBy().getId() == ((UserActivity)getActivity()).getUser().getId()) { //TODO: change to getID() when using server
-                        activeR.add(t);
+                    if(((UserActivity)getActivity()).getUser() != null){
+                        if(t.getPostedBy().getId() == ((UserActivity)getActivity()).getUser().getId()) { //TODO: change to getID() when using server
+                            activeR.add(t);
+                        }
+                    }else if(((UserActivity)getActivity()).getCurrentUser() != null){
+                        if(t.getPostedBy().getId() == ((UserActivity)getActivity()).getCurrentUser().getID()) { //TODO: change to getID() when using server
+                            activeR.add(t);
+                        }
                     }
+
                 }
             });
         }
@@ -70,12 +80,14 @@ public class ActiveRequests extends Fragment {
         public class MyViewHolder extends RecyclerView.ViewHolder{
             public TextView topicTitle;
             public Button mSeeMoreButton;
+            public Button mResolveButton;
 
             public MyViewHolder(View itemView){
                 super(itemView);
 
                 this.topicTitle = (TextView) itemView.findViewById(R.id.topic_title);
                 this.mSeeMoreButton = (Button) itemView.findViewById(R.id.see_more_);
+                this.mResolveButton = (Button) itemView.findViewById(R.id.resolve);
             }
 
         }
@@ -112,6 +124,17 @@ public class ActiveRequests extends Fragment {
                     mIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                     mIntent.putExtra("topic_id", topicID);
                     v.getContext().startActivity(mIntent);
+                }
+            });
+
+            Button resolveButton = viewHolder.mResolveButton;
+            resolveButton.setText("Resolve");
+            resolveButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Long topicID = topic.getId();
+
+                    //TODO: put archived topic
                 }
             });
         }

@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/primary_light"
+    android:background="@color/backgroundLight"
     android:orientation="vertical">
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -22,31 +22,52 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
+        <ImageView
+            android:id="@+id/imageView4"
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:layout_marginStart="16dp"
+            android:baselineAlignBottom="true"
+            app:layout_constraintBottom_toBottomOf="@+id/title_currentlocation"
+            app:layout_constraintBottom_toTopOf="@+id/currentLocation"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/title_currentlocation"
+            app:srcCompat="@drawable/my_location" />
+
+        <TextView
+            android:id="@+id/title_currentlocation"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="70dp"
+            android:fontFamily="@font/montserrat"
+            android:text="Current Location"
+            android:textAlignment="center"
+            android:textColor="@color/primaryTextColor"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            app:layout_constraintStart_toEndOf="@+id/imageView4"
+            app:layout_constraintTop_toTopOf="@+id/include2" />
+
         <TextView
             android:id="@+id/currentLocation"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="58dp"
-            android:layout_marginEnd="8dp"
-            android:layout_weight="10"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
             android:elegantTextHeight="true"
             android:fontFamily="@font/montserrat"
-            android:paddingBottom="8dp"
-            android:text="TextView"
+            android:text="Timisoara"
             android:textAlignment="center"
-            android:textColor="@color/accent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/include2" />
+            android:textColor="@color/secondaryColor"
+            app:layout_constraintStart_toStartOf="@id/title_currentlocation"
+            app:layout_constraintTop_toBottomOf="@+id/title_currentlocation" />
 
         <View
             android:id="@+id/divider"
             android:layout_width="match_parent"
-            android:layout_height="2dp"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="8dp"
+            android:layout_height="1dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="16dp"
             android:background="@color/divider"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
@@ -57,9 +78,9 @@
             android:id="@+id/modify_cities"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
+            android:layout_marginStart="16dp"
             android:layout_marginTop="8dp"
-            android:layout_marginEnd="8dp"
+            android:layout_marginEnd="16dp"
             android:layout_weight="10"
             android:fontFamily="@font/montserrat"
             android:text="Modify favorite cities"

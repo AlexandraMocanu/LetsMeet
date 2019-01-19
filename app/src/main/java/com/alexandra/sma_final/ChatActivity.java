@@ -7,7 +7,11 @@ import java.util.List;
 
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import io.realm.Realm;
+import io.realm.RealmResults;
+import realm.Conversation;
 import realm.Message;
+import realm.Topic;
 
 public class ChatActivity extends BaseActivity {
 
@@ -20,20 +24,36 @@ public class ChatActivity extends BaseActivity {
 
     private RecyclerView mMessageRecycler;
     private MessageListAdapter mMessageAdapter;
-    @Override
+    private List<Conversation> conversations;
 
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_message_list);
 
         mMessageRecycler = (RecyclerView) findViewById(R.id.reyclerview_message_list);
 
-        List<Message> messageList = new ArrayList<Message>();
+        conversations = new ArrayList<Conversation>();
 
         //get messages from Realm
+        ((MyApplication)getApplication()).requestGateway.getUserConversations();
+        try(Realm realm = Realm.getDefaultInstance()) {
+            realm.executeTransaction(inRealm -> {
+                final RealmResults<Conversation> convs  = realm.where(Conversation.class).findAll();
+                if(convs != null){
+                    for(Conversation c : convs){
+                        addConv(c);
+                    }
+                }
+            });
+        }
 
-        mMessageAdapter = new MessageListAdapter(this, messageList);
+//        mMessageAdapter = new MessageListAdapter(this, conversations);
         mMessageRecycler.setLayoutManager(new LinearLayoutManager(this));
+    }
+
+    private void addConv(Conversation c){
+        conversations.add(c);
     }
 
 }

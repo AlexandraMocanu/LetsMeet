@@ -8,6 +8,7 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 
 import androidx.fragment.app.Fragment;
+import realm.Rating;
 
 public class Score extends Fragment {
 
@@ -24,10 +25,9 @@ public class Score extends Fragment {
 
         // set karma
         mKarma = (TextView) v.findViewById(R.id.karma);
-        String karma = "Karma: ";
-        karma = karma + ((UserActivity)getActivity()).getUser().getKarma();
-        karma = karma + " karma";
-        mKarma.setText(karma);
+
+        mVote = (TextView) v.findViewById(R.id.vote);
+        mVote.setText(((UserActivity)getActivity()).getUser().getKarma());
 
         mUpButton = (ImageButton) v.findViewById(R.id.upButton);
         mDownButton = (ImageButton) v.findViewById(R.id.downButton);
@@ -38,10 +38,13 @@ public class Score extends Fragment {
             public void onClick(View view) {
                 // set rating + 1
                 if(clicked == 0){
-                    mVote.setText("+1");
+                    Rating newRating = new Rating();
+                    newRating.setScore(Integer.valueOf(((UserActivity)getActivity()).getUser().getKarma()+1));
+                    newRating.setUserId(((UserActivity)getActivity()).getUser().getId());
+                    ((MyApplication)getActivity().getApplication()).requestGateway.putRating(newRating);
+//                    mVote.setText(((UserActivity)getActivity()).getUser()..getKarma());
                     clicked = 1;
                 }else{
-                    mVote.setText("0");
                     clicked = 0;
                 }
 
@@ -56,10 +59,12 @@ public class Score extends Fragment {
             public void onClick(View view) {
                 // set rating - 1
                 if(clicked == 0){
-                    mVote.setText("-1");
+                    Rating newRating = new Rating();
+                    newRating.setScore(Integer.valueOf(((UserActivity)getActivity()).getUser().getKarma()-1));
+                    newRating.setUserId(((UserActivity)getActivity()).getUser().getId());
+                    ((MyApplication)getActivity().getApplication()).requestGateway.putRating(newRating);
                     clicked = 1;
                 }else{
-                    mVote.setText("0");
                     clicked = 0;
                 }
 
@@ -67,8 +72,6 @@ public class Score extends Fragment {
                 mDownButton.setPressed(true);
             }
         });
-        mVote = (TextView) v.findViewById(R.id.vote);
-        mVote.setText("0");
 
         return v;
     }

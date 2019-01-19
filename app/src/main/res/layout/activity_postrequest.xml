@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/primary_light"
+    android:background="@color/backgroundLight"
     android:orientation="vertical">
 
     <!--<androidx.appcompat.widget.Toolbar-->
@@ -18,75 +19,96 @@
         <!--app:titleTextAppearance="@style/TextAppearance.AppCompat.Widget.ActionBar.Title"-->
         <!--app:titleTextColor="@color/accent" />-->
 
-    <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        xmlns:tools="http://schemas.android.com/tools"
+    <!--TODO: add icon on top? -->
+
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_weight="2"
-        android:background="@drawable/card_view_bg">
+        android:layout_weight="1"
+        android:background="@color/backgroundLight">
 
         <include
+            android:id="@+id/include3"
             layout="@layout/activity_base"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_alignParentBottom="true"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/title"
-            android:layout_width="0dp"
-            android:layout_height="50dp"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="15dp"
-            android:layout_marginEnd="8dp"
-            android:layout_weight="1"
-            android:hint="A nice title"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/buttonPost" />
-
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/message"
-            android:layout_width="match_parent"
-            android:layout_height="150dp"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="8dp"
-            android:hint="Have you got an extra ticket to something? Or you just want to hang out with someone? Write what you wish for here!"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/title" />
-
-        <EditText
-            android:id="@+id/date"
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="70dp"
             android:layout_marginEnd="8dp"
-            android:ems="10"
-            android:hint="Where?"
-            android:inputType="date"
+            android:background="@color/backgroundLight"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/message" />
+            app:layout_constraintTop_toTopOf="parent">
 
-        <EditText
-            android:id="@+id/time"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="8dp"
-            android:ems="10"
-            android:hint="When?"
-            android:inputType="time"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/date" />
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                android:layout_weight="1"
+                android:hint="A nice title"
+                android:textColor="@color/primaryTextColor"
+                android:textColorHint="@color/primaryTextColor"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
-        <!--<EditText-->
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/message"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="4dp"
+                android:layout_marginEnd="8dp"
+                android:elegantTextHeight="true"
+                android:elevation="0dp"
+                android:fontFamily="@font/montserrat"
+                android:forceHasOverlappingRendering="false"
+                android:gravity="start"
+                android:hint="Have you got an extra ticket to something? Or you just want to hang out with someone? Write what you wish for here!"
+                android:textAlignment="textStart"
+                android:textColor="@color/primaryTextColor"
+                android:textColorHint="@color/primaryTextColor"
+                app:layout_constrainedWidth="true"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/title" />
+
+            <EditText
+                android:id="@+id/date"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                android:ems="10"
+                android:hint="Where?"
+                android:inputType="date"
+                android:textColor="@color/primaryTextColor"
+                android:textColorHint="@color/primaryTextColor"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/message" />
+
+            <EditText
+                android:id="@+id/time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                android:ems="10"
+                android:hint="When?"
+                android:inputType="time"
+                android:textColor="@color/primaryTextColor"
+                android:textColorHint="@color/primaryTextColor"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/date" />
+
+            <!--<EditText-->
             <!--android:id="@+id/address"-->
             <!--android:layout_width="0dp"-->
             <!--android:layout_height="75dp"-->
@@ -99,7 +121,7 @@
             <!--app:layout_constraintStart_toStartOf="parent"-->
             <!--app:layout_constraintTop_toBottomOf="@+id/time" />-->
 
-        <!--<AutoCompleteTextView-->
+            <!--<AutoCompleteTextView-->
             <!--android:id="@+id/address"-->
             <!--android:layout_width="0dp"-->
             <!--android:layout_height="75dp"-->
@@ -111,31 +133,43 @@
             <!--app:layout_constraintEnd_toEndOf="parent"-->
             <!--app:layout_constraintStart_toStartOf="parent"-->
             <!--app:layout_constraintTop_toBottomOf="@+id/time">-->
-        <!--</AutoCompleteTextView>-->
+            <!--</AutoCompleteTextView>-->
 
-        <fragment
-            android:id="@+id/autocomplete_fragment"
-            android:name="com.google.android.gms.location.places.ui.PlaceAutocompleteFragment"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginEnd="8dp"
-            android:ems="10"
-            android:hint="Enter Place Here"
-            app:layout_constraintTop_toBottomOf="@+id/time"/>
+            <fragment
+                android:id="@+id/autocomplete_fragment"
+                android:name="com.google.android.gms.location.places.ui.PlaceAutocompleteFragment"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginEnd="8dp"
+                android:ems="10"
+                android:hint="Enter Place Here"
+                app:layout_constraintTop_toBottomOf="@+id/time" />
 
-        <!--</AutoCompleteTextView>-->
+            <!--</AutoCompleteTextView>-->
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
         <Button
             android:id="@+id/buttonPost"
-            android:layout_width="70dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="5dp"
             android:layout_marginEnd="8dp"
+            android:background="@color/primaryLightColor"
+            android:fontFamily="monospace"
+            android:paddingStart="0dp"
+            android:paddingLeft="0dp"
+            android:paddingEnd="0dp"
+            android:paddingRight="0dp"
             android:text="Post"
+            android:textAlignment="center"
+            app:icon="@drawable/post_18"
+            app:iconGravity="textStart"
+            app:iconPadding="0dp"
+            app:iconSize="20dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
-
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </LinearLayout>

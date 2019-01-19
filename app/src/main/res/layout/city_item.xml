@@ -10,24 +10,30 @@
     <TextView
         android:id="@+id/city"
         android:layout_width="wrap_content"
-        android:layout_height="30dp"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/remove_city"
         android:layout_alignParentStart="true"
-        android:layout_marginStart="8dp"
+        android:layout_marginStart="16dp"
         android:layout_marginTop="8dp"
         android:layout_marginBottom="8dp"
-        android:text="TextView"
+        android:text="City"
         android:textAllCaps="true"
+        android:textColor="@color/primaryTextColor"
+        android:textSize="18sp"
         android:textStyle="bold" />
 
     <Button
         android:id="@+id/remove_city"
         android:layout_width="wrap_content"
-        android:layout_height="30dp"
+        android:layout_height="35dp"
+        android:layout_alignParentTop="true"
         android:layout_alignParentEnd="true"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
+        android:layout_marginEnd="16dp"
         android:layout_marginBottom="8dp"
-        android:gravity="right|start"
+        android:backgroundTint="@color/secondaryDarkColor"
+        android:gravity="center"
         android:text="Remove City"
-        android:textSize="10sp" />
+        android:textAlignment="center"
+        android:textColor="@color/secondaryTextColor"
+        android:textSize="16sp" />
 </RelativeLayout>

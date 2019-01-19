@@ -38,7 +38,7 @@ public class UserActivity extends BaseActivity {
     private TextView mTextView;
     private ViewPager mViewPager;
 
-//    private UserDTO mUser; //TODO: change to this when using the server
+    private UserDTO mCurrentUser;
     private User mUser;
 
     final Random rnd = new Random();
@@ -48,7 +48,7 @@ public class UserActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user);
 
-        Long user_id = getIntent().getExtras().getLong("username_id");
+        String username = getIntent().getExtras().getString("username_id");
         //TODO: change to this when using the server
 //        AsyncResponse<UserDTO> response = new AsyncResponse<UserDTO>() {
 //            @Override
@@ -61,13 +61,18 @@ public class UserActivity extends BaseActivity {
 //        };
 //        ((MyApplication) getApplication()).requestGateway.getCurrentUser(response);
 
-        try(Realm realm = Realm.getDefaultInstance()) {
-            realm.executeTransaction(inRealm -> {
-                final User user  = realm.where(User.class).equalTo("id", user_id).findFirst();
-                if(user != null){
-                    mUser = user;
-                }
-            });
+        if(username != ((MyApplication) getApplication()).getCurrentUser().getUsername()){
+            try(Realm realm = Realm.getDefaultInstance()) {
+                realm.executeTransaction(inRealm -> {
+                    final User user = realm.where(User.class).equalTo("username", username).findFirst();
+                    if (user != null) {
+                        setCurrentUser(user);
+                    }
+                });
+            }
+        }
+        else{
+            mCurrentUser = ((MyApplication) getApplication()).getCurrentUser();
         }
 
         setListeners();
@@ -84,11 +89,15 @@ public class UserActivity extends BaseActivity {
 
         // set textView to user name
         mTextView = (TextView) findViewById(R.id.textView);
-        mTextView.setText(mUser.getUsername());
-
+        if(mUser != null){
+            mTextView.setText(mUser.getUsername());
+        }
+        if(mCurrentUser != null){
+            mTextView.setText(mCurrentUser.getUsername());
+        }
 
         mViewPager = (ViewPager) findViewById(R.id.tabs_view);
-        UserTabAdapter myPagerAdapter = new UserTabAdapter(getSupportFragmentManager());
+        UserTabAdapter myPagerAdapter = new UserTabAdapter(getSupportFragmentManager(), this);
         mViewPager.setAdapter(myPagerAdapter);
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tablayout);
         tabLayout.setupWithViewPager(mViewPager);
@@ -110,12 +119,20 @@ public class UserActivity extends BaseActivity {
     }
 
     //TODO: change to this when using the server
-//    public UserDTO getUser(){
-//        return mUser;
-//    }
+    public UserDTO getCurrentUser(){
+        return mCurrentUser;
+    }
 
     public User getUser(){
         return mUser;
     }
+
+    public void setCurrentUser(User user){
+        mUser = user;
+    }
+
+//    public User getUser(){
+//        return mUser;
+//    }
 
 }

@@ -7,9 +7,9 @@
     android:layout_gravity="bottom|right"
     android:layout_marginRight="8dp"
     android:layout_marginBottom="60dp"
-    android:background="@color/accent"
+    android:background="@color/secondaryDarkColor"
     android:clickable="true"
-    app:itemIconTint="@color/primary_light"
+    app:itemIconTint="@color/backgroundLight"
     app:layout_constraintBottom_toBottomOf="parent"
     app:srcCompat="@drawable/round_add_white">
 

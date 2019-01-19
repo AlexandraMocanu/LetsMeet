@@ -26,9 +26,9 @@ public class TopicsViewHolder extends ChildViewHolder {
     private TextView mRequestLimit;
     private Button mSeeMore;
     private Button mUnpin;
-    private ImageView mImageCard;
+//    private ImageView mImageCard;
 
-    final Random rnd = new Random();
+//    final Random rnd = new Random();
 
     public TopicsViewHolder(View itemView, String caller, CityCAdapter adapter) {
         super(itemView);
@@ -37,26 +37,27 @@ public class TopicsViewHolder extends ChildViewHolder {
         this.mSeeMore = (Button) itemView.findViewById(R.id.see_more);
         this.mUnpin = (Button) itemView.findViewById(R.id.unpin);
 
-        this.mImageCard = (ImageView) itemView.findViewById(R.id.imageView_card);
-        final String img = "random_" + rnd.nextInt(6);
-        switch (img){
-            case "random_1":
-                this.mImageCard.setImageResource(R.color.random_1);
-                break;
-            case "random_2":
-                this.mImageCard.setImageResource(R.color.random_2);
-                break;
-            case "random_3":
-                this.mImageCard.setImageResource(R.color.random_3);
-                break;
-            case "random_4":
-                this.mImageCard.setImageResource(R.color.random_4);
-                break;
-            case "random_5":
-                this.mImageCard.setImageResource(R.color.random_5);
-                break;
-            default: this.mImageCard.setImageResource(R.color.primary_light); break;
-        }
+//        this.mImageCard = (ImageView) itemView.findViewById(R.id.card_view);
+
+//        final String img = "random_" + rnd.nextInt(6);
+//        switch (img){
+//            case "random_1":
+//                this.mImageCard.setImageResource(R.color.random_1);
+//                break;
+//            case "random_2":
+//                this.mImageCard.setImageResource(R.color.random_2);
+//                break;
+//            case "random_3":
+//                this.mImageCard.setImageResource(R.color.random_3);
+//                break;
+//            case "random_4":
+//                this.mImageCard.setImageResource(R.color.random_4);
+//                break;
+//            case "random_5":
+//                this.mImageCard.setImageResource(R.color.random_5);
+//                break;
+//            default: this.mImageCard.setImageResource(R.color.backgroundLight); break;
+//        }
 
         this.adapter = adapter;
 
