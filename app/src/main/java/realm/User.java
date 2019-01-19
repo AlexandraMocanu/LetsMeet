@@ -11,7 +11,6 @@ public class User extends RealmObject implements GetIdCompliant{
     @PrimaryKey
     private Long id;
 
-    @RealmField("login")
     private String username;
 
     private int karma;
