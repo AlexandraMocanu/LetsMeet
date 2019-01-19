@@ -23,7 +23,7 @@
         android:layout_height="1dp"
         android:layout_above="@+id/bottom_bar"
         android:layout_alignParentBottom="false"
-        android:background="@color/primary_light" />
+        android:background="@color/backgroundLight" />
 
     <include
         android:id="@+id/bottom_bar"

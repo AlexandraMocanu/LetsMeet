@@ -48,8 +48,8 @@ public class MyApplication extends Application implements AsyncResponse<UserDTO>
         requestGateway = new RequestGateway(this);
         requestGateway.authenticate(new CurrentUserCallback(this));
 
-//        doGetRequests();
-        createMockObjects();
+        doGetRequests();
+//        createMockObjects();
         doPutRequests();
 
         GPSTracker gps = new GPSTracker(this);

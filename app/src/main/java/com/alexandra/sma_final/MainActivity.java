@@ -9,6 +9,7 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 
+import com.alexandra.sma_final.rest.UserDTO;
 import com.alexandra.sma_final.view.CityC;
 import com.alexandra.sma_final.view.CityCAdapter;
 import com.alexandra.sma_final.view.ExpandableRecyclerAdapter;
@@ -68,15 +69,25 @@ public class MainActivity extends BaseActivity {
                 final RealmResults<User> users  = realm.where(User.class).findAll();
                 if (users.size() != 0){
                     for (User u: users){
-                        mUsers.add(u);
+                        addUser(u);
                     }
                 }
             });
         }
 
+//        AsyncResponse<ArrayList<UserDTO>> response = new AsyncResponse<ArrayList<UserDTO>>() {
+//            @Override
+//            public void processFinish(ArrayList<UserDTO> output) {
+//                for (UserDTO u : output){
+//                    mUsers.add(u);
+//                }
+//            }
+//        };
+//        ((MyApplication) getApplication()).requestGateway.getAllUsers(response);
+
         // sort newest message
 
-        adapter = new UserAdapter(mUsers, getApplicationContext());
+        adapter = new UserAdapter(mUsers, this);
 
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -95,5 +106,9 @@ public class MainActivity extends BaseActivity {
     @Override
     public String getActivityName() {
         return activityName;
+    }
+
+    public void addUser(User u){
+        mUsers.add(u);
     }
 }

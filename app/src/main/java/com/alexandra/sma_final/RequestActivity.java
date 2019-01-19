@@ -52,7 +52,7 @@ public class RequestActivity extends BaseActivity {
         this.mButtonPin = (Button) findViewById(R.id.pin_button);
         this.mRandomPicture = (ImageView) findViewById(R.id.random_picture);
         this.mTextTitle = (TextView) findViewById(R.id.title);
-        this.mTextMessage = (TextView) findViewById(R.id.title);
+        this.mTextMessage = (TextView) findViewById(R.id.message);
         this.mTextAuthor = (TextView) findViewById(R.id.author);
 
         topicID = getIntent().getExtras().getLong("topic_id");
@@ -78,9 +78,9 @@ public class RequestActivity extends BaseActivity {
         mTextAuthor.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent mIntent = new Intent(getApplicationContext(), RequestActivity.class);
+                Intent mIntent = new Intent(getApplicationContext(), UserActivity.class);
                 mIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                mIntent.putExtra("username_id", mTopic.getPostedBy().getId());
+                mIntent.putExtra("username", mTopic.getPostedBy().getUsername());
                 getApplicationContext().startActivity(mIntent);
             }
         });
@@ -105,6 +105,7 @@ public class RequestActivity extends BaseActivity {
             @Override
             public void onClick(View v) {
                 Intent mIntent = new Intent(v.getContext(), MapsActivity.class);
+                mIntent.putExtra("topicId", topicID);
                 mIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 startActivity(mIntent);
             }
