@@ -29,7 +29,7 @@ public class UserActivity extends BaseActivity {
     private ViewPager mViewPager;
 
     private UserDTO mCurrentUser;
-    private User mUser;
+    private User mUserProfile;
 
     final Random rnd = new Random();
 
@@ -38,32 +38,39 @@ public class UserActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user);
 
-        String username = getIntent().getExtras().getString("username_id");
+        String username = getIntent().getExtras().getString("username");
 
-        //TODO: uncomment this for server run!
-        if(username != ((MyApplication) getApplication()).getCurrentUser().getUsername()){
+        UserDTO currentAppUser = ((MyApplication) getApplication()).getCurrentUser();
+
+        //set current user
+        // if no user -> no internet connection
+        if(username.equals("No user")){
+            mUserProfile = null;
+            if(currentAppUser == null){
+                mCurrentUser = null;
+            }else{
+                mCurrentUser = currentAppUser;
+            }
+        }
+        // if the username received is our own -> our profile
+        else if(username.equals(currentAppUser.getUsername())){
+            mCurrentUser = currentAppUser;
+            mUserProfile = null;
+        }
+        //else if the username received is NOT our own -> someone elses profile
+        else if(!(username.equals(currentAppUser.getUsername()))){
+            ((MyApplication)getApplication()).requestGateway.getUserByUsername(username);
             try(Realm realm = Realm.getDefaultInstance()) {
                 realm.executeTransaction(inRealm -> {
                     final User user = realm.where(User.class).equalTo("username", username).findFirst();
                     if (user != null) {
-                        setCurrentUser(user);
+                        setUserProfileOwner(user);
                     }
                 });
             }
-        }
-        else{
-            if(username != "No user"){
-                mCurrentUser = ((MyApplication) getApplication()).getCurrentUser();
+            if(currentAppUser != null){
+                mCurrentUser = currentAppUser;
             }
-        }
-
-        try(Realm realm = Realm.getDefaultInstance()) {
-            realm.executeTransaction(inRealm -> {
-                final User user = realm.where(User.class).equalTo("username", username).findFirst();
-                if (user != null) {
-                    setCurrentUser(user);
-                }
-            });
         }
 
         setListeners();
@@ -80,8 +87,8 @@ public class UserActivity extends BaseActivity {
 
         // set MontserratTextView to user name
         mTextView = (MontserratTextView) findViewById(R.id.usernameUser);
-        if(mUser != null){
-            mTextView.setText(mUser.getUsername());
+        if(mUserProfile != null){
+            mTextView.setText(mUserProfile.getUsername());
         }
         else if(mCurrentUser != null){
             mTextView.setText(mCurrentUser.getUsername());
@@ -112,21 +119,17 @@ public class UserActivity extends BaseActivity {
         return activityName;
     }
 
-    //TODO: change to this when using the server
-    public UserDTO getCurrentUser(){
+    public User getUserProfileOwner(){
+        return mUserProfile;
+    }
+
+    private void setUserProfileOwner(User user){
+        mUserProfile = user;
+    }
+
+
+    public UserDTO getmCurrentUser(){
         return mCurrentUser;
     }
-
-    public User getUser(){
-        return mUser;
-    }
-
-    public void setCurrentUser(User user){
-        mUser = user;
-    }
-
-//    public User getUser(){
-//        return mUser;
-//    }
 
 }

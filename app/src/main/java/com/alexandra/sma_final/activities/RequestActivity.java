@@ -11,6 +11,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 
+import com.alexandra.sma_final.MyApplication;
 import com.alexandra.sma_final.R;
 import com.alexandra.sma_final.customviews.MontserratTextView;
 import android.widget.Toast;
@@ -35,6 +36,7 @@ public class RequestActivity extends BaseActivity {
     private MontserratTextView mTextTitle;
     private MontserratTextView mTextMessage;
     private MontserratTextView mTextAuthor;
+    private MontserratTextView mTextPostedBy;
     private Long topicID;
     private Topic mTopic;
 
@@ -60,6 +62,7 @@ public class RequestActivity extends BaseActivity {
         this.mTextTitle = (MontserratTextView) findViewById(R.id.title);
         this.mTextMessage = (MontserratTextView) findViewById(R.id.message);
         this.mTextAuthor = (MontserratTextView) findViewById(R.id.author);
+        this.mTextPostedBy = (MontserratTextView) findViewById(R.id.postedbytext);
 
         topicID = getIntent().getExtras().getLong("topic_id");
 
@@ -73,10 +76,7 @@ public class RequestActivity extends BaseActivity {
             realm.executeTransaction(inRealm -> {
                 final RealmQuery<Topic> topic  = realm.where(Topic.class).equalTo("id",topicID);
                 if (topic.count() > 0){
-                    mTopic = topic.findFirst();
-                    if (mTopic == null){
-
-                    }
+                    setTopic(topic.findFirst());
                 }
             });
         }
@@ -85,14 +85,15 @@ public class RequestActivity extends BaseActivity {
             @Override
             public void onClick(View view) {
                 Intent mIntent = new Intent(getApplicationContext(), UserActivity.class);
-                mIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                mIntent.putExtra("username", mTopic.getPostedBy().getUsername());
+                mIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                String username = mTopic.getPostedBy().getUsername();
+                mIntent.putExtra("username", username);
                 getApplicationContext().startActivity(mIntent);
             }
         });
 
-        SpannableStringBuilder str = new SpannableStringBuilder("Posted by: " + mTopic.getPostedBy().getUsername());
-        int INT_START = 11; int INT_END = INT_START + mTopic.getPostedBy().getUsername().length();
+        SpannableStringBuilder str = new SpannableStringBuilder("anon/" + mTopic.getPostedBy().getUsername() + " ");
+        int INT_START = 0; int INT_END = mTopic.getPostedBy().getUsername().length();
         str.setSpan(new android.text.style.StyleSpan(android.graphics.Typeface.BOLD),
                 INT_START, INT_END, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
         mTextAuthor.setText(str);
@@ -103,7 +104,14 @@ public class RequestActivity extends BaseActivity {
         mButtonMessage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // message person
+                Intent mIntent = new Intent(getApplicationContext(), ChatActivity.class);
+                mIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                String username = mTopic.getPostedBy().getUsername();
+                Long id = mTopic.getId();
+                mIntent.putExtra("usernameTopic", username);
+                mIntent.putExtra("usernameRespond", ((MyApplication)getApplicationContext()).getCurrentUser().getUsername());
+                mIntent.putExtra("idTopic", id);
+                getApplicationContext().startActivity(mIntent);
             }
         });
 
@@ -136,6 +144,11 @@ public class RequestActivity extends BaseActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    @Override
+    public String getActivityName() {
+        return activityName;
+    }
+
     private void pinTopic(){
         Long topicID = mTopic.getId();
         try (Realm realm = Realm.getDefaultInstance()) {
@@ -166,8 +179,7 @@ public class RequestActivity extends BaseActivity {
         }
     }
 
-    @Override
-    public String getActivityName() {
-        return activityName;
+    private void setTopic(Topic t){
+        this.mTopic = t;
     }
 }

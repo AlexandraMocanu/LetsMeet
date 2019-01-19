@@ -66,7 +66,7 @@ public class RequestGateway {
 
     //Connection parameters
     private static final boolean USES_SSL = true;
-    private static final boolean USES_EMULATOR = false;
+    private static final boolean USES_EMULATOR = true;
     private static boolean isConnected = false;
 
     //API link constants
