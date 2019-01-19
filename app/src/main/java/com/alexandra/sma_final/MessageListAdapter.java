@@ -5,7 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.TextView;
+import com.alexandra.sma_final.view.MontserratTextView;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -83,13 +83,13 @@ public class MessageListAdapter extends RecyclerView.Adapter {
     }
 
     private class SentMessageHolder extends RecyclerView.ViewHolder {
-        TextView messageText, timeText;
+        MontserratTextView messageText, timeText;
 
         SentMessageHolder(View itemView) {
             super(itemView);
 
-            messageText = (TextView) itemView.findViewById(R.id.text_message_body);
-            timeText = (TextView) itemView.findViewById(R.id.text_message_time);
+            messageText = (MontserratTextView) itemView.findViewById(R.id.text_message_body);
+            timeText = (MontserratTextView) itemView.findViewById(R.id.text_message_time);
         }
 
         void bind(Message message) {
@@ -106,7 +106,7 @@ public class MessageListAdapter extends RecyclerView.Adapter {
     }
 
     private class ReceivedMessageHolder extends RecyclerView.ViewHolder {
-        TextView messageText, timeText, nameText;
+        MontserratTextView messageText, timeText, nameText;
         ImageView profileImage;
         Context mContext;
 
@@ -115,9 +115,9 @@ public class MessageListAdapter extends RecyclerView.Adapter {
         ReceivedMessageHolder(View itemView, Context context) {
             super(itemView);
             mContext = context;
-            messageText = (TextView) itemView.findViewById(R.id.text_message_body);
-            timeText = (TextView) itemView.findViewById(R.id.text_message_time);
-            nameText = (TextView) itemView.findViewById(R.id.text_message_name);
+            messageText = (MontserratTextView) itemView.findViewById(R.id.text_message_body);
+            timeText = (MontserratTextView) itemView.findViewById(R.id.text_message_time);
+            nameText = (MontserratTextView) itemView.findViewById(R.id.text_message_name);
             profileImage = (ImageView) itemView.findViewById(R.id.image_message_profile);
         }
 

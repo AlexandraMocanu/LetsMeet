@@ -6,7 +6,7 @@ import android.text.SpannableStringBuilder;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.TextView;
+import com.alexandra.sma_final.view.MontserratTextView;
 import android.widget.Toast;
 
 import com.alexandra.sma_final.R;
@@ -22,8 +22,8 @@ import realm.Topic;
 public class TopicsViewHolder extends ChildViewHolder {
 
     private CityCAdapter adapter;
-    private TextView mTitleAuthor;
-    private TextView mRequestLimit;
+    private MontserratTextView mTitleAuthor;
+    private MontserratTextView mRequestLimit;
     private Button mSeeMore;
     private Button mUnpin;
 //    private ImageView mImageCard;
@@ -32,8 +32,8 @@ public class TopicsViewHolder extends ChildViewHolder {
 
     public TopicsViewHolder(View itemView, String caller, CityCAdapter adapter) {
         super(itemView);
-        this.mTitleAuthor = (TextView) itemView.findViewById(R.id.title_author);
-        this.mRequestLimit = (TextView) itemView.findViewById(R.id.request_limit);
+        this.mTitleAuthor = (MontserratTextView) itemView.findViewById(R.id.title_author);
+        this.mRequestLimit = (MontserratTextView) itemView.findViewById(R.id.request_limit);
         this.mSeeMore = (Button) itemView.findViewById(R.id.see_more);
         this.mUnpin = (Button) itemView.findViewById(R.id.unpin);
 

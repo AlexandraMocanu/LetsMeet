@@ -54,7 +54,7 @@
             app:layout_constraintTop_toTopOf="parent"
             app:srcCompat="@drawable/round_account_circle_black" />
 
-        <TextView
+        <com.alexandra.sma_final.view.MontserratTextView
             android:id="@+id/titleAct"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

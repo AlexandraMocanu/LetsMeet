@@ -6,28 +6,17 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.TextView;
-import android.widget.Toast;
+import com.alexandra.sma_final.view.MontserratTextView;
 
 import com.alexandra.sma_final.rest.UserDTO;
 import com.google.android.material.bottomnavigation.LabelVisibilityMode;
 import com.google.android.material.tabs.TabLayout;
 
-import java.util.ArrayList;
 import java.util.Random;
 
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager.widget.ViewPager;
 import io.realm.Realm;
-import io.realm.RealmResults;
-import realm.City;
-import realm.Topic;
 import realm.User;
 
 public class UserActivity extends BaseActivity {
@@ -35,7 +24,7 @@ public class UserActivity extends BaseActivity {
     protected String activityName = "My profile";
 
     private ImageView mImage;
-    private TextView mTextView;
+    private MontserratTextView mTextView;
     private ViewPager mViewPager;
 
     private UserDTO mCurrentUser;
@@ -49,18 +38,8 @@ public class UserActivity extends BaseActivity {
         setContentView(R.layout.activity_user);
 
         String username = getIntent().getExtras().getString("username_id");
-        //TODO: change to this when using the server
-//        AsyncResponse<UserDTO> response = new AsyncResponse<UserDTO>() {
-//            @Override
-//            public void processFinish(UserDTO output) {
-//                mUser = output;
-//                if(output.getID() != user_id){
-//                    activityName = output.getUsername();
-//                }
-//            }
-//        };
-//        ((MyApplication) getApplication()).requestGateway.getCurrentUser(response);
 
+        //TODO: uncomment this for server run!
         if(username != ((MyApplication) getApplication()).getCurrentUser().getUsername()){
             try(Realm realm = Realm.getDefaultInstance()) {
                 realm.executeTransaction(inRealm -> {
@@ -72,7 +51,18 @@ public class UserActivity extends BaseActivity {
             }
         }
         else{
-            mCurrentUser = ((MyApplication) getApplication()).getCurrentUser();
+            if(username != "No user"){
+                mCurrentUser = ((MyApplication) getApplication()).getCurrentUser();
+            }
+        }
+
+        try(Realm realm = Realm.getDefaultInstance()) {
+            realm.executeTransaction(inRealm -> {
+                final User user = realm.where(User.class).equalTo("username", username).findFirst();
+                if (user != null) {
+                    setCurrentUser(user);
+                }
+            });
         }
 
         setListeners();
@@ -87,13 +77,16 @@ public class UserActivity extends BaseActivity {
                         getApplicationContext()))
         );
 
-        // set textView to user name
-        mTextView = (TextView) findViewById(R.id.textView);
+        // set MontserratTextView to user name
+        mTextView = (MontserratTextView) findViewById(R.id.usernameUser);
         if(mUser != null){
             mTextView.setText(mUser.getUsername());
         }
-        if(mCurrentUser != null){
+        else if(mCurrentUser != null){
             mTextView.setText(mCurrentUser.getUsername());
+        }
+        else{
+            mTextView.setText("No user");
         }
 
         mViewPager = (ViewPager) findViewById(R.id.tabs_view);

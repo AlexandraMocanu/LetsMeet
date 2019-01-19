@@ -11,15 +11,19 @@
     android:fadeScrollbars="false"
     android:fadingEdge="horizontal|vertical"
     android:orientation="vertical"
-    android:padding="10dp"
+    android:paddingStart="10dp"
+    android:paddingLeft="10dp"
+    android:paddingTop="10dp"
+    android:paddingEnd="10dp"
+    android:paddingRight="10dp"
+    android:paddingBottom="60dp"
     app:layout_constraintBottom_toBottomOf="parent">
     <!--android:visibility="invisible"-->
 
-    <TextView
+    <com.alexandra.sma_final.view.MontserratTextView
         android:id="@+id/title_marker"
         android:layout_width="match_parent"
         android:layout_height="30dp"
-        android:layout_above="@+id/request_marker"
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
         android:layout_alignParentEnd="true"
@@ -31,11 +35,10 @@
         android:textColorHint="@color/primaryTextColor"
         android:textSize="18sp" />
 
-    <TextView
+    <com.alexandra.sma_final.view.MontserratTextView
         android:id="@+id/request_marker"
         android:layout_width="match_parent"
-        android:layout_height="60dp"
-        android:layout_above="@id/author_marker"
+        android:layout_height="100dp"
         android:layout_below="@id/title_marker"
         android:layout_alignParentStart="true"
         android:layout_alignParentEnd="true"
@@ -51,11 +54,10 @@
         android:textColorHint="@color/primaryTextColor"
         android:textSize="14sp" />
 
-    <TextView
+    <com.alexandra.sma_final.view.MontserratTextView
         android:id="@+id/author_marker"
         android:layout_width="match_parent"
         android:layout_height="30dp"
-        android:layout_above="@+id/pin"
         android:layout_below="@+id/request_marker"
         android:layout_alignParentStart="true"
         android:layout_alignParentEnd="true"
@@ -72,10 +74,11 @@
         android:id="@+id/message_author"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/author_marker"
         android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
+        android:layout_marginTop="16dp"
         android:layout_weight="10"
+        android:background="@color/secondaryDarkColor"
         android:text="Message author" />
 
     <Button
@@ -83,8 +86,8 @@
         style="@style/Widget.MaterialComponents.Button.OutlinedButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="false"
-        android:layout_marginTop="8dp"
+        android:layout_alignParentBottom="true"
+        android:layout_marginTop="16dp"
         android:layout_marginRight="8dp"
         android:layout_marginBottom="8dp"
         android:layout_toLeftOf="@+id/message_author"

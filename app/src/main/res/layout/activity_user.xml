@@ -48,12 +48,11 @@
                     app:layout_constraintTop_toTopOf="@+id/include"
                     app:srcCompat="@drawable/user_6" />
 
-                <TextView
-                    android:id="@+id/textView"
+                <com.alexandra.sma_final.view.MontserratTextView
+                    android:id="@+id/usernameUser"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:fontFamily="@font/montserrat"
                     android:text="User"
                     android:textAlignment="center"
                     android:textAllCaps="true"

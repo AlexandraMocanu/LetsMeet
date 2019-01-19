@@ -2,7 +2,6 @@ package com.alexandra.sma_final;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Typeface;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -12,12 +11,12 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageButton;
-import android.widget.TextView;
+
+import com.alexandra.sma_final.view.MontserratTextView;
 
 import com.alexandra.sma_final.MovableFloatingActionButton.MovableFloatingActionButton;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.bottomnavigation.LabelVisibilityMode;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.Random;
 
@@ -32,7 +31,7 @@ abstract public class BaseActivity extends AppCompatActivity implements BottomNa
     protected BottomNavigationView bottomNavigationView;
     protected ImageButton mMyIcon;
     protected ImageButton mBackButton;
-    protected TextView mActivity;
+    protected MontserratTextView mActivity;
 //    protected Toolbar toolbar;
 
     @Override
@@ -77,7 +76,12 @@ abstract public class BaseActivity extends AppCompatActivity implements BottomNa
                 Intent mIntent = new Intent(getApplicationContext(), UserActivity.class);
                 mIntent.setFlags(FLAG_ACTIVITY_CLEAR_TOP|FLAG_ACTIVITY_NEW_TASK);
                 // TODO: change the value!
-                mIntent.putExtra("username", ((MyApplication) getApplication()).getCurrentUser().getUsername());
+                String n =  ((MyApplication) getApplication()).getCurrentUser().getUsername();
+                if(!n.contains("fallback")){
+                    mIntent.putExtra("username", ((MyApplication) getApplication()).getCurrentUser().getUsername());
+                }else{
+                    mIntent.putExtra("username", "No user");
+                }
                 getApplicationContext().startActivity(mIntent);
             }
         });
@@ -102,7 +106,7 @@ abstract public class BaseActivity extends AppCompatActivity implements BottomNa
             }
         });
 
-        mActivity = (TextView) findViewById(R.id.titleAct);
+        mActivity = (MontserratTextView) findViewById(R.id.titleAct);
 
     }
 
