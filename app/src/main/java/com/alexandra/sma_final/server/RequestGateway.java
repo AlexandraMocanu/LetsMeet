@@ -189,10 +189,6 @@ public class RequestGateway {
         urlConnection.setRequestProperty("Content-Type", "application/json");
     }
 
-
-    //TODO: socket timeout exception
-    //TODO: connection refused
-
     public void noBodyRequest(String reqMethod, String urlStr, Class clazz) {
         AsyncTask<Object, Void, String> execute = new RequestPersistTask().execute(urlStr, reqMethod, clazz);
     }
@@ -352,7 +348,7 @@ public class RequestGateway {
                         Thread.sleep(50);
                     } else {
                         Log.v(TAG, "Waiting for connection to server!");
-                        Thread.sleep(5000);
+                        Thread.sleep(1000);
                     }
                     isConnected = isConnected && checkInternetConnection();
                 }
@@ -392,7 +388,7 @@ public class RequestGateway {
                         Thread.sleep(50);
                     } else {
                         Log.v(TAG, "Waiting for connection to server!");
-                        Thread.sleep(10000);
+                        Thread.sleep(4000);
                     }
                     isConnected = isConnected && checkInternetConnection();
                 }

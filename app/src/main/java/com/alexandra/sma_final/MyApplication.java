@@ -90,8 +90,8 @@ public class MyApplication extends Application implements AsyncResponse<UserDTO>
     public void doGetRequests() {
         requestGateway.getNearbyTopics(45.731527D, 21.240686D, null);
         requestGateway.getNearbyTopics("Timisoara");
-        requestGateway.getAllUsers();
-        requestGateway.getUserByUsername("system");
+//        requestGateway.getAllUsers();
+//        requestGateway.getUserByUsername("system");
         requestGateway.getUserConversations();
     }
 

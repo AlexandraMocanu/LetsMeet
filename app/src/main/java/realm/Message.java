@@ -13,10 +13,8 @@ public class Message extends RealmObject implements GetIdCompliant{
     @Required
     private String text;
 
-    @Required
     private Long userId;
 
-    @Required
     private Long timestampMillis;
 
     public String getText() {
