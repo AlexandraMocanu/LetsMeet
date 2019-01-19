@@ -9,7 +9,7 @@
     android:orientation="horizontal"
     android:padding="8dp">
 
-    <TextView
+    <com.alexandra.sma_final.view.MontserratTextView
         android:id="@+id/city_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

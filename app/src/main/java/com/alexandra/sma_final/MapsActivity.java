@@ -92,7 +92,10 @@ public class MapsActivity extends BaseActivity implements OnMapReadyCallback, Go
 
         mMap.getUiSettings().setMapToolbarEnabled(false);
         mMap.getUiSettings().setMyLocationButtonEnabled(true);
-        mMap.getUiSettings().setZoomControlsEnabled(false);
+        mMap.getUiSettings().setZoomControlsEnabled(true);
+        mMap.getUiSettings().setCompassEnabled(true);
+        mMap.getUiSettings().setRotateGesturesEnabled(true);
+        mMap.getUiSettings().setZoomGesturesEnabled(true);
 
         GPSTracker gps = new GPSTracker(this);
         LatLng position = null;

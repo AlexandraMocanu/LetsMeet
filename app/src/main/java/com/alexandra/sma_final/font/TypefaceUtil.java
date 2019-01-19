@@ -22,30 +22,14 @@ public class TypefaceUtil {
      * @param customFontFileNameInAssets file name of the font from assets
      */
     public static void overrideFont(Context context, String defaultFontNameToOverride, String customFontFileNameInAssets) {
+        try {
+            final Typeface customFontTypeface = Typeface.createFromAsset(context.getAssets(), customFontFileNameInAssets);
 
-        final Typeface customFontTypeface = Typeface.createFromAsset(context.getAssets(), customFontFileNameInAssets);
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            Map<String, Typeface> newMap = new HashMap<String, Typeface>();
-            newMap.put("serif", customFontTypeface);
-            try {
-                final Field staticField = Typeface.class
-                        .getDeclaredField("sSystemFontMap");
-                staticField.setAccessible(true);
-                staticField.set(null, newMap);
-            } catch (NoSuchFieldException e) {
-                e.printStackTrace();
-            } catch (IllegalAccessException e) {
-                e.printStackTrace();
-            }
-        } else {
-            try {
-                final Field defaultFontTypefaceField = Typeface.class.getDeclaredField(defaultFontNameToOverride);
-                defaultFontTypefaceField.setAccessible(true);
-                defaultFontTypefaceField.set(null, customFontTypeface);
-            } catch (Exception e) {
-                Log.e(TypefaceUtil.class.getSimpleName(), "Can not set custom font " + customFontFileNameInAssets + " instead of " + defaultFontNameToOverride);
-            }
+            final Field defaultFontTypefaceField = Typeface.class.getDeclaredField(defaultFontNameToOverride);
+            defaultFontTypefaceField.setAccessible(true);
+            defaultFontTypefaceField.set(null, customFontTypeface);
+        } catch (Exception e) {
+            Log.d("ChangeFont", "Can not set custom font " + customFontFileNameInAssets + " instead of " + defaultFontNameToOverride);
         }
     }
 }

@@ -1,6 +1,7 @@
 package com.alexandra.sma_final;
 
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
@@ -9,7 +10,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.TextView;
+import com.alexandra.sma_final.view.MontserratTextView;
 import android.widget.Toast;
 
 import com.google.android.material.bottomnavigation.LabelVisibilityMode;
@@ -29,9 +30,9 @@ public class RequestActivity extends BaseActivity {
     private Button mButtonSeeOnMap;
     private Button mButtonPin;
     private ImageView mRandomPicture;
-    private TextView mTextTitle;
-    private TextView mTextMessage;
-    private TextView mTextAuthor;
+    private MontserratTextView mTextTitle;
+    private MontserratTextView mTextMessage;
+    private MontserratTextView mTextAuthor;
     private Long topicID;
     private Topic mTopic;
 
@@ -48,12 +49,15 @@ public class RequestActivity extends BaseActivity {
         bottomNavigationView.getMenu().setGroupCheckable(0, false, true);
 
         this.mButtonMessage = (Button) findViewById(R.id.message_author);
+        mButtonMessage.setTypeface(Typeface.createFromAsset(getApplicationContext().getAssets(), "font/Montserrat-Regular.ttf"));
         this.mButtonSeeOnMap = (Button) findViewById(R.id.see_map);
+        mButtonSeeOnMap.setTypeface(Typeface.createFromAsset(getApplicationContext().getAssets(), "font/Montserrat-Regular.ttf"));
         this.mButtonPin = (Button) findViewById(R.id.pin_button);
+        mButtonPin.setTypeface(Typeface.createFromAsset(getApplicationContext().getAssets(), "font/Montserrat-Regular.ttf"));
         this.mRandomPicture = (ImageView) findViewById(R.id.random_picture);
-        this.mTextTitle = (TextView) findViewById(R.id.title);
-        this.mTextMessage = (TextView) findViewById(R.id.message);
-        this.mTextAuthor = (TextView) findViewById(R.id.author);
+        this.mTextTitle = (MontserratTextView) findViewById(R.id.title);
+        this.mTextMessage = (MontserratTextView) findViewById(R.id.message);
+        this.mTextAuthor = (MontserratTextView) findViewById(R.id.author);
 
         topicID = getIntent().getExtras().getLong("topic_id");
 

@@ -9,8 +9,9 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import com.alexandra.sma_final.view.MontserratTextView;
+
 import android.widget.Button;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import io.realm.Realm;
@@ -24,9 +25,9 @@ public class MarkerFragment extends Fragment {
 //    private MapView mMapView;
     private Button mButtonMessage;
     private Button mButtonPin;
-    private TextView mTextTitle;
-    private TextView mTextRequest;
-    private TextView mTextAuthor;
+    private MontserratTextView mTextTitle;
+    private MontserratTextView mTextRequest;
+    private MontserratTextView mTextAuthor;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
