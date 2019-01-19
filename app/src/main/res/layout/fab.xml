@@ -1,4 +1,4 @@
-<com.alexandra.sma_final.MovableFloatingActionButton.MovableFloatingActionButton
+<com.alexandra.sma_final.customviews.floatingbutton.MovableFloatingActionButton
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/fab"
@@ -13,4 +13,4 @@
     app:layout_constraintBottom_toBottomOf="parent"
     app:srcCompat="@drawable/round_add_white">
 
-</com.alexandra.sma_final.MovableFloatingActionButton.MovableFloatingActionButton>
+</com.alexandra.sma_final.customviews.floatingbutton.MovableFloatingActionButton>

@@ -48,7 +48,7 @@
                     app:layout_constraintTop_toTopOf="@+id/include"
                     app:srcCompat="@drawable/user_6" />
 
-                <com.alexandra.sma_final.view.MontserratTextView
+                <com.alexandra.sma_final.customviews.MontserratTextView
                     android:id="@+id/usernameUser"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
