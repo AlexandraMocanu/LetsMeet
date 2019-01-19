@@ -2,6 +2,7 @@ package realm;
 
 import java.util.Set;
 
+import io.realm.RealmList;
 import io.realm.RealmObject;
 import io.realm.annotations.PrimaryKey;
 import io.realm.annotations.Required;
@@ -18,7 +19,7 @@ public class Conversation extends RealmObject implements GetIdCompliant{
     @Required
     private Long respondingUserId;
 
-    private Set<Message> messages;
+    private RealmList<Message> messages;
 
     public Long getId() {
         return id;
@@ -44,11 +45,11 @@ public class Conversation extends RealmObject implements GetIdCompliant{
         this.respondingUserId = respondingUserId;
     }
 
-    public Set<Message> getMessages() {
+    public RealmList<Message> getMessages() {
         return messages;
     }
 
-    public void setMessages(Set<Message> messages) {
+    public void setMessages(RealmList<Message> messages) {
         this.messages = messages;
     }
 }

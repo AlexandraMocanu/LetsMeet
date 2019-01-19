@@ -189,10 +189,6 @@ public class RequestGateway {
         urlConnection.setRequestProperty("Content-Type", "application/json");
     }
 
-
-    //TODO: socket timeout exception
-    //TODO: connection refused
-
     public void noBodyRequest(String reqMethod, String urlStr, Class clazz) {
         AsyncTask<Object, Void, String> execute = new RequestPersistTask().execute(urlStr, reqMethod, clazz);
     }
