@@ -309,7 +309,7 @@ public class RequestGateway {
                         Thread.sleep(50);
                     } else {
                         Log.d(TAG, "Could not fetch JWT... Will retry later");
-                        Thread.sleep(10000);
+                        Thread.sleep(3000);
                     }
                     jwtJson = doRequest(params[0], params[1], params[2]);
                     isConnected = isConnected && checkInternetConnection();
@@ -352,7 +352,7 @@ public class RequestGateway {
                         Thread.sleep(50);
                     } else {
                         Log.v(TAG, "Waiting for connection to server!");
-                        Thread.sleep(10000);
+                        Thread.sleep(5000);
                     }
                     isConnected = isConnected && checkInternetConnection();
                 }
@@ -428,7 +428,7 @@ public class RequestGateway {
                 Object firstField = json.nextValue();
 //                realm.beginTransaction();
                 if (firstField instanceof JSONObject) {
-                    Log.d(TAG, "Persisting " + clazz.getSimpleName() + ": " + result);
+                    Log.v(TAG, "Persisting " + clazz.getSimpleName() + ": " + result);
                     realm.executeTransaction(new Realm.Transaction() {
                         @Override
                         public void execute(Realm realm) {
@@ -439,7 +439,7 @@ public class RequestGateway {
                     });
 //                    realm.createOrUpdateObjectFromJson(clazz, result);
                 } else if (firstField instanceof JSONArray) {
-                    Log.d(TAG, "Persisting " + clazz.getSimpleName() + "s: " + result);
+                    Log.v(TAG, "Persisting " + clazz.getSimpleName() + "s: " + result);
                     realm.executeTransaction(new Realm.Transaction() {
                         @Override
                         public void execute(Realm realm) {
@@ -458,6 +458,16 @@ public class RequestGateway {
                 Log.e(TAG, "Realm exception for JSON: " + result);
                 Log.getStackTraceString(e);
             }
+        }
+
+        @Override
+        protected void onCancelled(String s) {
+            super.onCancelled(s);
+        }
+
+        @Override
+        protected void onCancelled() {
+            super.onCancelled();
         }
     }
 
