@@ -60,18 +60,34 @@
             app:layout_constraintTop_toBottomOf="@+id/title" />
 
         <com.alexandra.sma_final.customviews.MontserratTextView
-            android:id="@+id/author"
+            android:id="@+id/postedbytext"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="16dp"
             android:layout_marginTop="16dp"
             android:layout_marginBottom="16dp"
             android:gravity="start"
-            android:text="Author"
+            android:text="Posted by: "
             android:textColor="@color/primaryTextColor"
             android:textColorHint="@color/primaryTextColor"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/message" />
+
+        <com.alexandra.sma_final.customviews.MontserratTextView
+            android:id="@+id/author"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="16dp"
+            android:gravity="start"
+            android:paddingStart="5dp"
+            android:text="Author"
+            android:textColor="@drawable/clickable_text_selector"
+            android:textColorHint="@color/primaryTextColor"
+            android:textColorLink="@color/secondaryDarkColor"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toEndOf="@id/postedbytext"
             app:layout_constraintTop_toBottomOf="@+id/message" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 

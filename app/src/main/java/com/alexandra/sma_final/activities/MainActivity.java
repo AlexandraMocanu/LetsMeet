@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.alexandra.sma_final.MyApplication;
 import com.alexandra.sma_final.R;
 import com.alexandra.sma_final.adapters.UserAdapter;
 import com.google.android.material.bottomnavigation.LabelVisibilityMode;
@@ -50,6 +51,7 @@ public class MainActivity extends BaseActivity {
 
         //get chats of user
         //create chat adapter and set it to layout manager
+        ((MyApplication)getApplicationContext()).requestGateway.getUserConversations();
 
         mUsers = new ArrayList<User>();
         try(Realm realm = Realm.getDefaultInstance()) {

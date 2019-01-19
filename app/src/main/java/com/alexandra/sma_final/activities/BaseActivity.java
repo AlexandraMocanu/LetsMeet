@@ -77,7 +77,7 @@ abstract public class BaseActivity extends AppCompatActivity implements BottomNa
             public void onClick(View view) {
                 Intent mIntent = new Intent(getApplicationContext(), UserActivity.class);
                 mIntent.setFlags(FLAG_ACTIVITY_CLEAR_TOP|FLAG_ACTIVITY_NEW_TASK);
-                // TODO: change the value!
+
                 String n =  ((MyApplication) getApplication()).getCurrentUser().getUsername();
                 if(!n.contains("fallback")){
                     mIntent.putExtra("username", ((MyApplication) getApplication()).getCurrentUser().getUsername());

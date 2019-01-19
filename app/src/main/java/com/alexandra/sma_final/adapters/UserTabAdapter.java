@@ -19,25 +19,25 @@ public class UserTabAdapter extends FragmentStatePagerAdapter {
 
     @Override public Fragment getItem(int position) {
 
-        if(userActivity.getUser() != null){
+        if(userActivity.getUserProfileOwner() != null){ //user profile
             switch (position){
                 case 0: return new ActiveRequests();
                 case 1: return new Score();
             }
         }
         else{
-            return new ActiveRequests();
+            return new ActiveRequests(); //our profile
         }
         return null;
     }
 
     @Override
     public int getCount() {
-        return userActivity.getUser() != null ? 2 : 1;
+        return userActivity.getUserProfileOwner() != null ? 2 : 1;
     }
 
     @Override public CharSequence getPageTitle(int position) {
-        if(userActivity.getUser() != null) {
+        if(userActivity.getUserProfileOwner() != null) {
             switch (position) {
                 case 0:
                     return "Active Requests";

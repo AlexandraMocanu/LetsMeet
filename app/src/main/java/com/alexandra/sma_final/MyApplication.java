@@ -66,7 +66,7 @@ public class MyApplication extends Application implements AsyncResponse<UserDTO>
 
         doGetRequests();
 //        createMockObjects();
-//        doPutRequests();
+        doPutRequests();
 
         GPSTracker gps = new GPSTracker(this);
         currentLocation = gps.location;

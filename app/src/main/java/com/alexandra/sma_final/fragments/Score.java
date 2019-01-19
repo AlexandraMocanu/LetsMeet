@@ -31,8 +31,9 @@ public class Score extends Fragment {
         mKarma = (MontserratTextView) v.findViewById(R.id.karma);
 
         mVote = (MontserratTextView) v.findViewById(R.id.vote);
-        if(((UserActivity)getActivity()).getUser() != null){
-            mVote.setText(((UserActivity)getActivity()).getUser().getKarma());
+        if(((UserActivity)getActivity()).getUserProfileOwner() != null){
+            Integer score = ((UserActivity)getActivity()).getUserProfileOwner().getKarma();
+            mVote.setText(score.toString());
         }
 
         mUpButton = (ImageButton) v.findViewById(R.id.upButton);
@@ -45,8 +46,8 @@ public class Score extends Fragment {
                 // set rating + 1
                 if(clicked == 0){
                     Rating newRating = new Rating();
-                    newRating.setScore(Integer.valueOf(((UserActivity)getActivity()).getUser().getKarma()+1));
-                    newRating.setUserId(((UserActivity)getActivity()).getUser().getId());
+                    newRating.setScore(Integer.valueOf(((UserActivity)getActivity()).getUserProfileOwner().getKarma()+1));
+                    newRating.setUserId(((UserActivity)getActivity()).getUserProfileOwner().getId());
                     ((MyApplication)getActivity().getApplication()).requestGateway.putRating(newRating);
 //                    mVote.setText(((UserActivity)getActivity()).getUser()..getKarma());
                     clicked = 1;
@@ -66,8 +67,8 @@ public class Score extends Fragment {
                 // set rating - 1
                 if(clicked == 0){
                     Rating newRating = new Rating();
-                    newRating.setScore(Integer.valueOf(((UserActivity)getActivity()).getUser().getKarma()-1));
-                    newRating.setUserId(((UserActivity)getActivity()).getUser().getId());
+                    newRating.setScore(Integer.valueOf(((UserActivity)getActivity()).getUserProfileOwner().getKarma()-1));
+                    newRating.setUserId(((UserActivity)getActivity()).getUserProfileOwner().getId());
                     ((MyApplication)getActivity().getApplication()).requestGateway.putRating(newRating);
                     clicked = 1;
                 }else{
