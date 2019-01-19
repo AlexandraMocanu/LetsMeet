@@ -4,18 +4,11 @@
     <color name="primaryLightColor">#73e8ff</color>
     <color name="primaryDarkColor">#0086c3</color>
     <color name="secondaryColor">#26c6da</color>
-    <color name="secondaryLightColor">#6ff9ff</color>
     <color name="secondaryDarkColor">#0095a8</color>
     <color name="primaryTextColor">#000000</color>
     <color name="secondaryTextColor">#000000</color>
-    <color name="backgroundDark">#9E9E9E</color>
-    <color name="backgroundLight">#FFFFFF</color>
+    <color name="backgroundLight">#ffffff</color>
     <color name="icons">#212121</color>
     <color name="divider">#bdbdbd</color>
-    <color name="random_1">#19535F</color>
-    <color name="random_2">#0B7A75</color>
-    <color name="random_3">#D7C9AA</color>
-    <color name="random_4">#7B2D26</color>
     <color name="random_5">#c9f0f3f5</color>
-    <color name="transparent">#eabcf2fd</color>
 </resources>

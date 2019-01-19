@@ -1,5 +1,6 @@
 package com.alexandra.sma_final;
 
+import android.graphics.Typeface;
 import android.os.Bundle;
 import androidx.fragment.app.Fragment;
 import android.text.Spannable;
@@ -8,7 +9,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
-import android.widget.TextView;
+
+import com.alexandra.sma_final.view.MontserratTextView;
 
 import com.google.android.material.bottomnavigation.LabelVisibilityMode;
 
@@ -24,8 +26,8 @@ public class SettingsActivity extends BaseActivity {
 
     private static final String CITIES_FRAGMENT_TAG = "cities_fragment";
 
-    private TextView currentLocation;
-//    private TextView favoriteCities;
+    private MontserratTextView currentLocation;
+//    private MontserratTextView favoriteCities;
     private Button modifyCities;
 
     @Override
@@ -39,9 +41,10 @@ public class SettingsActivity extends BaseActivity {
         bottomNavigationView.getMenu().setGroupCheckable(0, true, true);
         bottomNavigationView.getMenu().findItem(R.id.action_settings).setChecked(true);
 
-        this.currentLocation = (TextView) findViewById(R.id.currentLocation);
-//        this.favoriteCities = (TextView) findViewById(R.id.favorite_cities);
+        this.currentLocation = (MontserratTextView) findViewById(R.id.currentLocation);
+//        this.favoriteCities = (MontserratTextView) findViewById(R.id.favorite_cities);
         this.modifyCities = (Button) findViewById(R.id.modify_cities);
+        modifyCities.setTypeface(Typeface.createFromAsset(getApplicationContext().getAssets(), "font/Montserrat-Regular.ttf"));
 
         this.currentLocation.setText("Current city: " + MyApplication.city);
 //        setFavoriteCities();

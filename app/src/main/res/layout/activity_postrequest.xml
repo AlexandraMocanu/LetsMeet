@@ -46,20 +46,21 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 
-            <com.google.android.material.textfield.TextInputEditText
+            <com.alexandra.sma_final.view.MontserratInputEditText
                 android:id="@+id/title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="8dp"
                 android:layout_weight="1"
+                android:fontFamily="monospace"
                 android:hint="A nice title"
                 android:textColor="@color/primaryTextColor"
                 android:textColorHint="@color/primaryTextColor"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
-            <com.google.android.material.textfield.TextInputEditText
+            <com.alexandra.sma_final.view.MontserratInputEditText
                 android:id="@+id/message"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -68,10 +69,14 @@
                 android:layout_marginEnd="8dp"
                 android:elegantTextHeight="true"
                 android:elevation="0dp"
-                android:fontFamily="@font/montserrat"
+                android:fontFamily="monospace"
                 android:forceHasOverlappingRendering="false"
                 android:gravity="start"
                 android:hint="Have you got an extra ticket to something? Or you just want to hang out with someone? Write what you wish for here!"
+                android:isScrollContainer="true"
+                android:maxLines="6"
+                android:minLines="6"
+                android:scrollbars="vertical"
                 android:textAlignment="textStart"
                 android:textColor="@color/primaryTextColor"
                 android:textColorHint="@color/primaryTextColor"
@@ -80,13 +85,14 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/title" />
 
-            <EditText
+            <com.alexandra.sma_final.view.MontserratEditText
                 android:id="@+id/date"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="8dp"
                 android:ems="10"
+                android:fontFamily="monospace"
                 android:hint="Where?"
                 android:inputType="date"
                 android:textColor="@color/primaryTextColor"
@@ -94,13 +100,14 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/message" />
 
-            <EditText
+            <com.alexandra.sma_final.view.MontserratEditText
                 android:id="@+id/time"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="8dp"
                 android:ems="10"
+                android:fontFamily="monospace"
                 android:hint="When?"
                 android:inputType="time"
                 android:textColor="@color/primaryTextColor"
@@ -150,14 +157,13 @@
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
-        <Button
+        <ImageButton
             android:id="@+id/buttonPost"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="5dp"
             android:layout_marginEnd="8dp"
             android:background="@color/primaryLightColor"
-            android:fontFamily="monospace"
             android:paddingStart="0dp"
             android:paddingLeft="0dp"
             android:paddingEnd="0dp"

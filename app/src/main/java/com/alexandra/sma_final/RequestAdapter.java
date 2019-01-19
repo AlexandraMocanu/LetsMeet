@@ -10,9 +10,9 @@
 //import android.view.LayoutInflater;
 //import android.view.View;
 //import android.view.ViewGroup;
-//import android.widget.Button;
+//import com.alexandra.sma_final.view.Button;
 //import android.widget.ImageView;
-//import android.widget.TextView;
+//import com.alexandra.sma_final.view.MontserratTextView;
 //import android.widget.Toast;
 //
 //import java.util.ArrayList;
@@ -30,15 +30,15 @@
 //        public static class MyViewHolder extends RecyclerView.ViewHolder {
 //
 //            private ConstraintLayout mConstraintLayout;
-//            private TextView mTitleAuthor;
-//            private TextView mRequestLimit;
+//            private MontserratTextView mTitleAuthor;
+//            private MontserratTextView mRequestLimit;
 //            private Button mSeeMore;
 //            private Button mUnpin;
 //
 //            public MyViewHolder(View itemView, String caller) {
 //                super(itemView);
-//                this.mTitleAuthor = (TextView) itemView.findViewById(R.id.title_author);
-//                this.mRequestLimit = (TextView) itemView.findViewById(R.id.request_limit);
+//                this.mTitleAuthor = (MontserratTextView) itemView.findViewById(R.id.title_author);
+//                this.mRequestLimit = (MontserratTextView) itemView.findViewById(R.id.request_limit);
 //                this.mSeeMore = (Button) itemView.findViewById(R.id.see_more);
 //                this.mUnpin = (Button) itemView.findViewById(R.id.unpin);
 //
@@ -124,8 +124,8 @@
 //        @Override
 //        public void onBindViewHolder(final MyViewHolder holder, final int listPosition) {
 //
-//            TextView titleAuthor = holder.mTitleAuthor;
-//            TextView request = holder.mRequestLimit;
+//            MontserratTextView titleAuthor = holder.mTitleAuthor;
+//            MontserratTextView request = holder.mRequestLimit;
 //
 //            SpannableStringBuilder str1 = new SpannableStringBuilder(mTopics.get(listPosition).getTitle());
 //            int INT_START1 = 0; int INT_END1 = mTopics.get(listPosition).getTitle().length();

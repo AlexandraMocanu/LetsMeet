@@ -3,7 +3,7 @@ package com.alexandra.sma_final.view;
 import android.view.View;
 import android.view.animation.RotateAnimation;
 import android.widget.ImageView;
-import android.widget.TextView;
+import com.alexandra.sma_final.view.MontserratTextView;
 
 import com.alexandra.sma_final.R;
 
@@ -13,11 +13,11 @@ public class CityCViewHolder extends ParentViewHolder {
     private static final float ROTATED_POSITION = 180f;
 
     private final ImageView mArrowExpandImageView;
-    private TextView mCityName;
+    private MontserratTextView mCityName;
 
     public CityCViewHolder(View itemView) {
         super(itemView);
-        mCityName = (TextView) itemView.findViewById(R.id.city_name);
+        mCityName = (MontserratTextView) itemView.findViewById(R.id.city_name);
 
         mArrowExpandImageView = (ImageView) itemView.findViewById(R.id.iv_arrow_expand);
     }

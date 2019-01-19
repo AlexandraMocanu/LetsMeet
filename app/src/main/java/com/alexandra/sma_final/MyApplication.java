@@ -6,6 +6,8 @@ import android.location.Geocoder;
 import android.location.Location;
 import android.widget.Toast;
 
+import com.alexandra.sma_final.font.FontsOverride;
+import com.alexandra.sma_final.font.TypefaceUtil;
 import com.alexandra.sma_final.rest.UserDTO;
 
 import java.io.IOException;
@@ -36,6 +38,11 @@ public class MyApplication extends Application implements AsyncResponse<UserDTO>
         super.onCreate();
 
 //        TypefaceUtil.overrideFont(this, "SERIF", "font/Montserrat-Regular.ttf");
+
+        FontsOverride.setDefaultFont(this, "DEFAULT", "font/Montserrat-Regular.ttf");
+        FontsOverride.setDefaultFont(this, "MONOSPACE", "font/Montserrat-Regular.ttf");
+        FontsOverride.setDefaultFont(this, "SERIF", "font/Montserrat-Regular.ttf");
+        FontsOverride.setDefaultFont(this, "SANS_SERIF", "font/Montserrat-Regular.ttf");
 
         Realm.init(getApplicationContext());
 
@@ -101,11 +108,11 @@ public class MyApplication extends Application implements AsyncResponse<UserDTO>
     public void createMockObjects() {
         User user1 = new User();
         user1.setId(Long.valueOf(1));
-        user1.setUsername("anon" + 1);
+        user1.setUsername("user" + 1);
         user1.setKarma(123);
         User user2 = new User();
         user2.setId(Long.valueOf(2));
-        user2.setUsername("anon" + 2);
+        user2.setUsername("user" + 2);
         user2.setKarma(345);
 
         Topic topic1 = new Topic();

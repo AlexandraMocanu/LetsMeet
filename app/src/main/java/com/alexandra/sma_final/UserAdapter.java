@@ -5,9 +5,8 @@ import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.TextView;
+import com.alexandra.sma_final.view.MontserratTextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -28,18 +27,18 @@ class UserAdapter extends RecyclerView.Adapter<UserAdapter.MyViewHolder> {
     final Random rnd = new Random();
 
     public class MyViewHolder extends RecyclerView.ViewHolder{
-        public TextView username;
-        public TextView title;
-        public TextView time;
+        public MontserratTextView username;
+        public MontserratTextView title;
+        public MontserratTextView time;
         public ImageView mImage;
         public CardView mCardView;
 
         public MyViewHolder(View itemView){
             super(itemView);
 
-            this.username = (TextView) itemView.findViewById(R.id.username);
-            this.title = (TextView) itemView.findViewById(R.id.title);
-            this.time = (TextView) itemView.findViewById(R.id.time);
+            this.username = (MontserratTextView) itemView.findViewById(R.id.username);
+            this.title = (MontserratTextView) itemView.findViewById(R.id.title);
+            this.time = (MontserratTextView) itemView.findViewById(R.id.time);
             this.mImage = (ImageView) itemView.findViewById(R.id.icon);
             this.mCardView = (CardView) itemView.findViewById(R.id.card_view);
 
@@ -66,13 +65,13 @@ class UserAdapter extends RecyclerView.Adapter<UserAdapter.MyViewHolder> {
     public void onBindViewHolder(UserAdapter.MyViewHolder viewHolder, int position) {
         User user = mUsers.get(position);
 
-        TextView textView = viewHolder.username;
-        textView.setText(user.getUsername());
+        MontserratTextView MontserratTextView = viewHolder.username;
+        MontserratTextView.setText(user.getUsername());
 
-        TextView title = viewHolder.username;
+        MontserratTextView title = viewHolder.username;
         title.setText("last message"); //TODO: change this to actual last mesage in chat
 
-        TextView time =  viewHolder.time;
+        MontserratTextView time =  viewHolder.time;
         time.setText("00:00");
 
         ImageView mImage = viewHolder.mImage;

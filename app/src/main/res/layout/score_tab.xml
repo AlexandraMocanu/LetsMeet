@@ -27,7 +27,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <TextView
+        <com.alexandra.sma_final.view.MontserratTextView
             android:id="@+id/karma"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -43,7 +43,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <TextView
+        <com.alexandra.sma_final.view.MontserratTextView
             android:id="@+id/vote"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

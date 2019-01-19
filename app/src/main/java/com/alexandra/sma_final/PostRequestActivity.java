@@ -2,7 +2,9 @@ package com.alexandra.sma_final;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.location.Address;
+import android.media.Image;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -11,10 +13,12 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
+import com.alexandra.sma_final.view.MontserratEditText;
+
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.Filter;
 import android.widget.Filterable;
+import android.widget.ImageButton;
 import android.widget.Toast;
 
 import com.google.android.gms.common.api.Status;
@@ -44,12 +48,12 @@ public class PostRequestActivity extends BaseActivity implements PlaceSelectionL
 
     private TextInputEditText mTitle;
     private TextInputEditText mMessage;
-    private EditText mDate;
-    private EditText mTime;
+    private MontserratEditText mDate;
+    private MontserratEditText mTime;
 //    private AutoCompleteTextView mAddress;
     private PlaceAutocompleteFragment placeAutocompleteFragment;
     private Place selectedAddress;
-    private Button mPostButton;
+    private ImageButton mPostButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,10 +67,10 @@ public class PostRequestActivity extends BaseActivity implements PlaceSelectionL
 
         mTitle = (TextInputEditText) findViewById(R.id.title);
         mMessage = (TextInputEditText) findViewById(R.id.message);
-        mDate = (EditText) findViewById(R.id.date);
-        mTime = (EditText) findViewById(R.id.time);
+        mDate = (MontserratEditText) findViewById(R.id.date);
+        mTime = (MontserratEditText) findViewById(R.id.time);
 //        mAddress = (AutoCompleteTextView) findViewById(R.id.address);
-        mPostButton = (Button) findViewById(R.id.buttonPost);
+        mPostButton = (ImageButton) findViewById(R.id.buttonPost);
 
         PlaceAutocompleteFragment autocompleteFragment = (PlaceAutocompleteFragment)
                 getFragmentManager().findFragmentById(R.id.autocomplete_fragment);
