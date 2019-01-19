@@ -34,6 +34,7 @@ import realm.User;
 import java.io.*;
 import java.net.ConnectException;
 import java.net.InetAddress;
+import java.net.SocketTimeoutException;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.security.KeyStore;
@@ -64,13 +65,13 @@ public class RequestGateway {
 
     //Connection parameters
     private static final boolean USES_SSL = true;
-    private static final boolean USES_EMULATOR = true;
+    private static final boolean USES_EMULATOR = false;
     private static boolean isConnected = false;
 
     //API link constants
     private static final String EMU_LOCALHOST = "10.0.2.2";
     private static final String DOMAIN_BASE_API = USES_EMULATOR ?
-            EMU_LOCALHOST : "localhost" ;
+            EMU_LOCALHOST : "192.168.1.110";
     private static final String BASE_API = "https://" + DOMAIN_BASE_API + ":8080/api";
     private static final String AUTH_API = BASE_API + "/authenticate";
     private static final String WHO_AM_I_API = BASE_API + "/account";
@@ -254,6 +255,13 @@ public class RequestGateway {
                 ret = inputStreamToString(response);
 
                 Log.d(TAG, urlConnection.getResponseCode() + "<---" + urlStr + ": " + ret);
+            } catch (SocketTimeoutException e) {
+                Log.w(TAG, "Timeout exception!");
+                if (USES_EMULATOR) {
+//                    Toast.makeText(mApp.getApplicationContext(), "EMULATOR MODE: Timeout exception. Server should be running on the same device", Toast.LENGTH_LONG).show();
+                    Log.e(TAG, "USES_EMULATOR is true! Make sure that the server is running on the same machine as the emulator!");
+                }
+                Log.getStackTraceString(e);
             } catch (FileNotFoundException e) {
                 Log.e(TAG, "HTTP error!");
                 Log.e(TAG, urlConnection.getResponseCode() + ": " + urlConnection.getResponseMessage());
@@ -263,8 +271,7 @@ public class RequestGateway {
                 }
                 e.printStackTrace();
             } catch (ConnectException e) {
-                Log.e(TAG, e.getMessage() + " Try checking your connection to the server!");
-                e.printStackTrace();
+                Log.w(TAG, e.getMessage() + " Try checking your connection to the server!");
             } catch (IOException e) {
                 e.printStackTrace();
             } finally {
@@ -290,11 +297,28 @@ public class RequestGateway {
             if (params.length == 4 && params[3] != null) {
                 cb = (Callback) params[3];
             }
-            return doRequest(params[0], params[1], params[2]);
+            String jwtJson = doRequest(params[0], params[1], params[2]);
+            try {
+                while (jwtJson == null){
+                    if (isConnected) {
+                        Log.w(TAG, "Retrying to fetch JWT!");
+                        Thread.sleep(50);
+                    } else {
+                        Log.d(TAG, "Could not fetch JWT... Will retry later");
+                        Thread.sleep(10000);
+                    }
+                    jwtJson = doRequest(params[0], params[1], params[2]);
+                    isConnected = isConnected && checkInternetConnection();
+                }
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            return jwtJson;
         }
 
         @Override
         protected void onPostExecute(String result) {
+            isConnected = true;
             TokenHolderDTO tokenJson = gson.fromJson(result, TokenHolderDTO.class);
             if (tokenJson == null) {
                 Log.e(TAG, "Server responded to Login Request with null!");
@@ -317,11 +341,26 @@ public class RequestGateway {
 
         @Override
         protected String doInBackground(Object... params) {
+            try {
+                while (jwtToken == null) {
+                    if (isConnected) {
+                        Log.d(TAG, "Waiting for JWT!");
+                        Thread.sleep(50);
+                    } else {
+                        Log.v(TAG, "Waiting for connection to server!");
+                        Thread.sleep(10000);
+                    }
+                    isConnected = isConnected && checkInternetConnection();
+                }
+            } catch (InterruptedException e) {
+                Log.getStackTraceString(e);
+            }
             return doRequest(params);
         }
 
         @Override
         protected void onPostExecute(String result) {
+            isConnected = true;
             if (delegate != null) {
                 Log.d(TAG, "Current user is: " + result);
                 currentUser = gson.fromJson(result, UserDTO.class);
@@ -343,14 +382,15 @@ public class RequestGateway {
         @Override
         protected String doInBackground(Object... params) {
             try {
-                while (jwtToken == null ) {
-                    if (isConnected && checkInternetConnection()) {
+                while (jwtToken == null) {
+                    if (isConnected) {
                         Log.d(TAG, "Waiting for JWT!");
                         Thread.sleep(50);
                     } else {
                         Log.v(TAG, "Waiting for connection to server!");
-                        Thread.sleep(500);
+                        Thread.sleep(10000);
                     }
+                    isConnected = isConnected && checkInternetConnection();
                 }
             } catch (InterruptedException e) {
                 Log.getStackTraceString(e);
@@ -374,6 +414,7 @@ public class RequestGateway {
 
         @Override
         protected void onPostExecute(String result) {
+            isConnected = true;
             try {
                 JSONTokener json = new JSONTokener(result);
                 if (result == null || json == null) {
@@ -505,11 +546,26 @@ public class RequestGateway {
         ConnectivityManager cm = (ConnectivityManager) mApp.getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo ni = cm.getActiveNetworkInfo();
         if (null == ni) {
-            Toast.makeText(mApp.getApplicationContext(), "no internet connection", Toast.LENGTH_LONG).show();
+            Log.d(TAG, "no internet connection!");
+//            Toast.makeText(mApp.getApplicationContext(), "no internet connection", Toast.LENGTH_LONG).show();
             return false;
         } else {
-            Toast.makeText(mApp.getApplicationContext(), "Internet Connect is detected .. check access to sire", Toast.LENGTH_LONG).show();
-            return true;
+//            Toast.makeText(mApp.getApplicationContext(), "Internet Connect is detected .. check access to sire", Toast.LENGTH_LONG).show();
+            return isOnline();
         }
+    }
+
+    public boolean isOnline() {
+        Runtime runtime = Runtime.getRuntime();
+        try {
+            Process ipProcess = runtime.exec("/system/bin/ping -c 1 8.8.8.8");
+            int exitValue = ipProcess.waitFor();
+            return (exitValue == 0);
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        return false;
     }
 }
