@@ -10,7 +10,9 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.alexandra.sma_final.MyApplication;
 import com.alexandra.sma_final.R;
+import com.alexandra.sma_final.activities.ChatActivity;
 import com.alexandra.sma_final.activities.MapsActivity;
 import com.alexandra.sma_final.customviews.MontserratTextView;
 
@@ -20,6 +22,7 @@ import android.widget.Toast;
 import io.realm.Realm;
 import io.realm.RealmQuery;
 import io.realm.RealmResults;
+import realm.Conversation;
 import realm.Pin;
 import realm.Topic;
 
@@ -94,7 +97,18 @@ public class MarkerFragment extends Fragment {
         mButtonMessage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // message person
+                Intent mIntent = new Intent(getContext(), ChatActivity.class);
+                mIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                String username = mTopic.getPostedBy().getUsername();
+                Long id = mTopic.getId();
+                Conversation conv  = new Conversation();
+                conv.setRespondingUserId(((MyApplication)((MapsActivity)getActivity()).getApplication()).getCurrentUser().getId());
+                conv.setTopicId(id);
+                ((MyApplication)((MapsActivity)getActivity()).getApplication()).requestGateway.putConversation(conv);
+                mIntent.putExtra("usernameTopic", username); //username author
+                mIntent.putExtra("usernameRespond", ((MyApplication)((MapsActivity)getActivity()).getApplication()).getCurrentUser().getId()); //responding user id = me
+                mIntent.putExtra("idTopic", id); //topic id
+                getContext().startActivity(mIntent);
             }
         });
 

@@ -92,9 +92,6 @@ public class ConversationAdapter extends RecyclerView.Adapter<ConversationAdapte
                 }
             });
         }
-        if(currentUserConv != null){
-            username.setText(currentUserConv.getUsername());
-        }
 
         //find messages
         MontserratTextView title = viewHolder.title;
@@ -103,6 +100,8 @@ public class ConversationAdapter extends RecyclerView.Adapter<ConversationAdapte
         messages.addAll(conv.getMessages());
 
         if(!messages.isEmpty() && currentUserConv != null){
+            username.setText(currentUserConv.getUsername());
+
             messages.sort(new Comparator<Message>() {
                 @Override
                 public int compare(Message o1, Message o2) {

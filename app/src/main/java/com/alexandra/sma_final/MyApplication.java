@@ -11,6 +11,7 @@ import android.location.Location;
 
 import com.alexandra.sma_final.font.FontsOverride;
 import com.alexandra.sma_final.receivers.AlarmReceiver;
+import com.alexandra.sma_final.receivers.NotificationReceiver;
 import com.alexandra.sma_final.rest.UserDTO;
 import com.alexandra.sma_final.server.AsyncResponse;
 import com.alexandra.sma_final.server.Callback;
@@ -23,8 +24,10 @@ import java.util.Locale;
 
 import androidx.annotation.NonNull;
 import io.realm.Realm;
+import io.realm.RealmChangeListener;
 import io.realm.RealmConfiguration;
 import io.realm.RealmList;
+import io.realm.RealmResults;
 import realm.City;
 import realm.Conversation;
 import realm.Message;
@@ -69,6 +72,26 @@ public class MyApplication extends Application implements AsyncResponse<UserDTO>
         requestGateway.authenticate(new CurrentUserCallback(this));
 
         scheduleAlarm();
+
+        Realm realm = Realm.getDefaultInstance();
+        final RealmResults<Conversation> conversations = realm.where(Conversation.class).findAll();
+        realm.addChangeListener(new RealmChangeListener<Realm>() {
+            @Override
+            public void onChange(Realm realm) {
+                Intent mIntent = new Intent(getBaseContext(), NotificationReceiver.class);
+                mIntent.putExtra("type", "messages");
+                startService(mIntent);
+            }
+        });
+        final RealmResults<Topic> topics = realm.where(Topic.class).findAll();
+        realm.addChangeListener(new RealmChangeListener<Realm>() {
+            @Override
+            public void onChange(Realm realm) {
+                Intent mIntent = new Intent(getBaseContext(), NotificationReceiver.class);
+                mIntent.putExtra("type", "topics");
+                startService(mIntent);
+            }
+        });
 
 //        createMockObjects();
 //        doPutRequests();

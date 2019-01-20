@@ -22,6 +22,7 @@ import io.realm.Realm;
 import io.realm.RealmChangeListener;
 import io.realm.RealmList;
 import io.realm.RealmResults;
+import realm.City;
 import realm.Conversation;
 import realm.ConversationHelper;
 import realm.Message;
@@ -77,6 +78,10 @@ public class ChatActivity extends BaseActivity{
                     newMessage.setTimestampMillis(System.currentTimeMillis());
                     newMessage.setConversationId(conversationHelper.getConversation().getId());
                     ((MyApplication)getApplication()).requestGateway.putMessage(newMessage);
+
+                    messages.add(newMessage);
+                    mMessageAdapter.notifyItemInserted(mMessageAdapter.getItemCount());
+                    mMessageAdapter.notifyDataSetChanged();
                 }
             }
         });
@@ -118,25 +123,13 @@ public class ChatActivity extends BaseActivity{
         //get conversation from Realm
         ((MyApplication)getApplication()).requestGateway.getUserConversations();
         conversationHelper.queryRealm(mCurrentUser, topicId);
-//        try(Realm realm = Realm.getDefaultInstance()) {
-//            realm.executeTransaction(inRealm -> {
-//                final RealmResults<Conversation> convs  = realm.where(Conversation.class).equalTo("topicId", topicId).findAll();
-//                for(Conversation c : convs){
-//                    if(mCurrentUser!=null){
-//                        if(c.getRespondingUserId() == mCurrentUser.getId()){
-//                            if(c != null){
-//                                setConversation(c);
-//                            }
-//                        }
-//                    }
-//                }
-//            });
-//        }
-//        conversation.addChangeListener(this);
 
         messages = new ArrayList<>();
         if(conversationHelper.getConversation() != null){
-            messages.addAll(conversationHelper.getConversation().getMessages());
+            RealmList<Message> list = conversationHelper.getConversation().getMessages();
+            for(Message m : list){
+                messages.add(m);
+            }
             if(messages.size() > 2){
                 messages.sort(new Comparator<Message>() {
                     @Override
@@ -151,7 +144,6 @@ public class ChatActivity extends BaseActivity{
                 });
             }
         }
-
     }
 
     @Override

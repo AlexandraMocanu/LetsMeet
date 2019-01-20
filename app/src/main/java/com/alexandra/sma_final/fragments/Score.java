@@ -49,7 +49,7 @@ public class Score extends Fragment {
                     newRating.setScore(Integer.valueOf(((UserActivity)getActivity()).getUserProfileOwner().getKarma()+1));
                     newRating.setUserId(((UserActivity)getActivity()).getUserProfileOwner().getId());
                     ((MyApplication)getActivity().getApplication()).requestGateway.putRating(newRating);
-//                    mVote.setText(((UserActivity)getActivity()).getUser()..getKarma());
+                    mVote.setText(((UserActivity)getActivity()).getUserProfileOwner().getKarma()+1);
                     clicked = 1;
                 }else{
                     clicked = 0;
@@ -70,6 +70,7 @@ public class Score extends Fragment {
                     newRating.setScore(Integer.valueOf(((UserActivity)getActivity()).getUserProfileOwner().getKarma()-1));
                     newRating.setUserId(((UserActivity)getActivity()).getUserProfileOwner().getId());
                     ((MyApplication)getActivity().getApplication()).requestGateway.putRating(newRating);
+                    mVote.setText(((UserActivity)getActivity()).getUserProfileOwner().getKarma()+1);
                     clicked = 1;
                 }else{
                     clicked = 0;

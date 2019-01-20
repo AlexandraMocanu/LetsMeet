@@ -7,6 +7,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 
+import com.alexandra.sma_final.R;
 import com.alexandra.sma_final.activities.MainActivity;
 
 public class NotificationReceiver extends BroadcastReceiver {
@@ -25,13 +26,24 @@ public class NotificationReceiver extends BroadcastReceiver {
                 newIntent,
                 PendingIntent.FLAG_ONE_SHOT);
 
-        Notification notification = new Notification.Builder(context)
-                .setContentTitle("New requests!")
-                .setContentText("You've got " + count + " new requests")
-                .setSmallIcon(android.R.drawable.sym_action_email)
-                .setContentIntent(operation)
-                .setAutoCancel(true)
-                .getNotification();
-        notificationManager.notify(NOTIFICATION_ID, notification);
+        if(intent.getStringExtra("type").equals("messages")){
+            Notification notification = new Notification.Builder(context)
+                    .setContentTitle("New requests!")
+                    .setContentText("You've got " + count + " new messages")
+                    .setSmallIcon(R.drawable.round_notification_black)
+                    .setContentIntent(operation)
+                    .setAutoCancel(true)
+                    .getNotification();
+            notificationManager.notify(NOTIFICATION_ID, notification);
+        }else{
+            Notification notification = new Notification.Builder(context)
+                    .setContentTitle("New requests!")
+                    .setContentText("You've got " + count + " new requests")
+                    .setSmallIcon(R.drawable.round_notification_black)
+                    .setContentIntent(operation)
+                    .setAutoCancel(true)
+                    .getNotification();
+            notificationManager.notify(NOTIFICATION_ID, notification);
+        }
     }
 }
