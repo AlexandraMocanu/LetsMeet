@@ -11,7 +11,6 @@ import com.alexandra.sma_final.MyApplication;
 import com.alexandra.sma_final.rest.NullX509TrustManager;
 import com.alexandra.sma_final.rest.TokenHolderDTO;
 import com.alexandra.sma_final.rest.UserDTO;
-import com.alexandra.sma_final.server.Callback;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
@@ -111,14 +110,22 @@ public class RequestGateway {
     }
 
     public void getAllUsers() {
-        new RequestPersistTask().execute(USERS_API, "GET", User.class, true);
+        new RequestPersistTask().execute(USERS_API, "GET", User.class, null);
+    }
+
+    public void getAllUsers(Long maxTimeout) {
+        new RequestPersistTask().execute(USERS_API, "GET", User.class, maxTimeout);
     }
 
     public void getUserByUsername(String username) {
-        new RequestPersistTask().execute(USERS_API + "/" + username, "GET", User.class, false);
+        new RequestPersistTask().execute(USERS_API + "/" + username, "GET", User.class, null);
     }
 
-    public void getNearbyTopics(double coordX, double coordY, @Nullable Integer dist) {
+    public void getUserByUsername(String username, Long maxTimeout) {
+        new RequestPersistTask().execute(USERS_API + "/" + username, "GET", User.class, maxTimeout);
+    }
+
+    public void getNearbyTopics(double coordX, double coordY, @Nullable Integer dist, @Nullable Long maxTimeout) {
         Topic location = new Topic();
         location.setCoordX(coordX);
         location.setCoordY(coordY);
@@ -126,21 +133,33 @@ public class RequestGateway {
         if (dist != null) {
             urlStr += "?distance=" + dist.toString();
         }
-        new RequestPersistTask().execute(urlStr, "POST", Topic.class, false, location);
+        new RequestPersistTask().execute(urlStr, "POST", Topic.class, maxTimeout, location);
     }
 
-    public void getNearbyTopics(String city) {
+    public void getNearbyTopics(double coordX, double coordY, @Nullable Integer dist) {
+        getNearbyTopics(coordX, coordY, dist, null);
+    }
+
+    public void getNearbyTopics(String city, Long maxTimeout) {
         try {
             String cityUrl = URLEncoder.encode(city, "UTF-8");
-            new RequestPersistTask().execute(TOPICS_NEARBY_API + "?city=" + cityUrl, "GET", Topic.class, false);
+            new RequestPersistTask().execute(TOPICS_NEARBY_API + "?city=" + cityUrl, "GET", Topic.class, maxTimeout);
         } catch (UnsupportedEncodingException e) {
             Log.e(TAG, "City name could not be encoded!");
         }
     }
 
+    public void getNearbyTopics(String city) {
+        getNearbyTopics(city, null);
+    }
+
 
     public void getUserConversations() {
-        new RequestPersistTask().execute(MY_CONVERSATIONS_API, "GET", Conversation.class, false);
+        new RequestPersistTask().execute(MY_CONVERSATIONS_API, "GET", Conversation.class, null);
+    }
+
+    public void getUserConversations(Long maxTimeout) {
+        new RequestPersistTask().execute(MY_CONVERSATIONS_API, "GET", Conversation.class, maxTimeout);
     }
 
     public String postOrPut(GetIdCompliant obj) {
@@ -148,19 +167,19 @@ public class RequestGateway {
     }
 
     public void putConversation(Conversation conversation) {
-        new RequestPersistTask().execute(CONVERSATIONS_API, postOrPut(conversation), Conversation.class, false, conversation);
+        new RequestPersistTask().execute(CONVERSATIONS_API, postOrPut(conversation), Conversation.class, null, conversation);
     }
 
     public void putMessage(Message message) {
-        new RequestPersistTask().execute(MESSAGES_API, postOrPut(message), Message.class, false, message);
+        new RequestPersistTask().execute(MESSAGES_API, postOrPut(message), Message.class, null, message);
     }
 
     public void putRating(Rating rating) {
-        new RequestPersistTask().execute(RATINGS_API, postOrPut(rating), Rating.class, false, rating);
+        new RequestPersistTask().execute(RATINGS_API, postOrPut(rating), Rating.class, null, rating);
     }
 
     public void putTopic(Topic topic) {
-        new RequestPersistTask().execute(TOPICS_API, postOrPut(topic), Topic.class, false, topic);
+        new RequestPersistTask().execute(TOPICS_API, postOrPut(topic), Topic.class, null, topic);
     }
 
     public String objToStr(Object obj) {
@@ -187,10 +206,6 @@ public class RequestGateway {
         urlConnection.setDoInput(true);
         urlConnection.setConnectTimeout(1000 * 5);
         urlConnection.setRequestProperty("Content-Type", "application/json");
-    }
-
-    public void noBodyRequest(String reqMethod, String urlStr, Class clazz) {
-        AsyncTask<Object, Void, String> execute = new RequestPersistTask().execute(urlStr, reqMethod, clazz);
     }
 
     public void setupRequest(HttpsURLConnection urlConnection) {
@@ -252,7 +267,7 @@ public class RequestGateway {
                 ret = inputStreamToString(response);
 
                 Log.d(TAG, urlConnection.getResponseCode() + "<---" + urlStr + ": " + ret);
-            }catch(SSLHandshakeException e) {
+            } catch (SSLHandshakeException e) {
                 Log.e(TAG, "SSl Handshake Exception! Server is not running in tls mode!");
                 Log.getStackTraceString(e);
             } catch (SocketTimeoutException e) {
@@ -299,7 +314,7 @@ public class RequestGateway {
             }
             String jwtJson = doRequest(params[0], params[1], params[2]);
             try {
-                while (jwtJson == null){
+                while (jwtJson == null) {
                     if (isConnected) {
                         Log.w(TAG, "Retrying to fetch JWT!");
                         Thread.sleep(50);
@@ -375,12 +390,13 @@ public class RequestGateway {
         private static final String TAG = "RequestGateway - RequestPersistTask";
 
         private Class<RealmModel> clazz;
-        private boolean shouldClear;
+        private Long maxTimeout;
         private String urlStr = null;
 
-        //urlStr, reqMethod, class, clear, [obj]
+        //urlStr, reqMethod, class, maxTimeout, [obj]
         @Override
         protected String doInBackground(Object... params) {
+            long startTime = System.currentTimeMillis();
             try {
                 while (jwtToken == null) {
                     if (isConnected) {
@@ -391,8 +407,13 @@ public class RequestGateway {
                         Thread.sleep(4000);
                     }
                     isConnected = isConnected && checkInternetConnection();
+                    if (maxTimeout != null &&
+                    System.currentTimeMillis() - startTime > maxTimeout) {
+                        this.cancel(true);
+                    }
                 }
             } catch (InterruptedException e) {
+                Log.e(TAG, "Interrupted exception");
                 Log.getStackTraceString(e);
             }
 
@@ -401,12 +422,13 @@ public class RequestGateway {
             }
             clazz = (Class<RealmModel>) params[2];
             byte[] bytes = null;
-            shouldClear = (boolean) params[3];
+            maxTimeout = (Long) params[3];
 
             if (params.length == 5 && params[4] != null) {
                 RealmModel obj = (RealmModel) params[4];
                 bytes = gson.toJson(obj, clazz).getBytes();
             }
+
 
             return doRequest(params[0], params[1], bytes);
         }
@@ -428,8 +450,6 @@ public class RequestGateway {
                     realm.executeTransaction(new Realm.Transaction() {
                         @Override
                         public void execute(Realm realm) {
-                            if (shouldClear)
-                                realm.delete(clazz);
                             realm.createOrUpdateObjectFromJson(clazz, result);
                         }
                     });
@@ -439,8 +459,6 @@ public class RequestGateway {
                     realm.executeTransaction(new Realm.Transaction() {
                         @Override
                         public void execute(Realm realm) {
-                            if (shouldClear)
-                                realm.delete(clazz);
                             realm.createOrUpdateAllFromJson(clazz, result);
                         }
                     });
@@ -459,11 +477,13 @@ public class RequestGateway {
         @Override
         protected void onCancelled(String s) {
             super.onCancelled(s);
+            Log.e(TAG, "Cancelled task " + s);
         }
 
         @Override
         protected void onCancelled() {
             super.onCancelled();
+            Log.e(TAG, "Cancelled task");
         }
     }
 
