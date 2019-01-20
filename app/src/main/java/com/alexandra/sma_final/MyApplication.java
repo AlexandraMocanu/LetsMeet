@@ -18,6 +18,7 @@ import com.alexandra.sma_final.receivers.CheckConnectivity;
 import androidx.annotation.NonNull;
 import io.realm.Realm;
 import io.realm.RealmConfiguration;
+import io.realm.RealmList;
 import realm.City;
 import realm.Conversation;
 import realm.Message;
@@ -89,13 +90,19 @@ public class MyApplication extends Application implements AsyncResponse<UserDTO>
             setScore(10);
             setTitle("My New Topic");
             setCity("Timisoara");
+            Message message = new Message();
+            message.setText("new Topic text!");
+            setMessage(message);
         }});
         requestGateway.putConversation(new Conversation(){{
             setTopicId(10L);
+            Message message = new Message();
+            message.setText("Opening Message");
+            setMessages(new RealmList<Message>(message));
         }});
         requestGateway.putMessage(new Message() {{
             setText("My new Message text");
-            setConversationId(6L);
+            setConversationId(4L);
         }});
         requestGateway.putRating(new Rating() {{
             setScore(1);
