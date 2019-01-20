@@ -1,6 +1,8 @@
 package com.alexandra.sma_final.activities;
 
 import android.graphics.Typeface;
+import android.location.Address;
+import android.location.Geocoder;
 import android.os.Bundle;
 import androidx.fragment.app.Fragment;
 
@@ -14,7 +16,12 @@ import com.alexandra.sma_final.MyApplication;
 import com.alexandra.sma_final.R;
 import com.alexandra.sma_final.customviews.MontserratTextView;
 
+import com.alexandra.sma_final.services.GPSTracker;
 import com.google.android.material.bottomnavigation.LabelVisibilityMode;
+
+import java.io.IOException;
+import java.util.List;
+import java.util.Locale;
 
 public class SettingsActivity extends BaseActivity {
 
@@ -42,7 +49,8 @@ public class SettingsActivity extends BaseActivity {
         this.modifyCities = (Button) findViewById(R.id.modify_cities);
         modifyCities.setTypeface(Typeface.createFromAsset(getApplicationContext().getAssets(), "font/Montserrat-Regular.ttf"));
 
-        this.currentLocation.setText("Current city: " + MyApplication.city);
+//        this.currentLocation.setText("Current city: " + MyApplication.city);
+        this.currentLocation.setText("Current city: " + getCity());
 //        setFavoriteCities();
 
         this.modifyCities.setOnClickListener(new View.OnClickListener() {
@@ -111,6 +119,23 @@ public class SettingsActivity extends BaseActivity {
 //        }
 //
 //    }
+
+    private String getCity(){
+        String city = "No city";
+        GPSTracker gps = new GPSTracker(this);
+        Geocoder geoCoder = new Geocoder(this, Locale.getDefault());
+        List<Address> address = null;
+        try {
+            address = geoCoder.getFromLocation(gps.latitude, gps.longitude, 1);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        if (address.size() > 0) {
+            city = address.get(0).getLocality();
+        }
+
+        return city;
+    }
 
     @Override
     public String getActivityName() {
