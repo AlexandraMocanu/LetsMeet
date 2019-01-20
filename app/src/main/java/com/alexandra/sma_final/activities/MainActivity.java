@@ -6,16 +6,18 @@ import android.view.MenuItem;
 
 import com.alexandra.sma_final.MyApplication;
 import com.alexandra.sma_final.R;
-import com.alexandra.sma_final.adapters.UserAdapter;
+import com.alexandra.sma_final.adapters.ConversationAdapter;
 import com.google.android.material.bottomnavigation.LabelVisibilityMode;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import io.realm.Realm;
 import io.realm.RealmResults;
+import realm.Conversation;
 import realm.User;
 
 public class MainActivity extends BaseActivity {
@@ -29,7 +31,8 @@ public class MainActivity extends BaseActivity {
     private LinearLayoutManager layoutManager;
 
     private ArrayList<User> mUsers;
-    private static UserAdapter adapter;
+    private ArrayList<Conversation> mConversations;
+    private static ConversationAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,30 +57,23 @@ public class MainActivity extends BaseActivity {
         ((MyApplication)getApplicationContext()).requestGateway.getUserConversations();
 
         mUsers = new ArrayList<User>();
+        mConversations = new ArrayList<Conversation>();
         try(Realm realm = Realm.getDefaultInstance()) {
             realm.executeTransaction(inRealm -> {
-                final RealmResults<User> users  = realm.where(User.class).findAll();
-                if (users.size() != 0){
-                    for (User u: users){
-                        addUser(u);
+                final RealmResults<Conversation> convs  = realm.where(Conversation.class).findAll();
+                if (convs.size() != 0){
+                    for (Conversation c: convs){
+                        addConversation(c);
+//                        addUser(u);
                     }
                 }
             });
         }
 
-//        AsyncResponse<ArrayList<UserDTO>> response = new AsyncResponse<ArrayList<UserDTO>>() {
-//            @Override
-//            public void processFinish(ArrayList<UserDTO> output) {
-//                for (UserDTO u : output){
-//                    mUsers.add(u);
-//                }
-//            }
-//        };
-//        ((MyApplication) getApplication()).requestGateway.getAllUsers(response);
+        // sort conversations on latest created
+        sortConv();
 
-        // sort newest message
-
-        adapter = new UserAdapter(mUsers, this);
+        adapter = new ConversationAdapter(mConversations, this);
 
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -100,5 +96,23 @@ public class MainActivity extends BaseActivity {
 
     public void addUser(User u){
         mUsers.add(u);
+    }
+
+    public void addConversation(Conversation c){
+        mConversations.add(c);
+    }
+
+    public void sortConv(){
+        mConversations.sort(new Comparator<Conversation>() {
+            @Override
+            public int compare(Conversation o1, Conversation o2) {
+                if(o1.getId() > o2.getId()){
+                    return 1;
+                }else if(o1.getId() < o2.getId()){
+                    return -1;
+                }
+                return 0;
+            }
+        });
     }
 }

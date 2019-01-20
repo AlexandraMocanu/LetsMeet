@@ -22,6 +22,7 @@ import java.util.Random;
 
 import io.realm.Realm;
 import io.realm.RealmQuery;
+import realm.Conversation;
 import realm.Pin;
 import realm.Topic;
 
@@ -108,9 +109,13 @@ public class RequestActivity extends BaseActivity {
                 mIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 String username = mTopic.getPostedBy().getUsername();
                 Long id = mTopic.getId();
-                mIntent.putExtra("usernameTopic", username);
-                mIntent.putExtra("usernameRespond", ((MyApplication)getApplicationContext()).getCurrentUser().getUsername());
-                mIntent.putExtra("idTopic", id);
+                Conversation conv  = new Conversation();
+                conv.setRespondingUserId(((MyApplication)getApplicationContext()).getCurrentUser().getId());
+                conv.setTopicId(id);
+                ((MyApplication)getBaseContext()).requestGateway.putConversation(conv);
+                mIntent.putExtra("usernameTopic", username); //username author
+                mIntent.putExtra("usernameRespond", ((MyApplication)getApplicationContext()).getCurrentUser().getId()); //responding user id = me
+                mIntent.putExtra("idTopic", id); //topic id
                 getApplicationContext().startActivity(mIntent);
             }
         });
