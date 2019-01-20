@@ -7,7 +7,7 @@ Let's Meet! is the only Application which does not discriminate based on looks, 
 
 Travelling to a new city? Find new friends to hang out with!
 
-2 Solutie propusa (non tehnica)
+2. Solutie propusa (non tehnica)
 Anonimat
 * While the android app is completely anonymous, however the intended purpose excludes anonymity.
 People (who enjoy chatting together) will inevitably meet, at which point the anonymity disappears.

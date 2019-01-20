@@ -17,6 +17,8 @@ public class Message extends RealmObject implements GetIdCompliant{
 
     private Long timestampMillis;
 
+    private Long conversationId;
+
     public String getText() {
         return text;
     }
@@ -49,4 +51,11 @@ public class Message extends RealmObject implements GetIdCompliant{
         this.id = id;
     }
 
+    public Long getConversationId() {
+        return conversationId;
+    }
+
+    public void setConversationId(Long conversationId) {
+        this.conversationId = conversationId;
+    }
 }
