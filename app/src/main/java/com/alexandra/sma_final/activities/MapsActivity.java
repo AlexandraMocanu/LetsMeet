@@ -2,6 +2,7 @@ package com.alexandra.sma_final.activities;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+
 import androidx.fragment.app.Fragment;
 
 import android.content.pm.PackageManager;
@@ -16,6 +17,7 @@ import androidx.core.content.ContextCompat;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.alexandra.sma_final.MyApplication;
 import com.alexandra.sma_final.services.GPSTracker;
 import com.alexandra.sma_final.fragments.MarkerFragment;
 import com.alexandra.sma_final.R;
@@ -55,9 +57,9 @@ public class MapsActivity extends BaseActivity implements OnMapReadyCallback, Go
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
 
-        try{
+        try {
             topicId = getIntent().getExtras().getLong("topicId");
-        }catch (Exception e){
+        } catch (Exception e) {
 
         }
 
@@ -100,7 +102,7 @@ public class MapsActivity extends BaseActivity implements OnMapReadyCallback, Go
         GPSTracker gps = new GPSTracker(this);
         LatLng position = null;
         if (topicId != null) {
-            try(Realm realm = Realm.getDefaultInstance()) {
+            try (Realm realm = Realm.getDefaultInstance()) {
                 realm.executeTransaction(inRealm -> {
                     final Topic topic = realm.where(Topic.class).equalTo("id", topicId).findFirst();
                     if (topic != null) {
@@ -110,14 +112,13 @@ public class MapsActivity extends BaseActivity implements OnMapReadyCallback, Go
             }
 
             position = new LatLng(mTopic.getCoordX(), mTopic.getCoordY());
-        }
-        else {
+        } else {
             if (gps.canGetLocation()) {
                 position = new LatLng(gps.getLatitude(), gps.getLongitude());
             }
         }
 
-        if (position != null){
+        if (position != null) {
             //            mMap.addMarker(new MarkerOptions().position(currentPosition).title("You are here");
             CameraPosition cameraPosition = new CameraPosition.Builder()
                     .target(position)    // Sets the center of the map to location user
@@ -130,19 +131,7 @@ public class MapsActivity extends BaseActivity implements OnMapReadyCallback, Go
         mMap.setOnMarkerClickListener(this);
     }
 
-    private void enableMyLocation() {
-        if (ContextCompat.checkSelfPermission(this,
-                Manifest.permission.ACCESS_FINE_LOCATION)
-                == PackageManager.PERMISSION_GRANTED) {
-            mMap.setMyLocationEnabled(true);
-        } else {
-            ActivityCompat.requestPermissions(this, new String[]
-                            {Manifest.permission.ACCESS_FINE_LOCATION,
-                            Manifest.permission.ACCESS_COARSE_LOCATION},
-                    REQUEST_LOCATION_PERMISSION);
-        }
-    }
-
+    @SuppressLint("MissingPermission")
     @Override
     public void onRequestPermissionsResult(int requestCode,
                                            @NonNull String[] permissions,
@@ -154,7 +143,10 @@ public class MapsActivity extends BaseActivity implements OnMapReadyCallback, Go
                 if (grantResults.length > 0
                         && grantResults[0]
                         == PackageManager.PERMISSION_GRANTED) {
-                    enableMyLocation();
+                    boolean enabled = enableMyLocation();
+                    if (enabled == true) {
+                        mMap.setMyLocationEnabled(enabled);
+                    }
                     break;
                 }
         }
