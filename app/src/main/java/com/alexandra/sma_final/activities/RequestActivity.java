@@ -112,7 +112,7 @@ public class RequestActivity extends BaseActivity {
                 Conversation conv  = new Conversation();
                 conv.setRespondingUserId(((MyApplication)getApplicationContext()).getCurrentUser().getId());
                 conv.setTopicId(id);
-                ((MyApplication)getBaseContext()).requestGateway.putConversation(conv);
+                ((MyApplication)getApplicationContext()).requestGateway.putConversation(conv);
                 mIntent.putExtra("usernameTopic", username); //username author
                 mIntent.putExtra("usernameRespond", ((MyApplication)getApplicationContext()).getCurrentUser().getId()); //responding user id = me
                 mIntent.putExtra("idTopic", id); //topic id

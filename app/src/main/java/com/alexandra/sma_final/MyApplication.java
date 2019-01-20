@@ -77,7 +77,7 @@ public class MyApplication extends Application implements AsyncResponse<UserDTO>
         requestGateway.authenticate(new CurrentUserCallback(this));
 
         doGetRequests();
-//        createMockObjects();
+        createMockObjects();
         doPutRequests();
 
     }
