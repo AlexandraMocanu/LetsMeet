@@ -16,7 +16,6 @@ public class Conversation extends RealmObject implements GetIdCompliant{
     @Required
     private Long topicId;
 
-    @Required
     private Long respondingUserId;
 
     private RealmList<Message> messages;
