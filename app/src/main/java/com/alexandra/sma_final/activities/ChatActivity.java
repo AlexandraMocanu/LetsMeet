@@ -1,5 +1,6 @@
 package com.alexandra.sma_final.activities;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -193,4 +194,5 @@ public class ChatActivity extends BaseActivity{
         super.onStop();
         conversationHelper.getConversation().removeChangeListener(conversationHelper);
     }
+
 }
