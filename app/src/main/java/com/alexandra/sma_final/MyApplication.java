@@ -1,12 +1,16 @@
 package com.alexandra.sma_final;
 
 import android.app.Application;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentSender;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
+import android.util.Log;
 import android.widget.Toast;
 
+import com.alexandra.sma_final.activities.BaseActivity;
 import com.alexandra.sma_final.font.FontsOverride;
 import com.alexandra.sma_final.rest.UserDTO;
 import com.alexandra.sma_final.server.AsyncResponse;
@@ -14,6 +18,16 @@ import com.alexandra.sma_final.server.Callback;
 import com.alexandra.sma_final.server.RequestGateway;
 import com.alexandra.sma_final.receivers.CheckConnectivity;
 import com.alexandra.sma_final.services.GPSTracker;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.PendingResult;
+import com.google.android.gms.common.api.ResultCallback;
+import com.google.android.gms.common.api.Status;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.location.LocationSettingsRequest;
+import com.google.android.gms.location.LocationSettingsResult;
+import com.google.android.gms.location.LocationSettingsStatusCodes;
+import com.google.android.gms.maps.LocationSource;
 
 import java.io.IOException;
 import java.util.List;
@@ -42,8 +56,6 @@ public class MyApplication extends Application implements AsyncResponse<UserDTO>
     public void onCreate() {
         super.onCreate();
 
-//        TypefaceUtil.overrideFont(this, "SERIF", "font/Montserrat-Regular.ttf");
-
         startService(new Intent(getApplicationContext(), CheckConnectivity.class));
 
         FontsOverride.setDefaultFont(this, "DEFAULT", "font/Montserrat-Regular.ttf");
@@ -68,23 +80,6 @@ public class MyApplication extends Application implements AsyncResponse<UserDTO>
 //        createMockObjects();
         doPutRequests();
 
-        GPSTracker gps = new GPSTracker(this);
-        currentLocation = gps.location;
-
-        Geocoder geoCoder = new Geocoder(this, Locale.getDefault());
-        List<Address> address = null;
-        try {
-            address = geoCoder.getFromLocation(gps.latitude, gps.longitude, 1);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        if (address != null && address.size() > 0) {
-            city = address.get(0).getLocality();
-        } else {
-            System.out.println("asdasasdasdasdasdasd city not found !");
-            Toast.makeText(this, "Could not get current location! Is GeoLocation active?", Toast.LENGTH_LONG).show();
-            city = "Timisoara";
-        }
     }
 
     public void doGetRequests() {
@@ -330,5 +325,25 @@ public class MyApplication extends Application implements AsyncResponse<UserDTO>
         public void execute() {
             requestGateway.getCurrentUser(delegate);
         }
+    }
+
+    public void setLocation(Location l){
+        this.currentLocation = l;
+//        GPSTracker gps = new GPSTracker(this);
+//        currentLocation = gps.location;
+//
+//        Geocoder geoCoder = new Geocoder(this, Locale.getDefault());
+//        List<Address> address = null;
+//        try {
+//            address = geoCoder.getFromLocation(gps.latitude, gps.longitude, 1);
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+//        if (address != null && address.size() > 0) {
+//            city = address.get(0).getLocality();
+//        } else {
+//            Toast.makeText(this, "Could not get current location! Is GeoLocation active?", Toast.LENGTH_LONG).show();
+//            city = "Timisoara";
+//        }
     }
 }
