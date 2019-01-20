@@ -81,7 +81,7 @@ public class MarkerFragment extends Fragment {
             public void onClick(View view) {
                 Intent mIntent = new Intent(getContext(), MapsActivity.class);
                 mIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                mIntent.putExtra("username_id", mTopic.getPostedBy().getId());
+//                mIntent.putExtra("username_id", mTopic.getPostedBy().getId());
                 getContext().startActivity(mIntent);
             }
         });

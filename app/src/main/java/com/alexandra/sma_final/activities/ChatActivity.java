@@ -14,6 +14,7 @@ import com.alexandra.sma_final.customviews.MontserratEditText;
 import com.alexandra.sma_final.rest.UserDTO;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.bottomnavigation.LabelVisibilityMode;
+import com.google.android.material.textfield.TextInputEditText;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -22,12 +23,14 @@ import java.util.List;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import io.realm.Realm;
+import io.realm.RealmChangeListener;
 import io.realm.RealmResults;
 import realm.Conversation;
+import realm.ConversationResults;
 import realm.Message;
 import realm.User;
 
-public class ChatActivity extends BaseActivity {
+public class ChatActivity extends BaseActivity implements RealmChangeListener<Conversation> {
 
     protected String activityName = "Messenger";
 
@@ -37,10 +40,12 @@ public class ChatActivity extends BaseActivity {
     private List<Message> messages;
     private UserDTO mCurrentUser;
     private User mRespondingUser;
+    private RealmResults<Conversation> convs;
     private static Conversation conversation;
+    private Long topicId;
 
     private Button sendButton;
-    private MontserratEditText writeMessage;
+    private TextInputEditText writeMessage;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,14 +53,59 @@ public class ChatActivity extends BaseActivity {
         setContentView(R.layout.activity_message_list);
 
         sendButton = (Button) findViewById(R.id.button_chatbox_send);
-        writeMessage = (MontserratEditText) findViewById(R.id.edittext_chatbox);
+        writeMessage = (TextInputEditText) findViewById(R.id.edittext_chatbox);
 
         setListeners();
         mActivity.setText(getActivityName());
 
         mMessageRecycler = (RecyclerView) findViewById(R.id.reyclerview_message_list);
-        messages = new ArrayList<Message>();
 
+        messages = new ArrayList<Message>();
+        setMessages();
+
+        //get conversation from Realm
+//        ((MyApplication)getApplication()).requestGateway.getUserConversations();
+//        try(Realm realm = Realm.getDefaultInstance()) {
+//            realm.executeTransaction(inRealm -> {
+//                final RealmResults<Conversation> convs  = realm.where(Conversation.class).equalTo("topicId", topicId).findAll();
+//                for(Conversation c : convs){
+//                    if(c.getRespondingUserId() == mCurrentUser.getId()){
+//                        if(c != null){
+//                            setConversation(c);
+//                        }
+//                    }
+//                }
+//            });
+//        }
+
+        mMessageAdapter = new MessageListAdapter(this, messages);
+        mLayoutManager = new LinearLayoutManager(this);
+        mMessageRecycler.setLayoutManager(mLayoutManager);
+        mMessageRecycler.setAdapter(mMessageAdapter);
+
+        //TODO: send button
+        sendButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if((!writeMessage.getText().toString().equals("")) || (!writeMessage.getText().toString().equals(null))){
+                    Message newMessage = new Message();
+                    newMessage.setText(writeMessage.getText().toString());
+                    newMessage.setTimestampMillis(System.currentTimeMillis());
+                    ((MyApplication)getApplication()).requestGateway.putMessage(newMessage);
+                }
+            }
+        });
+    }
+
+    private void setUser(User u){
+        mRespondingUser = u;
+    }
+
+    private void setConversation(Conversation c){
+        conversation = c;
+    }
+
+    private void setMessages(){
         //set responding user = author of topic
         String respondingUser = getIntent().getExtras().getString("usernameTopic");
         ((MyApplication)getApplication()).requestGateway.getUserByUsername(respondingUser);
@@ -69,59 +119,49 @@ public class ChatActivity extends BaseActivity {
         }
 
         //set current user
-        Long currentUserId = getIntent().getExtras().getLong("usernameRespond_id");
-        if(currentUserId == ((MyApplication)getApplication()).getCurrentUser().getId()){
+//        Long currentUserId = getIntent().getExtras().getLong("usernameRespond_id");
+        if(((MyApplication)getApplication()).getCurrentUser() != null){
             mCurrentUser = ((MyApplication)getApplication()).getCurrentUser();
         }
 
         //set conversation
-        Long topicId = getIntent().getExtras().getLong("idTopic");
+        topicId = getIntent().getExtras().getLong("idTopic");
+
         //get conversation from Realm
         ((MyApplication)getApplication()).requestGateway.getUserConversations();
         try(Realm realm = Realm.getDefaultInstance()) {
             realm.executeTransaction(inRealm -> {
                 final RealmResults<Conversation> convs  = realm.where(Conversation.class).equalTo("topicId", topicId).findAll();
                 for(Conversation c : convs){
-                    if(c.getRespondingUserId() == mCurrentUser.getId()){
-                        if(c != null){
-                            setConversation(c);
+                    if(mCurrentUser!=null){
+                        if(c.getRespondingUserId() == mCurrentUser.getId()){
+                            if(c != null){
+                                setConversation(c);
+                            }
                         }
                     }
                 }
             });
         }
+        conversation.addChangeListener(this);
 
-        //set messages
         messages = new ArrayList<>();
-        messages.addAll(conversation.getMessages());
-        if(messages.size() > 2){
-            messages.sort(new Comparator<Message>() {
-                @Override
-                public int compare(Message o1, Message o2) {
-                    if(o1.getTimestampMillis() > o2.getTimestampMillis()){
-                        return 1;
-                    }else if(o1.getTimestampMillis() < o2.getTimestampMillis()){
-                        return -1;
+        if(conversation != null){
+            messages.addAll(conversation.getMessages());
+            if(messages.size() > 2){
+                messages.sort(new Comparator<Message>() {
+                    @Override
+                    public int compare(Message o1, Message o2) {
+                        if(o1.getTimestampMillis() > o2.getTimestampMillis()){
+                            return 1;
+                        }else if(o1.getTimestampMillis() < o2.getTimestampMillis()){
+                            return -1;
+                        }
+                        return 0;
                     }
-                    return 0;
-                }
-            });
+                });
+            }
         }
-
-        mMessageAdapter = new MessageListAdapter(this, messages);
-        mLayoutManager = new LinearLayoutManager(this);
-        mMessageRecycler.setLayoutManager(mLayoutManager);
-        mMessageRecycler.setAdapter(mMessageAdapter);
-
-        //TODO: send button
-    }
-
-    private void setUser(User u){
-        mRespondingUser = u;
-    }
-
-    private void setConversation(Conversation c){
-        conversation = c;
     }
 
     @Override
@@ -149,5 +189,23 @@ public class ChatActivity extends BaseActivity {
     @Override
     public String getActivityName() {
         return activityName;
+    }
+
+    @Override
+    public void onChange(Conversation newConv) { // called once the query complete and on every update
+        mMessageAdapter.notifyDataSetChanged();
+        mMessageAdapter.notifyItemInserted(mMessageAdapter.getItemCount());
+    }
+
+    @Override
+    public void onStart(){
+        super.onStart();
+        setMessages();
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        conversation.removeChangeListener(this);
     }
 }

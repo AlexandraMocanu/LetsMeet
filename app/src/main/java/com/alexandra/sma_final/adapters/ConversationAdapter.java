@@ -82,10 +82,12 @@ public class ConversationAdapter extends RecyclerView.Adapter<ConversationAdapte
         MontserratTextView MontserratTextView = viewHolder.username;
         try(Realm realm = Realm.getDefaultInstance()) {
             realm.executeTransaction(inRealm -> {
-                final RealmResults<User> user  = realm.where(User.class).equalTo("id", conv.getRespondingUserId()).findAll();
-                if (user.size() != 0){
-                    User u = user.first();
-                    setUserConv(u);
+                if(conv.getRespondingUserId() != null){
+                    final RealmResults<User> user  = realm.where(User.class).equalTo("id", conv.getRespondingUserId()).findAll();
+                    if (user.size() != 0){
+                        User u = user.first();
+                        setUserConv(u);
+                    }
                 }
             });
         }
@@ -95,6 +97,7 @@ public class ConversationAdapter extends RecyclerView.Adapter<ConversationAdapte
 
         //find messages
         MontserratTextView title = viewHolder.title;
+        MontserratTextView time =  viewHolder.time;
         ArrayList<Message> messages = new ArrayList<>();
         messages.addAll(conv.getMessages());
 
@@ -113,33 +116,36 @@ public class ConversationAdapter extends RecyclerView.Adapter<ConversationAdapte
             title.setText(messages.get(messages.size()-1).getText());
 
             //set timestamp
-            MontserratTextView time =  viewHolder.time;
             Date date = new Date(messages.get(messages.size()-1).getTimestampMillis());
             DateFormat formatter = new SimpleDateFormat("HH:mm:ss");
             formatter.setTimeZone(TimeZone.getTimeZone("UTC"));
             String dateFormatted = formatter.format(date);
             time.setText(dateFormatted);
-
-            ImageView mImage = viewHolder.mImage;
-            final String img = "user_" + rnd.nextInt(10);
-            mImage.setImageDrawable(
-                    context.getResources().getDrawable(((MainActivity)context).getResourceID(img, "drawable",
-                            context))
-            );
-
-            CardView cardView = viewHolder.mCardView;
-            cardView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Intent mIntent = new Intent(context, ChatActivity.class);
-                    mIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                    mIntent.putExtra("usernameTopic", ((MyApplication)((MainActivity)context).getApplication()).getCurrentUser().getId()); //username author
-                    mIntent.putExtra("usernameRespond_id", currentUserConv.getId()); //responding user id
-                    mIntent.putExtra("idTopic", conv.getTopicId()); //topic id
-                    context.startActivity(mIntent);
-                }
-            });
         }
+        else{
+            title.setText("");
+            time.setText("");
+        }
+
+        ImageView mImage = viewHolder.mImage;
+        final String img = "user_" + rnd.nextInt(10);
+        mImage.setImageDrawable(
+                context.getResources().getDrawable(((MainActivity)context).getResourceID(img, "drawable",
+                        context))
+        );
+
+        CardView cardView = viewHolder.mCardView;
+        cardView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent mIntent = new Intent(context, ChatActivity.class);
+                mIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                mIntent.putExtra("usernameTopic", ((MyApplication)((MainActivity)context).getApplication()).getCurrentUser().getId()); //username author
+//                mIntent.putExtra("usernameRespond_id", currentUserConv.getId()); //responding user id
+                mIntent.putExtra("idTopic", conv.getTopicId()); //topic id
+                context.startActivity(mIntent);
+            }
+        });
     }
 
     private void setUserConv(User u){

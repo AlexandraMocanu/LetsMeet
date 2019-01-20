@@ -40,8 +40,9 @@
         android:orientation="horizontal"
         android:scrollbars="vertical">
 
-        <com.alexandra.sma_final.customviews.MontserratEditText
+        <com.alexandra.sma_final.customviews.MontserratInputEditText
             android:id="@+id/edittext_chatbox"
+            android:text="Your message here"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
