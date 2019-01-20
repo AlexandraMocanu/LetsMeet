@@ -5,6 +5,8 @@ import android.app.Application;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.location.Address;
+import android.location.Geocoder;
 import android.location.Location;
 
 import com.alexandra.sma_final.font.FontsOverride;
@@ -14,6 +16,10 @@ import com.alexandra.sma_final.server.AsyncResponse;
 import com.alexandra.sma_final.server.Callback;
 import com.alexandra.sma_final.server.RequestGateway;
 import com.alexandra.sma_final.receivers.CheckConnectivity;
+
+import java.io.IOException;
+import java.util.List;
+import java.util.Locale;
 
 import androidx.annotation.NonNull;
 import io.realm.Realm;
@@ -29,7 +35,7 @@ import realm.User;
 public class MyApplication extends Application implements AsyncResponse<UserDTO> {
 
 
-    private Location currentLocation;
+    private static Location currentLocation;
     public static String city;
     public RequestGateway requestGateway;
 
@@ -330,21 +336,20 @@ public class MyApplication extends Application implements AsyncResponse<UserDTO>
 
     public void setLocation(Location l){
         this.currentLocation = l;
-//        GPSTracker gps = new GPSTracker(this);
-//        currentLocation = gps.location;
-//
-//        Geocoder geoCoder = new Geocoder(this, Locale.getDefault());
-//        List<Address> address = null;
-//        try {
-//            address = geoCoder.getFromLocation(gps.latitude, gps.longitude, 1);
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-//        if (address != null && address.size() > 0) {
-//            city = address.get(0).getLocality();
-//        } else {
-//            Toast.makeText(this, "Could not get current location! Is GeoLocation active?", Toast.LENGTH_LONG).show();
-//            city = "Timisoara";
-//        }
+
+        Geocoder geoCoder = new Geocoder(this, Locale.getDefault());
+        List<Address> address = null;
+        try {
+            address = geoCoder.getFromLocation(currentLocation.getLatitude(), currentLocation.getLongitude(), 1);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        if (address != null && address.size() > 0) {
+            city = address.get(0).getLocality();
+        }
+
+        if(city == null){
+            city = "No city";
+        }
     }
 }

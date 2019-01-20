@@ -169,7 +169,9 @@ abstract public class BaseActivity extends AppCompatActivity implements
         });
         if (this instanceof PostRequestActivity) {
             mMyIcon.setEnabled(false);
+            mMyIcon.setActivated(false);
             mMyIcon.setAlpha(0.0F);
+            mMyIcon.setVisibility(View.GONE);
         }
 
 //        final String img = "user_icon_" + rnd.nextInt(10);

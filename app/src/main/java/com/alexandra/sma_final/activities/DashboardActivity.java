@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.alexandra.sma_final.MyApplication;
 import com.alexandra.sma_final.R;
 import com.alexandra.sma_final.customviews.CityC;
 import com.alexandra.sma_final.customviews.CityCAdapter;

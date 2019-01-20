@@ -99,12 +99,6 @@ public class TopicsViewHolder extends ChildViewHolder {
                             Toast.LENGTH_LONG).show();
                     int idx_parent = 0;
                     for(int i = 0; i < adapter.mParentItemList.size(); i++){
-//                        if(adapter.mItemList.get(i) instanceof ParentWrapper){
-//                            if( ( (CityC) ((ParentWrapper) adapter.mItemList.get(i))
-//                                    .getParentListItem()).getName().equals(t.getCity())){
-//                                idx_parent = i;
-//                            }
-//                        }
                         if( ((CityC) adapter.mParentItemList.get(i)).getName().equals(t.getCity()) ){
                             idx_parent = i;
                             for(int j = 0; j < ((CityC) adapter.mParentItemList.get(i)).getChildItemList().size(); j++){
@@ -124,18 +118,9 @@ public class TopicsViewHolder extends ChildViewHolder {
                         }
                     }
 
-//                    adapter.notifyChildItemRemoved(idx_parent, getAdapterPosition());\
                     adapter.mItemList.remove(idx_child);
                     adapter.notifyItemRemoved(idx_child);
                 }
-//                }, new Realm.Transaction.OnError() {
-//                    @Override
-//                    public void onError(Throwable error) {
-//                        Toast.makeText(
-//                                view.getContext(),
-//                                "Topic doesn't exist in your pins.",
-//                                Toast.LENGTH_LONG).show();
-//                    }
             });
         }
     }

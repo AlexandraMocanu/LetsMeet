@@ -11,6 +11,7 @@ import com.alexandra.sma_final.R;
 import com.alexandra.sma_final.customviews.MontserratEditText;
 
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
@@ -40,7 +41,7 @@ public class PostRequestActivity extends BaseActivity implements PlaceSelectionL
 //    private AutoCompleteTextView mAddress;
     private PlaceAutocompleteFragment placeAutocompleteFragment;
     private Place selectedAddress;
-    private ImageButton mPostButton;
+    private Button mPostButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,7 +58,11 @@ public class PostRequestActivity extends BaseActivity implements PlaceSelectionL
 //        mDate = (MontserratEditText) findViewById(R.id.date);
 //        mTime = (MontserratEditText) findViewById(R.id.time);
 //        mAddress = (AutoCompleteTextView) findViewById(R.id.address);
-        mPostButton = (ImageButton) findViewById(R.id.buttonPost);
+        mPostButton = (Button) findViewById(R.id.buttonPost);
+        mPostButton.setActivated(true);
+        mPostButton.setEnabled(true);
+        mPostButton.setAlpha(1.0F);
+        mPostButton.setVisibility(View.VISIBLE);
 
         PlaceAutocompleteFragment autocompleteFragment = (PlaceAutocompleteFragment)
                 getFragmentManager().findFragmentById(R.id.autocomplete_fragment);
@@ -80,7 +85,7 @@ public class PostRequestActivity extends BaseActivity implements PlaceSelectionL
                 List<Address> addresses = null;
                 try {
                     addresses = gcd.getFromLocation(selectedAddress.getLatLng().latitude,
-                            selectedAddress.getLatLng().latitude, 1);
+                            selectedAddress.getLatLng().longitude, 1);
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -90,6 +95,8 @@ public class PostRequestActivity extends BaseActivity implements PlaceSelectionL
                 newTopic.setCoordY(selectedAddress.getLatLng().longitude);
 
                 ((MyApplication) getApplication()).requestGateway.putTopic(newTopic);
+
+                Toast.makeText(getApplicationContext(), "Posted new topic!", Toast.LENGTH_LONG).show();
             }
         });
 
@@ -108,7 +115,8 @@ public class PostRequestActivity extends BaseActivity implements PlaceSelectionL
     @Override
     public void onPlaceSelected(Place place) {
         this.selectedAddress = place;
-        Toast.makeText(getApplicationContext(), "" + place.getName() + place.getLatLng(), Toast.LENGTH_LONG).show();
+//        Toast.makeText(getApplicationContext(), "" + place.getName() + place.getLatLng(), Toast.LENGTH_LONG).show();
+        Toast.makeText(getApplicationContext(), "Selected: "+place.getName(), Toast.LENGTH_LONG).show();
     }
 
     @Override

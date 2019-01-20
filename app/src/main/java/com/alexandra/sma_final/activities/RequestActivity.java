@@ -22,6 +22,7 @@ import java.util.Random;
 
 import io.realm.Realm;
 import io.realm.RealmQuery;
+import io.realm.RealmResults;
 import realm.Conversation;
 import realm.Pin;
 import realm.Topic;
@@ -33,6 +34,7 @@ public class RequestActivity extends BaseActivity {
     private Button mButtonMessage;
     private Button mButtonSeeOnMap;
     private Button mButtonPin;
+    private boolean pinOrUnpin;
     private ImageView mRandomPicture;
     private MontserratTextView mTextTitle;
     private MontserratTextView mTextMessage;
@@ -130,10 +132,37 @@ public class RequestActivity extends BaseActivity {
             }
         });
 
+        try(Realm realm = Realm.getDefaultInstance()) {
+            realm.executeTransaction(inRealm -> {
+                final RealmResults<Pin> pins  = realm.where(Pin.class).findAll();
+                if (pins.size() != 0){
+                    for (Pin p: pins){
+                        if(p.getTopicID().equals(topicID)){
+                            pinOrUnpin = true;
+                        }
+                    }
+                }
+            });
+        }
+
+        if(pinOrUnpin == true){
+            mButtonPin.setText("Unpin");
+        }else{
+            mButtonPin.setText("Pin");
+        }
+
         mButtonPin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                pinTopic();
+                if(pinOrUnpin == true){
+                    unpinTopic();
+                    mButtonPin.setText("Pin");
+                    pinOrUnpin = false;
+                }else{
+                    pinTopic();
+                    mButtonPin.setText("Unpin");
+                    pinOrUnpin = true;
+                }
             }
         });
 
@@ -172,14 +201,27 @@ public class RequestActivity extends BaseActivity {
                             "Succesfully pinned Topic: " + mTopic.getTitle(),
                             Toast.LENGTH_LONG).show();
                 }
-//            }, new Realm.Transaction.OnError() {
-//                @Override
-//                public void onError(Throwable error) {
-//                    Toast.makeText(
-//                            getActivity(),
-//                            "Topic " + mTopic.getTitle() + " is already in your pinned list.",
-//                            Toast.LENGTH_LONG).show();
-//                }
+            });
+        }
+    }
+
+    private void unpinTopic(){
+        Long topicID = mTopic.getId();
+        try (Realm realm = Realm.getDefaultInstance()) {
+            realm.executeTransactionAsync(new Realm.Transaction() {
+                @Override
+                public void execute(Realm bgRealm) {
+                    RealmResults<Pin> rows = bgRealm.where(Pin.class).equalTo("topicID", topicID).findAll();
+                    rows.deleteAllFromRealm();
+                }
+            }, new Realm.Transaction.OnSuccess() {
+                @Override
+                public void onSuccess() {
+                    Toast.makeText(
+                            getBaseContext(),
+                            "Succesfully deleted Pin: " + mTopic.getTitle(),
+                            Toast.LENGTH_LONG).show();
+                }
             });
         }
     }

@@ -31,9 +31,10 @@ public class PeriodicRequestService extends IntentService {
 
     public void doGetRequests() {
         reqGtw.getNearbyTopics(45.731527D, 21.240686D, null, mApp.refreshTime);
+//        reqGtw.getNearbyTopics(((MyApplication)getApplication()).city, mApp.refreshTime);
         reqGtw.getNearbyTopics("Timisoara", mApp.refreshTime);
-//        requestGateway.getAllUsers();
-//        requestGateway.getUserByUsername("system");
+        reqGtw.getAllUsers();
+//        req.getUserByUsername("system");
         reqGtw.getUserConversations(mApp.refreshTime);
     }
 }
