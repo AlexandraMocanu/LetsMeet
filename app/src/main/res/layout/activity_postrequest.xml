@@ -20,163 +20,90 @@
 
     <!--TODO: add icon on top? -->
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <include
+        android:id="@+id/include3"
+        layout="@layout/activity_base"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/backgroundLight">
+        android:layout_alignParentBottom="true"
+        app:layout_constraintTop_toTopOf="parent" />
 
-        <include
-            android:id="@+id/include3"
-            layout="@layout/activity_base"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_alignParentBottom="true"
-            app:layout_constraintTop_toTopOf="parent" />
+    <Button
+        android:id="@+id/buttonPost"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginEnd="8dp"
+        android:text="Post"
+        app:icon="@drawable/post" />
 
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="70dp"
-            android:layout_marginEnd="8dp"
-            android:background="@color/backgroundLight"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="70dp"
+        android:layout_marginEnd="8dp"
+        android:background="@color/backgroundLight"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
-            <com.alexandra.sma_final.customviews.MontserratInputEditText
-                android:id="@+id/title"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:layout_marginTop="8dp"
-                android:layout_weight="1"
-                android:fontFamily="monospace"
-                android:hint="A nice title"
-                android:textColor="@color/primaryTextColor"
-                android:textColorHint="@color/primaryTextColor"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <com.alexandra.sma_final.customviews.MontserratInputEditText
-                android:id="@+id/message"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:layout_marginTop="4dp"
-                android:layout_marginEnd="8dp"
-                android:elegantTextHeight="true"
-                android:elevation="0dp"
-                android:fontFamily="monospace"
-                android:forceHasOverlappingRendering="false"
-                android:gravity="start"
-                android:hint="Have you got an extra ticket to something? Or you just want to hang out with someone? Write what you wish for here!"
-                android:isScrollContainer="true"
-                android:maxLines="6"
-                android:minLines="6"
-                android:scrollbars="vertical"
-                android:textAlignment="textStart"
-                android:textColor="@color/primaryTextColor"
-                android:textColorHint="@color/primaryTextColor"
-                app:layout_constrainedWidth="true"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/title" />
-
-            <!--<com.alexandra.sma_final.customviews.MontserratEditText-->
-            <!--android:id="@+id/date"-->
-            <!--android:layout_width="wrap_content"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:layout_marginStart="8dp"-->
-            <!--android:layout_marginTop="8dp"-->
-            <!--android:ems="10"-->
-            <!--android:fontFamily="monospace"-->
-            <!--android:hint="Where?"-->
-            <!--android:inputType="date"-->
-            <!--android:textColor="@color/primaryTextColor"-->
-            <!--android:textColorHint="@color/primaryTextColor"-->
-            <!--app:layout_constraintStart_toStartOf="parent"-->
-            <!--app:layout_constraintTop_toBottomOf="@+id/message" />-->
-
-            <!--<com.alexandra.sma_final.customviews.MontserratEditText-->
-            <!--android:id="@+id/time"-->
-            <!--android:layout_width="wrap_content"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:layout_marginStart="8dp"-->
-            <!--android:layout_marginTop="8dp"-->
-            <!--android:ems="10"-->
-            <!--android:fontFamily="monospace"-->
-            <!--android:hint="When?"-->
-            <!--android:inputType="time"-->
-            <!--android:textColor="@color/primaryTextColor"-->
-            <!--android:textColorHint="@color/primaryTextColor"-->
-            <!--app:layout_constraintStart_toStartOf="parent"-->
-            <!--app:layout_constraintTop_toBottomOf="@+id/date" />-->
-
-            <!--<EditText-->
-            <!--android:id="@+id/address"-->
-            <!--android:layout_width="0dp"-->
-            <!--android:layout_height="75dp"-->
-            <!--android:layout_marginStart="8dp"-->
-            <!--android:layout_marginEnd="8dp"-->
-            <!--android:ems="10"-->
-            <!--android:hint="Address of event"-->
-            <!--android:inputType="textPostalAddress"-->
-            <!--app:layout_constraintEnd_toEndOf="parent"-->
-            <!--app:layout_constraintStart_toStartOf="parent"-->
-            <!--app:layout_constraintTop_toBottomOf="@+id/time" />-->
-
-            <!--<AutoCompleteTextView-->
-            <!--android:id="@+id/address"-->
-            <!--android:layout_width="0dp"-->
-            <!--android:layout_height="75dp"-->
-            <!--android:layout_marginStart="8dp"-->
-            <!--android:layout_marginEnd="8dp"-->
-            <!--android:ems="10"-->
-            <!--android:hint="Enter Place Here"-->
-            <!--android:inputType="textPostalAddress"-->
-            <!--app:layout_constraintEnd_toEndOf="parent"-->
-            <!--app:layout_constraintStart_toStartOf="parent"-->
-            <!--app:layout_constraintTop_toBottomOf="@+id/time">-->
-            <!--</AutoCompleteTextView>-->
-
-            <fragment
-                android:id="@+id/autocomplete_fragment"
-                android:name="com.google.android.gms.location.places.ui.PlaceAutocompleteFragment"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:layout_marginTop="8dp"
-                android:layout_marginEnd="8dp"
-                android:ems="10"
-                android:hint="Enter Place Here"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/message" />
-
-            <!--</AutoCompleteTextView>-->
-
-        </androidx.constraintlayout.widget.ConstraintLayout>
-
-        <ImageButton
-            android:id="@+id/buttonPost"
+        <com.alexandra.sma_final.customviews.MontserratInputEditText
+            android:id="@+id/title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="5dp"
-            android:layout_marginEnd="8dp"
-            android:background="@color/primaryLightColor"
-            android:paddingStart="0dp"
-            android:paddingLeft="0dp"
-            android:paddingEnd="0dp"
-            android:paddingRight="0dp"
-            android:text="Post"
-            android:textAlignment="center"
-            app:icon="@drawable/post_18"
-            app:iconGravity="textStart"
-            app:iconPadding="0dp"
-            app:iconSize="20dp"
-            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_weight="1"
+            android:fontFamily="monospace"
+            android:hint="A nice title"
+            android:textColor="@color/primaryTextColor"
+            android:textColorHint="@color/primaryTextColor"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
+
+        <com.alexandra.sma_final.customviews.MontserratInputEditText
+            android:id="@+id/message"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="4dp"
+            android:layout_marginEnd="8dp"
+            android:elegantTextHeight="true"
+            android:elevation="0dp"
+            android:fontFamily="monospace"
+            android:forceHasOverlappingRendering="false"
+            android:gravity="start"
+            android:hint="Have you got an extra ticket to something? Or you just want to hang out with someone? Write what you wish for here!"
+            android:isScrollContainer="true"
+            android:maxLines="6"
+            android:minLines="6"
+            android:scrollbars="vertical"
+            android:textAlignment="textStart"
+            android:textColor="@color/primaryTextColor"
+            android:textColorHint="@color/primaryTextColor"
+            app:layout_constrainedWidth="true"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/title" />
+
+        <fragment
+            android:id="@+id/autocomplete_fragment"
+            android:name="com.google.android.gms.location.places.ui.PlaceAutocompleteFragment"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            android:ems="10"
+            android:hint="Enter Place Here"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/message" />
+
+        <!--</AutoCompleteTextView>-->
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </RelativeLayout>

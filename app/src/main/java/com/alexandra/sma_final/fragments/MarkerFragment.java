@@ -19,6 +19,7 @@ import android.widget.Toast;
 
 import io.realm.Realm;
 import io.realm.RealmQuery;
+import io.realm.RealmResults;
 import realm.Pin;
 import realm.Topic;
 
@@ -26,6 +27,7 @@ public class MarkerFragment extends Fragment {
 
     private Topic mTopic;
 //    private MapView mMapView;
+    private boolean pinOrUnpin;
     private Button mButtonMessage;
     private Button mButtonPin;
     private MontserratTextView mTextTitle;
@@ -96,10 +98,31 @@ public class MarkerFragment extends Fragment {
             }
         });
 
+        try(Realm realm = Realm.getDefaultInstance()) {
+            realm.executeTransaction(inRealm -> {
+                final RealmResults<Pin> pins  = realm.where(Pin.class).findAll();
+                if (pins.size() != 0){
+                    for (Pin p: pins){
+                        if(p.getTopicID().equals(mTopic.getId())){
+                            pinOrUnpin = true;
+                        }
+                    }
+                }
+            });
+        }
+
         mButtonPin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                pinTopic();
+                if(pinOrUnpin == true){
+                    unpinTopic();
+                    mButtonPin.setText("Pin");
+                    pinOrUnpin = false;
+                }else{
+                    pinTopic();
+                    mButtonPin.setText("Unpin");
+                    pinOrUnpin = true;
+                }
             }
         });
 
@@ -129,14 +152,27 @@ public class MarkerFragment extends Fragment {
                             "Succesfully pinned Topic: " + mTopic.getTitle(),
                             Toast.LENGTH_LONG).show();
                 }
-//            }, new Realm.Transaction.OnError() {
-//                @Override
-//                public void onError(Throwable error) {
-//                    Toast.makeText(
-//                            getActivity(),
-//                            "Topic " + mTopic.getTitle() + " is already in your pinned list.",
-//                            Toast.LENGTH_LONG).show();
-//                }
+            });
+        }
+    }
+
+    private void unpinTopic(){
+        Long topicID = mTopic.getId();
+        try (Realm realm = Realm.getDefaultInstance()) {
+            realm.executeTransactionAsync(new Realm.Transaction() {
+                @Override
+                public void execute(Realm bgRealm) {
+                    RealmResults<Pin> rows = bgRealm.where(Pin.class).equalTo("topicID", topicID).findAll();
+                    rows.deleteAllFromRealm();
+                }
+            }, new Realm.Transaction.OnSuccess() {
+                @Override
+                public void onSuccess() {
+                    Toast.makeText(
+                            getActivity(),
+                            "Succesfully deleted Pin: " + mTopic.getTitle(),
+                            Toast.LENGTH_LONG).show();
+                }
             });
         }
     }

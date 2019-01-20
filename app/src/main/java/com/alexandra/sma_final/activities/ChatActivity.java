@@ -1,6 +1,5 @@
 package com.alexandra.sma_final.activities;
 
-import android.opengl.Visibility;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -10,10 +9,7 @@ import android.widget.Button;
 import com.alexandra.sma_final.MyApplication;
 import com.alexandra.sma_final.R;
 import com.alexandra.sma_final.adapters.MessageListAdapter;
-import com.alexandra.sma_final.customviews.MontserratEditText;
 import com.alexandra.sma_final.rest.UserDTO;
-import com.google.android.material.bottomnavigation.BottomNavigationView;
-import com.google.android.material.bottomnavigation.LabelVisibilityMode;
 import com.google.android.material.textfield.TextInputEditText;
 
 import java.util.ArrayList;
@@ -24,13 +20,14 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import io.realm.Realm;
 import io.realm.RealmChangeListener;
+import io.realm.RealmList;
 import io.realm.RealmResults;
 import realm.Conversation;
-import realm.ConversationResults;
+import realm.ConversationHelper;
 import realm.Message;
 import realm.User;
 
-public class ChatActivity extends BaseActivity implements RealmChangeListener<Conversation> {
+public class ChatActivity extends BaseActivity{
 
     protected String activityName = "Messenger";
 
@@ -41,7 +38,8 @@ public class ChatActivity extends BaseActivity implements RealmChangeListener<Co
     private UserDTO mCurrentUser;
     private User mRespondingUser;
     private RealmResults<Conversation> convs;
-    private static Conversation conversation;
+//    private volatile Conversation conversation;
+    private static ConversationHelper conversationHelper;
     private Long topicId;
 
     private Button sendButton;
@@ -61,53 +59,43 @@ public class ChatActivity extends BaseActivity implements RealmChangeListener<Co
         mMessageRecycler = (RecyclerView) findViewById(R.id.reyclerview_message_list);
 
         messages = new ArrayList<Message>();
+        conversationHelper = new ConversationHelper();
         setMessages();
 
-        //get conversation from Realm
-//        ((MyApplication)getApplication()).requestGateway.getUserConversations();
-//        try(Realm realm = Realm.getDefaultInstance()) {
-//            realm.executeTransaction(inRealm -> {
-//                final RealmResults<Conversation> convs  = realm.where(Conversation.class).equalTo("topicId", topicId).findAll();
-//                for(Conversation c : convs){
-//                    if(c.getRespondingUserId() == mCurrentUser.getId()){
-//                        if(c != null){
-//                            setConversation(c);
-//                        }
-//                    }
-//                }
-//            });
-//        }
-
         mMessageAdapter = new MessageListAdapter(this, messages);
+        conversationHelper.setAdapter(this.mMessageAdapter);
         mLayoutManager = new LinearLayoutManager(this);
         mMessageRecycler.setLayoutManager(mLayoutManager);
         mMessageRecycler.setAdapter(mMessageAdapter);
 
-        //TODO: send button
         sendButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if((!writeMessage.getText().toString().equals("")) || (!writeMessage.getText().toString().equals(null))){
+                if((conversationHelper.getConversation()!=null) && (!writeMessage.getText().toString().equals("")) || (!writeMessage.getText().toString().equals(null))){
                     Message newMessage = new Message();
                     newMessage.setText(writeMessage.getText().toString());
                     newMessage.setTimestampMillis(System.currentTimeMillis());
+                    newMessage.setConversationId(conversationHelper.getConversation().getId());
                     ((MyApplication)getApplication()).requestGateway.putMessage(newMessage);
                 }
             }
         });
+
     }
 
     private void setUser(User u){
         mRespondingUser = u;
     }
 
-    private void setConversation(Conversation c){
-        conversation = c;
-    }
+//    private void setConversation(Conversation c){
+//        if(c != null){
+//            conversationHelper = new ConversationHelper(c);
+//        }
+//    }
 
     private void setMessages(){
         //set responding user = author of topic
-        String respondingUser = getIntent().getExtras().getString("usernameTopic");
+        String respondingUser = getIntent().getStringExtra("usernameTopic");
         ((MyApplication)getApplication()).requestGateway.getUserByUsername(respondingUser);
         try(Realm realm = Realm.getDefaultInstance()) {
             realm.executeTransaction(inRealm -> {
@@ -119,7 +107,7 @@ public class ChatActivity extends BaseActivity implements RealmChangeListener<Co
         }
 
         //set current user
-//        Long currentUserId = getIntent().getExtras().getLong("usernameRespond_id");
+//        Long currentUserId = getIntent().getExtras().getLong("usernameRespond");
         if(((MyApplication)getApplication()).getCurrentUser() != null){
             mCurrentUser = ((MyApplication)getApplication()).getCurrentUser();
         }
@@ -129,25 +117,26 @@ public class ChatActivity extends BaseActivity implements RealmChangeListener<Co
 
         //get conversation from Realm
         ((MyApplication)getApplication()).requestGateway.getUserConversations();
-        try(Realm realm = Realm.getDefaultInstance()) {
-            realm.executeTransaction(inRealm -> {
-                final RealmResults<Conversation> convs  = realm.where(Conversation.class).equalTo("topicId", topicId).findAll();
-                for(Conversation c : convs){
-                    if(mCurrentUser!=null){
-                        if(c.getRespondingUserId() == mCurrentUser.getId()){
-                            if(c != null){
-                                setConversation(c);
-                            }
-                        }
-                    }
-                }
-            });
-        }
-        conversation.addChangeListener(this);
+        conversationHelper.queryRealm(mCurrentUser, topicId);
+//        try(Realm realm = Realm.getDefaultInstance()) {
+//            realm.executeTransaction(inRealm -> {
+//                final RealmResults<Conversation> convs  = realm.where(Conversation.class).equalTo("topicId", topicId).findAll();
+//                for(Conversation c : convs){
+//                    if(mCurrentUser!=null){
+//                        if(c.getRespondingUserId() == mCurrentUser.getId()){
+//                            if(c != null){
+//                                setConversation(c);
+//                            }
+//                        }
+//                    }
+//                }
+//            });
+//        }
+//        conversation.addChangeListener(this);
 
         messages = new ArrayList<>();
-        if(conversation != null){
-            messages.addAll(conversation.getMessages());
+        if(conversationHelper.getConversation() != null){
+            messages.addAll(conversationHelper.getConversation().getMessages());
             if(messages.size() > 2){
                 messages.sort(new Comparator<Message>() {
                     @Override
@@ -162,6 +151,7 @@ public class ChatActivity extends BaseActivity implements RealmChangeListener<Co
                 });
             }
         }
+
     }
 
     @Override
@@ -192,12 +182,6 @@ public class ChatActivity extends BaseActivity implements RealmChangeListener<Co
     }
 
     @Override
-    public void onChange(Conversation newConv) { // called once the query complete and on every update
-        mMessageAdapter.notifyDataSetChanged();
-        mMessageAdapter.notifyItemInserted(mMessageAdapter.getItemCount());
-    }
-
-    @Override
     public void onStart(){
         super.onStart();
         setMessages();
@@ -206,6 +190,6 @@ public class ChatActivity extends BaseActivity implements RealmChangeListener<Co
     @Override
     public void onStop() {
         super.onStop();
-        conversation.removeChangeListener(this);
+        conversationHelper.getConversation().removeChangeListener(conversationHelper);
     }
 }

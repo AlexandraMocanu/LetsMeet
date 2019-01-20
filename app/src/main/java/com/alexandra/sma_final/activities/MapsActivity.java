@@ -88,18 +88,14 @@ public class MapsActivity extends BaseActivity implements OnMapReadyCallback, Go
         return super.onOptionsItemSelected(item);
     }
 
+    @SuppressLint("MissingPermission")
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
 
-        enableMyLocation();
-
-        mMap.getUiSettings().setMapToolbarEnabled(false);
-        mMap.getUiSettings().setMyLocationButtonEnabled(true);
-        mMap.getUiSettings().setZoomControlsEnabled(true);
-        mMap.getUiSettings().setCompassEnabled(true);
-        mMap.getUiSettings().setRotateGesturesEnabled(true);
-        mMap.getUiSettings().setZoomGesturesEnabled(true);
+        if (enableMyLocation() == true){
+            mMap.setMyLocationEnabled(true);
+        }
 
         GPSTracker gps = new GPSTracker(this);
         LatLng position = null;
@@ -127,6 +123,14 @@ public class MapsActivity extends BaseActivity implements OnMapReadyCallback, Go
                     .zoom(13)                   // Sets the zoom
                     .build();                   // Creates a CameraPosition from the builder
             mMap.moveCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+
+            mMap.setMyLocationEnabled(true);
+            mMap.getUiSettings().setMapToolbarEnabled(false);
+            mMap.getUiSettings().setMyLocationButtonEnabled(true);
+            mMap.getUiSettings().setZoomControlsEnabled(true);
+            mMap.getUiSettings().setCompassEnabled(true);
+            mMap.getUiSettings().setRotateGesturesEnabled(true);
+            mMap.getUiSettings().setZoomGesturesEnabled(true);
         }
 
         setRequestMarkers();

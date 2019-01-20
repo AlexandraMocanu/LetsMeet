@@ -65,7 +65,7 @@ public class RequestGateway {
 
     //Connection parameters
     private static final boolean USES_SSL = true;
-    private static final boolean USES_EMULATOR = true;
+    private static final boolean USES_EMULATOR = false;
     private static boolean isConnected = false;
 
     //API link constants
@@ -84,8 +84,8 @@ public class RequestGateway {
     private static final String CONVERSATIONS_API = BASE_API + "/conversations";
     private static final String MY_CONVERSATIONS_API = BASE_API + "/conversations/me";
 
-    private static final String USERNAME = "admin";
-    private static final String PASSWORD = "admin";
+    private static final String USERNAME = "user";
+    private static final String PASSWORD = "user";
 
     public RequestGateway(MyApplication mApp) {
         this.mApp = mApp;

@@ -1,7 +1,5 @@
 package realm;
 
-import javax.annotation.Nullable;
-
 import io.realm.RealmObject;
 import io.realm.annotations.PrimaryKey;
 import io.realm.annotations.RealmField;
@@ -11,7 +9,6 @@ public class User extends RealmObject implements GetIdCompliant{
 
     @Required
     @PrimaryKey
-    @Nullable
     private Long id;
 
     private String username;

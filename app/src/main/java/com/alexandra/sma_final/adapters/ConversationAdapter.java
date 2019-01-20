@@ -79,7 +79,8 @@ public class ConversationAdapter extends RecyclerView.Adapter<ConversationAdapte
         Conversation conv = mConversations.get(position);
 
         //find responding user
-        MontserratTextView MontserratTextView = viewHolder.username;
+//        ((MyApplication)((MainActivity)context).getApplication()).requestGateway.getAllUsers();
+        MontserratTextView username = viewHolder.username;
         try(Realm realm = Realm.getDefaultInstance()) {
             realm.executeTransaction(inRealm -> {
                 if(conv.getRespondingUserId() != null){
@@ -92,7 +93,7 @@ public class ConversationAdapter extends RecyclerView.Adapter<ConversationAdapte
             });
         }
         if(currentUserConv != null){
-            MontserratTextView.setText(currentUserConv.getUsername());
+            username.setText(currentUserConv.getUsername());
         }
 
         //find messages
@@ -101,7 +102,7 @@ public class ConversationAdapter extends RecyclerView.Adapter<ConversationAdapte
         ArrayList<Message> messages = new ArrayList<>();
         messages.addAll(conv.getMessages());
 
-        if(!messages.isEmpty()){
+        if(!messages.isEmpty() && currentUserConv != null){
             messages.sort(new Comparator<Message>() {
                 @Override
                 public int compare(Message o1, Message o2) {
@@ -121,31 +122,31 @@ public class ConversationAdapter extends RecyclerView.Adapter<ConversationAdapte
             formatter.setTimeZone(TimeZone.getTimeZone("UTC"));
             String dateFormatted = formatter.format(date);
             time.setText(dateFormatted);
-        }
-        else{
-            title.setText("");
-            time.setText("");
-        }
 
-        ImageView mImage = viewHolder.mImage;
-        final String img = "user_" + rnd.nextInt(10);
-        mImage.setImageDrawable(
-                context.getResources().getDrawable(((MainActivity)context).getResourceID(img, "drawable",
-                        context))
-        );
+            ImageView mImage = viewHolder.mImage;
+            final String img = "user_" + rnd.nextInt(10);
+            mImage.setImageDrawable(
+                    context.getResources().getDrawable(((MainActivity)context).getResourceID(img, "drawable",
+                            context))
+            );
 
-        CardView cardView = viewHolder.mCardView;
-        cardView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent mIntent = new Intent(context, ChatActivity.class);
-                mIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                mIntent.putExtra("usernameTopic", ((MyApplication)((MainActivity)context).getApplication()).getCurrentUser().getId()); //username author
-//                mIntent.putExtra("usernameRespond_id", currentUserConv.getId()); //responding user id
-                mIntent.putExtra("idTopic", conv.getTopicId()); //topic id
-                context.startActivity(mIntent);
-            }
-        });
+            CardView cardView = viewHolder.mCardView;
+            cardView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+                    String username = ((MyApplication)((MainActivity)context).getApplication()).getCurrentUser().getUsername();
+                    if(!username.equals("fallback-user-1")){
+                        Intent mIntent = new Intent(context, ChatActivity.class);
+                        mIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                        mIntent.putExtra("usernameTopic", username); //username author
+                        mIntent.putExtra("usernameRespond", currentUserConv.getId()); //responding user id
+                        mIntent.putExtra("idTopic", conv.getTopicId()); //topic id
+                        context.startActivity(mIntent);
+                    }
+                }
+            });
+        }
     }
 
     private void setUserConv(User u){
