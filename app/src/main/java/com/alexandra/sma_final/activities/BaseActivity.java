@@ -133,6 +133,8 @@ abstract public class BaseActivity extends AppCompatActivity implements
         if ((this instanceof PostRequestActivity) || (this instanceof ChatActivity)) {
             fab.setEnabled(false);
             fab.setAlpha(0.0F);
+            fab.setActivated(false);
+//            fab.setVisibility(View.GONE);
         }
 
         bottomNavigationView = (BottomNavigationView)
@@ -141,6 +143,7 @@ abstract public class BaseActivity extends AppCompatActivity implements
             bottomNavigationView.setActivated(false);
             bottomNavigationView.setEnabled(false);
             bottomNavigationView.setAlpha(0.0F);
+            bottomNavigationView.setVisibility(View.GONE);
         }
         else{
             bottomNavigationView.setLabelVisibilityMode(LabelVisibilityMode.LABEL_VISIBILITY_SELECTED);
