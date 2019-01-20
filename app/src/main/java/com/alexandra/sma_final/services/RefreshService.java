@@ -24,6 +24,7 @@ public class RefreshService extends IntentService {
 //                "com.marakana.android.yamba.action.NEW_STATUSES").putExtra(
 //                "count", count));
 
+
         return;
     }
 

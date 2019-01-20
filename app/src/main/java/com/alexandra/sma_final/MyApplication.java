@@ -1,37 +1,19 @@
 package com.alexandra.sma_final;
 
+import android.app.AlarmManager;
 import android.app.Application;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentSender;
-import android.location.Address;
-import android.location.Geocoder;
 import android.location.Location;
-import android.util.Log;
-import android.widget.Toast;
 
-import com.alexandra.sma_final.activities.BaseActivity;
 import com.alexandra.sma_final.font.FontsOverride;
+import com.alexandra.sma_final.receivers.AlarmReceiver;
 import com.alexandra.sma_final.rest.UserDTO;
 import com.alexandra.sma_final.server.AsyncResponse;
 import com.alexandra.sma_final.server.Callback;
 import com.alexandra.sma_final.server.RequestGateway;
 import com.alexandra.sma_final.receivers.CheckConnectivity;
-import com.alexandra.sma_final.services.GPSTracker;
-import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.common.api.PendingResult;
-import com.google.android.gms.common.api.ResultCallback;
-import com.google.android.gms.common.api.Status;
-import com.google.android.gms.location.LocationRequest;
-import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.location.LocationSettingsRequest;
-import com.google.android.gms.location.LocationSettingsResult;
-import com.google.android.gms.location.LocationSettingsStatusCodes;
-import com.google.android.gms.maps.LocationSource;
-
-import java.io.IOException;
-import java.util.List;
-import java.util.Locale;
 
 import androidx.annotation.NonNull;
 import io.realm.Realm;
@@ -51,6 +33,9 @@ public class MyApplication extends Application implements AsyncResponse<UserDTO>
     public RequestGateway requestGateway;
 
     private UserDTO currentUser;
+
+//    public long refreshTime = AlarmManager.INTERVAL_FIFTEEN_MINUTES;
+    public long refreshTime = 7000;
 
     @Override
     public void onCreate() {
@@ -76,19 +61,28 @@ public class MyApplication extends Application implements AsyncResponse<UserDTO>
         requestGateway = new RequestGateway(this);
         requestGateway.authenticate(new CurrentUserCallback(this));
 
-        doGetRequests();
-        createMockObjects();
-        doPutRequests();
+        scheduleAlarm();
+
+//        createMockObjects();
+//        doPutRequests();
 
     }
 
-    public void doGetRequests() {
-        requestGateway.getNearbyTopics(45.731527D, 21.240686D, null);
-        requestGateway.getNearbyTopics("Timisoara");
-//        requestGateway.getAllUsers();
-//        requestGateway.getUserByUsername("system");
-        requestGateway.getUserConversations();
+    public void scheduleAlarm() {
+        // Construct an intent that will execute the AlarmReceiver
+        Intent intent = new Intent(getApplicationContext(), AlarmReceiver.class);
+        // Create a PendingIntent to be triggered when the alarm goes off
+        final PendingIntent pIntent = PendingIntent.getBroadcast(this, AlarmReceiver.REQUEST_CODE,
+                intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        // Setup periodic alarm every every half hour from this point onwards
+        long firstMillis = System.currentTimeMillis(); // alarm is set right away
+        AlarmManager alarm = (AlarmManager) this.getSystemService(Context.ALARM_SERVICE);
+        // First parameter is the type: ELAPSED_REALTIME, ELAPSED_REALTIME_WAKEUP, RTC_WAKEUP
+        // Interval can be INTERVAL_FIFTEEN_MINUTES, INTERVAL_HALF_HOUR, INTERVAL_HOUR, INTERVAL_DAY
+        alarm.setInexactRepeating(AlarmManager.RTC_WAKEUP, firstMillis,
+                refreshTime, pIntent);
     }
+
 
     public void doPutRequests() {
         requestGateway.putTopic(new Topic() {{
