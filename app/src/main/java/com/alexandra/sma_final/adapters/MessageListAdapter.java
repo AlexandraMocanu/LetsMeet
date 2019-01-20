@@ -1,6 +1,7 @@
 package com.alexandra.sma_final.adapters;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,6 +10,7 @@ import android.widget.ImageView;
 import com.alexandra.sma_final.activities.ChatActivity;
 import com.alexandra.sma_final.MyApplication;
 import com.alexandra.sma_final.R;
+import com.alexandra.sma_final.activities.UserActivity;
 import com.alexandra.sma_final.customviews.MontserratTextView;
 
 import java.text.DateFormat;
@@ -116,6 +118,8 @@ public class MessageListAdapter extends RecyclerView.Adapter {
 
         final Random rnd = new Random();
 
+        private User user;
+
         ReceivedMessageHolder(View itemView, Context context) {
             super(itemView);
             mContext = context;
@@ -146,10 +150,20 @@ public class MessageListAdapter extends RecyclerView.Adapter {
                     mContext.getResources().getDrawable(((ChatActivity)mContext).getResourceID(img, "drawable",
                             mContext)));
 
+            this.profileImage.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        Intent mIntent = new Intent(mContext, UserActivity.class);
+                        mIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                        mIntent.putExtra("username", user.getUsername());
+                        mContext.startActivity(mIntent);
+                    }});
+
         }
 
         private void setUsername(User u){
             nameText.setText(u.getUsername());
+            this.user = u;
         }
     }
 }

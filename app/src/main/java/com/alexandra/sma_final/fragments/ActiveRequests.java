@@ -80,7 +80,9 @@ public class ActiveRequests extends Fragment {
                     allTopics = realm.where(Topic.class).findAll();
                     for(Topic t : allTopics) {
                         if (t.getPostedBy().getUsername().equals(((UserActivity)getContext()).getmCurrentUser().getUsername())) {
-                            addTopic(t);
+                            if(t.getArchived() == false){
+                                addTopic(t);
+                            }
                         }
                     }
                 }
@@ -162,16 +164,11 @@ public class ActiveRequests extends Fragment {
                 resolveButton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        Long topicID = topic.getId();
-
-                        //TODO: put archived topic
+                        topic.setArchived(true);
+                        ((MyApplication)((UserActivity)getActivity()).getApplication()).requestGateway.putTopic(topic);
+                        updateView(position);
                     }
                 });
-
-//                ConstraintLayout.LayoutParams params = (ConstraintLayout.LayoutParams)seeMoreButton.getLayoutParams();
-////                params.endToEnd = 1;
-//                params.startToEnd = 1;
-//                seeMoreButton.setLayoutParams(params);
 
                 ConstraintSet constraintSet = new ConstraintSet();
                 constraintSet.clone(viewHolder.constraintLayout);
@@ -182,6 +179,11 @@ public class ActiveRequests extends Fragment {
                 constraintSet.applyTo(viewHolder.constraintLayout);
 
             }
+        }
+
+        private void updateView(int position){
+            mAdapter.notifyDataSetChanged();
+            mAdapter.notifyItemRemoved(position);
         }
 
         @Override

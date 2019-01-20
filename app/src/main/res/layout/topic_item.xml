@@ -8,12 +8,13 @@
 
     <com.alexandra.sma_final.customviews.MontserratTextView
         android:id="@+id/topic_title"
-        android:layout_width="100dp"
+        android:layout_width="150dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
         android:layout_marginTop="8dp"
         android:layout_marginBottom="8dp"
         android:text="TextView"
+        android:textAlignment="textStart"
         android:textAllCaps="true"
         android:textColor="@color/primaryTextColor"
         android:textColorHint="@color/primaryTextColor"
@@ -29,12 +30,13 @@
         android:layout_height="43dp"
         android:layout_marginTop="4dp"
         android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
         android:text="See more"
         android:textAlignment="center"
         android:textAllCaps="true"
         android:textColor="@color/secondaryDarkColor"
         android:textSize="12sp"
-        app:layout_constraintBaseline_toBaselineOf="@+id/topic_title"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/resolve"
         app:layout_constraintTop_toTopOf="parent" />
 
