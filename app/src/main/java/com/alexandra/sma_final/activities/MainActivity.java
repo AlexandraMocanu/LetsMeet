@@ -54,7 +54,7 @@ public class MainActivity extends BaseActivity {
 
         //get chats of user
         //create chat adapter and set it to layout manager
-        ((MyApplication)getApplicationContext()).requestGateway.getUserConversations();
+//        ((MyApplication)getApplicationContext()).requestGateway.getUserConversations();
 
         mUsers = new ArrayList<User>();
         mConversations = new ArrayList<Conversation>();
@@ -64,7 +64,6 @@ public class MainActivity extends BaseActivity {
                 if (convs.size() != 0){
                     for (Conversation c: convs){
                         addConversation(c);
-//                        addUser(u);
                     }
                 }
             });

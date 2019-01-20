@@ -79,10 +79,19 @@ public class ChatActivity extends BaseActivity{
                     newMessage.setConversationId(conversationHelper.getConversation().getId());
                     ((MyApplication)getApplication()).requestGateway.putMessage(newMessage);
 
-                    messages.add(newMessage);
-                    mMessageAdapter.notifyItemInserted(mMessageAdapter.getItemCount());
-                    mMessageAdapter.notifyDataSetChanged();
+//                    mMessageAdapter.notifyItemInserted(mMessageAdapter.getItemCount()+1);
+//                    mMessageAdapter.notifyDataSetChanged();
                 }
+            }
+        });
+
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                conversationHelper.queryRealm(mCurrentUser, topicId);
+                //TODO: fix this
+//                mMessageAdapter.notifyDataSetChanged();
+//                mMessageAdapter.notifyItemInserted(mMessageAdapter.getItemCount());
             }
         });
 
