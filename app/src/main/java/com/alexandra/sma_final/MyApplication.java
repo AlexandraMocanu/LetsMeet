@@ -326,22 +326,23 @@ public class MyApplication extends Application implements AsyncResponse<UserDTO>
         }
     }
 
-    public void setLocation(){
-        GPSTracker gps = new GPSTracker(this);
-        currentLocation = gps.location;
-
-        Geocoder geoCoder = new Geocoder(this, Locale.getDefault());
-        List<Address> address = null;
-        try {
-            address = geoCoder.getFromLocation(gps.latitude, gps.longitude, 1);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        if (address != null && address.size() > 0) {
-            city = address.get(0).getLocality();
-        } else {
-            Toast.makeText(this, "Could not get current location! Is GeoLocation active?", Toast.LENGTH_LONG).show();
-            city = "Timisoara";
-        }
+    public void setLocation(Location l){
+        this.currentLocation = l;
+//        GPSTracker gps = new GPSTracker(this);
+//        currentLocation = gps.location;
+//
+//        Geocoder geoCoder = new Geocoder(this, Locale.getDefault());
+//        List<Address> address = null;
+//        try {
+//            address = geoCoder.getFromLocation(gps.latitude, gps.longitude, 1);
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+//        if (address != null && address.size() > 0) {
+//            city = address.get(0).getLocality();
+//        } else {
+//            Toast.makeText(this, "Could not get current location! Is GeoLocation active?", Toast.LENGTH_LONG).show();
+//            city = "Timisoara";
+//        }
     }
 }
