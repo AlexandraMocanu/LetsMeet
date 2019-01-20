@@ -133,7 +133,7 @@ public class ConversationAdapter extends RecyclerView.Adapter<ConversationAdapte
                 public void onClick(View v) {
                     Intent mIntent = new Intent(context, ChatActivity.class);
                     mIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                    mIntent.putExtra("usernameTopic", ((MyApplication)context).getCurrentUser().getId()); //username author
+                    mIntent.putExtra("usernameTopic", ((MyApplication)((MainActivity)context).getApplication()).getCurrentUser().getId()); //username author
                     mIntent.putExtra("usernameRespond_id", currentUserConv.getId()); //responding user id
                     mIntent.putExtra("idTopic", conv.getTopicId()); //topic id
                     context.startActivity(mIntent);

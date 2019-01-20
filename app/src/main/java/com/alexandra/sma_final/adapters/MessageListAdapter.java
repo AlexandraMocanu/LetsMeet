@@ -16,6 +16,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.Random;
+import java.util.TimeZone;
 
 import androidx.recyclerview.widget.RecyclerView;
 import io.realm.Realm;
@@ -101,9 +102,8 @@ public class MessageListAdapter extends RecyclerView.Adapter {
 
             // Format the stored timestamp into a readable String using method.
             Date date = new Date(message.getTimestampMillis());
-            DateFormat formatter = new SimpleDateFormat("HH:mm");
-            //TODO: timezone?
-//        formatter.setTimeZone(TimeZone.getTimeZone("UTC"));
+            DateFormat formatter = new SimpleDateFormat("HH:mm:ss");
+            formatter.setTimeZone(TimeZone.getTimeZone("UTC"));
             String dateFormatted = formatter.format(date);
             timeText.setText(dateFormatted);
         }
@@ -128,20 +128,16 @@ public class MessageListAdapter extends RecyclerView.Adapter {
         void bind(Message message) {
             messageText.setText(message.getText());
 
-            // Format the stored timestamp into a readable String using method.
             Date date = new Date(message.getTimestampMillis());
-            DateFormat formatter = new SimpleDateFormat("HH:mm");
-            //TODO: timezone?
-//        formatter.setTimeZone(TimeZone.getTimeZone("UTC"));
+            DateFormat formatter = new SimpleDateFormat("HH:mm:ss");
+            formatter.setTimeZone(TimeZone.getTimeZone("UTC"));
             String dateFormatted = formatter.format(date);
             timeText.setText(dateFormatted);
-            try (Realm realm = Realm.getDefaultInstance()) {
-                realm.executeTransactionAsync(new Realm.Transaction() {
-                    @Override
-                    public void execute(Realm bgRealm) {
-                        RealmResults<User> users = bgRealm.where(User.class).equalTo("id", message.getUserId()).findAll();
-                        nameText.setText(users.first().getUsername());
-                    }
+
+            try(Realm realm = Realm.getDefaultInstance()) {
+                realm.executeTransaction(inRealm -> {
+                    final RealmResults<User> users = realm.where(User.class).equalTo("id", message.getUserId()).findAll();
+                    setUsername(users.first());
                 });
             }
 
@@ -150,6 +146,10 @@ public class MessageListAdapter extends RecyclerView.Adapter {
                     mContext.getResources().getDrawable(((ChatActivity)mContext).getResourceID(img, "drawable",
                             mContext)));
 
+        }
+
+        private void setUsername(User u){
+            nameText.setText(u.getUsername());
         }
     }
 }

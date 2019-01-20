@@ -10,6 +10,8 @@ import android.content.pm.PackageManager;
 import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
 
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 
 import androidx.core.content.ContextCompat;
@@ -162,11 +164,17 @@ public class MapsActivity extends BaseActivity implements OnMapReadyCallback, Go
 
                     int count = 0;
                     for (Topic t : topics) {
+
+                        BitmapDrawable bitmapdraw = (BitmapDrawable)getResources().getDrawable(R.drawable.final_app_icon_without_text_resized);
+                        Bitmap b = bitmapdraw.getBitmap();
+                        Bitmap smallMarker = Bitmap.createScaledBitmap(b, 48, 48, false);
+
                         mRequests.add(count,
                                 mMap.addMarker(new MarkerOptions()
                                         .position(new LatLng(t.getCoordX(), t.getCoordY()))
                                         .title(t.getTitle())
-                                        .icon(BitmapDescriptorFactory.fromResource(R.drawable.location))));
+                                        .icon(BitmapDescriptorFactory.fromBitmap(smallMarker))
+                                ));
 
                         mRequests.get(count).setTag(t);
 

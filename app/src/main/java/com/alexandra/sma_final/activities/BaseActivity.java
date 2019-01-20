@@ -130,17 +130,23 @@ abstract public class BaseActivity extends AppCompatActivity implements
                 startActivity(newIntent);
             }
         });
-        if (this instanceof PostRequestActivity) {
+        if ((this instanceof PostRequestActivity) || (this instanceof ChatActivity)) {
             fab.setEnabled(false);
             fab.setAlpha(0.0F);
         }
 
         bottomNavigationView = (BottomNavigationView)
                 findViewById(R.id.bottom_bar);
-
-        bottomNavigationView.setLabelVisibilityMode(LabelVisibilityMode.LABEL_VISIBILITY_SELECTED);
-        bottomNavigationView.setOnNavigationItemSelectedListener(this);
+        if(this instanceof ChatActivity){
+            bottomNavigationView.setActivated(false);
+            bottomNavigationView.setEnabled(false);
+            bottomNavigationView.setAlpha(0.0F);
+        }
+        else{
+            bottomNavigationView.setLabelVisibilityMode(LabelVisibilityMode.LABEL_VISIBILITY_SELECTED);
+            bottomNavigationView.setOnNavigationItemSelectedListener(this);
 //        bottomNavigationView.getMenu().findItem().setChecked(true);
+        }
 
         mMyIcon = (ImageButton) findViewById(R.id.my_profile);
         mMyIcon.setOnClickListener(new View.OnClickListener() {
