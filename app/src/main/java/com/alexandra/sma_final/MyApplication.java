@@ -91,16 +91,17 @@ public class MyApplication extends Application implements AsyncResponse<UserDTO>
     }
 
     public void doPutRequests() {
-        //USER IS ALWAYS REQUIRED
         requestGateway.putTopic(new Topic() {{
             setScore(10);
             setTitle("My New Topic");
+            setCity("Timisoara");
         }});
-        requestGateway.putConversation(new Conversation());
+        requestGateway.putConversation(new Conversation(){{
+            setTopicId(10L);
+        }});
         requestGateway.putMessage(new Message() {{
             setText("My new Message text");
-            setUserId(5L);
-            setTimestampMillis(System.currentTimeMillis());
+            setConversationId(6L);
         }});
         requestGateway.putRating(new Rating() {{
             setScore(1);
