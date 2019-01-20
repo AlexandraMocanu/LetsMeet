@@ -16,15 +16,6 @@ public class ConversationHelper implements RealmChangeListener<Conversation> {
         try(Realm realm = Realm.getDefaultInstance()) {
             realm.executeTransaction(inRealm -> {
                 final RealmResults<Conversation> convs  = realm.where(Conversation.class).equalTo("topicId", topicId).findAll();
-//                for(Conversation c : convs){
-//                    if(mCurrentUser!=null){
-//                        if(c.getRespondingUserId() == mCurrentUser.getId()){
-//                            if(c != null){
-//                                setConversation(c);
-//                            }
-//                        }
-//                    }
-//                }
                 if(convs.first() != null){
                     setConversation(convs.first());
                 }
