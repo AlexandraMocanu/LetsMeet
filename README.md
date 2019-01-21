@@ -3,6 +3,7 @@ How to run:
 2. Using Gradle, either
    2.1 Deploy application to emulator and deploy on the backend on the same machine
    2.2 Set `USES_EMULATOR` (RequestGateway:68) flag to false and the ip address (RequestGateway:74) of the machine with the backend
+3. If you want to enable geolocation features, you need to add you own Google API key at AndroidManifest.xml:57
 
 Request Gateway filepath = src\main\java\com\alexandra\sma_final\server
 
