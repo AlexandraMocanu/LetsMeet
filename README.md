@@ -8,13 +8,12 @@ Request Gateway filepath = src\main\java\com\alexandra\sma_final\server
 
 Let's Meet!
 
-1. Problema 
 Android Application for meeting people.
 Let's Meet! is the only Application which does not discriminate based on looks, race or gender.
 
 Travelling to a new city? Find new friends to hang out with!
 
-2. Solutie propusa (non tehnica)
+Solutie propusa (non tehnica)
 Anonimat
 * While the android app is completely anonymous, however the intended purpose excludes anonymity.
 People (who enjoy chatting together) will inevitably meet, at which point the anonymity disappears.
@@ -23,25 +22,19 @@ makes the users more sociable (not afraid of being judged).
 Also, 
 
 GeoLocatie 
+
 * GeoLocation is essential to our app. If users are not close to each other, then their 
 interaction is limited by their means of communication.
 While chatting and VoIP are nice, we believe that it does not quite beat the real thing.
 Also, this is a great way for travellers to meet new people when in another city.
 
-General
-* 
 
-5. Solutie tehnica
+Solutie tehnica
+
 Diagrama arhitecturala
 Built using Android with local database layer using Realm.
 Publisher - Subscriber: publish topics, users subscribe to topics in a city.
 
-
-6. Rezultate obtinute
-demo
-
-7. Posibilitate monetizare/exploatare
-* 
 
 
 FAQ
