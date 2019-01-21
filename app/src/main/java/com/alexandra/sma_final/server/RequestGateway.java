@@ -65,13 +65,13 @@ public class RequestGateway {
 
     //Connection parameters
     private static final boolean USES_SSL = true;
-    private static final boolean USES_EMULATOR = false;
+    private static final boolean USES_EMULATOR = true;
     private static boolean isConnected = false;
 
     //API link constants
     private static final String EMU_LOCALHOST = "10.0.2.2";
     private static final String DOMAIN_BASE_API = USES_EMULATOR ?
-            EMU_LOCALHOST : "192.168.100.166";
+            EMU_LOCALHOST : "192.168.1.110";
     private static final String BASE_API = "https://" + DOMAIN_BASE_API + ":8080/api";
     private static final String AUTH_API = BASE_API + "/authenticate";
     private static final String WHO_AM_I_API = BASE_API + "/account";

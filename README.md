@@ -1,3 +1,10 @@
+How to run:
+1. Clone this repo and the one at https://github.com/vali-m/sma-back.git
+2. Using Gradle, either
+   2.1 Deploy application to emulator and deploy on the backend on the same machine
+   2.2 Set `USES_EMULATOR` (RequestGateway:68) flag to false and the ip address (RequestGateway:74) of the machine with the backend
+
+Request Gateway filepath = src\main\java\com\alexandra\sma_final\server
 
 Let's Meet!
 
